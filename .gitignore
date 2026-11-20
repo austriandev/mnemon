@@ -1,0 +1,27 @@
+# Secrets — never committed. Use .env.example for the shape.
+.env
+.env.*
+!.env.example
+
+# Local-only material: source brief, personal notes, personal agent instructions
+brief/
+.local/
+CLAUDE.local.md
+
+# Build / tooling output
+node_modules/
+.next/
+dist/
+coverage/
+*.tsbuildinfo
+.turbo/
+
+# Local runtime data (uploaded transcripts, model cache, eval run outputs)
+data/uploads/
+.cache/
+evals/runs/
+
+# OS / editor
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
