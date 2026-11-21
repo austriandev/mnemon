@@ -142,6 +142,66 @@ describe("createVoyageEmbedder", () => {
     await expect(embedder.embed(["x"], "query")).rejects.toThrow(/512.*1024/);
   });
 
+  it("retries rate-limited and server-error responses with backoff, then succeeds", async () => {
+    const { fetch: ok } = fakeVoyage();
+    const statuses = [429, 503];
+    const waits: number[] = [];
+    const flaky: typeof globalThis.fetch = async (url, init) => {
+      const status = statuses.shift();
+      if (status === 429) {
+        return new Response("{}", { status, headers: { "retry-after": "7" } });
+      }
+      if (status) return new Response("{}", { status });
+      return ok(url, init);
+    };
+    const embedder = createVoyageEmbedder({
+      apiKey: "k",
+      fetch: flaky,
+      onUsage: () => {},
+      sleep: async (ms) => {
+        waits.push(ms);
+      },
+    });
+
+    const { vectors } = await embedder.embed(["x"], "query");
+
+    expect(vectors).toHaveLength(1);
+    // Retry-After (7 s) is honoured; without it, backoff doubles from 1 s.
+    expect(waits).toEqual([7000, 2000]);
+  });
+
+  it("gives up after the last retry with the API's error", async () => {
+    const waits: number[] = [];
+    const embedder = createVoyageEmbedder({
+      apiKey: "k",
+      fetch: async () => new Response('{"detail":"slow down"}', { status: 429 }),
+      onUsage: () => {},
+      maxRetries: 2,
+      sleep: async (ms) => {
+        waits.push(ms);
+      },
+    });
+
+    await expect(embedder.embed(["x"], "query")).rejects.toThrow(/429.*slow down/);
+    expect(waits).toEqual([1000, 2000]);
+  });
+
+  it("does not retry a client error such as a bad key", async () => {
+    let calls = 0;
+    const embedder = createVoyageEmbedder({
+      apiKey: "k",
+      fetch: async () => {
+        calls++;
+        return new Response("{}", { status: 401 });
+      },
+      onUsage: () => {},
+      sleep: async () => {},
+    });
+
+    await expect(embedder.embed(["x"], "query")).rejects.toThrow(/401/);
+    expect(calls).toBe(1);
+  });
+
   it("refuses to start without an API key", () => {
     expect(() => createVoyageEmbedder({ apiKey: "" })).toThrow(/MNEMON_VOYAGE_API_KEY/);
   });

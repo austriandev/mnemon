@@ -31,6 +31,9 @@ export interface VoyageEmbedderOptions {
   /** Called once per API request; defaults to a JSON line on stderr. */
   readonly onUsage?: (usage: EmbeddingUsage) => void;
   readonly fetch?: typeof globalThis.fetch;
+  /** Retries for 429 and 5xx responses. Backoff doubles from 1 s unless Retry-After says otherwise. */
+  readonly maxRetries?: number;
+  readonly sleep?: (ms: number) => Promise<void>;
 }
 
 const ENDPOINT = "https://api.voyageai.com/v1/embeddings";
@@ -47,22 +50,34 @@ export function createVoyageEmbedder({
   batchSize = 128,
   onUsage = logUsage,
   fetch = globalThis.fetch,
+  maxRetries = 4,
+  sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
 }: VoyageEmbedderOptions): Embedder {
   if (!apiKey) {
     throw new Error("No Voyage API key: set MNEMON_VOYAGE_API_KEY in .env (see .env.example).");
   }
 
+  async function post(texts: string[], inputType: EmbeddingInputType): Promise<Response> {
+    for (let retry = 0; ; retry++) {
+      const response = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: `Bearer ${apiKey}` },
+        body: JSON.stringify({
+          input: texts,
+          model,
+          input_type: inputType,
+          output_dimension: dimensions,
+        }),
+      });
+      const retryable = response.status === 429 || response.status >= 500;
+      if (response.ok || !retryable || retry >= maxRetries) return response;
+      const retryAfter = Number(response.headers.get("retry-after"));
+      await sleep(retryAfter > 0 ? retryAfter * 1000 : 1000 * 2 ** retry);
+    }
+  }
+
   async function embedBatch(texts: string[], inputType: EmbeddingInputType) {
-    const response = await fetch(ENDPOINT, {
-      method: "POST",
-      headers: { "content-type": "application/json", authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({
-        input: texts,
-        model,
-        input_type: inputType,
-        output_dimension: dimensions,
-      }),
-    });
+    const response = await post(texts, inputType);
     if (!response.ok) {
       const detail = await response.text().catch(() => "");
       throw new Error(`Voyage embeddings request failed: HTTP ${response.status} ${detail}`);

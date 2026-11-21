@@ -18,6 +18,21 @@ importers:
         specifier: 7.0.2
         version: 7.0.2
 
+  apps/cli:
+    dependencies:
+      '@mnemon/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@mnemon/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@mnemon/voyage':
+        specifier: workspace:*
+        version: link:../../packages/voyage
+      postgres:
+        specifier: 3.4.9
+        version: 3.4.9
+
   packages/core:
     devDependencies:
       fast-check:

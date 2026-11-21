@@ -1,0 +1,15 @@
+{
+  "name": "@mnemon/cli",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@mnemon/core": "workspace:*",
+    "@mnemon/db": "workspace:*",
+    "@mnemon/voyage": "workspace:*",
+    "postgres": "3.4.9"
+  }
+}
