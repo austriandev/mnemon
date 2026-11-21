@@ -36,3 +36,15 @@ function redact(url: string): string {
   if (parsed.password) parsed.password = "***";
   return parsed.toString();
 }
+
+/**
+ * Deterministic stand-in embeddings: chunk i gets the unit vector along axis i, so
+ * the nearest chunk to axis i is chunk i. Model "fake-embed-1", 1024 dimensions.
+ */
+export function fakeEmbeddings(count: number, model = "fake-embed-1") {
+  return { model, vectors: Array.from({ length: count }, (_, i) => unitVector(i)) };
+}
+
+export function unitVector(axis: number, dimensions = 1024): number[] {
+  return Array.from({ length: dimensions }, (_, d) => (d === axis ? 1 : 0));
+}

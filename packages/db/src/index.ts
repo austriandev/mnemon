@@ -1,4 +1,6 @@
 // Public interface of @mnemon/db: Postgres storage for Mnemon.
+
+export { createChunkSearch } from "./chunk-search.ts";
 export { databaseUrl, LOCAL_DATABASE_URL } from "./config.ts";
 export {
   createMeetingStore,

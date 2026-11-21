@@ -3,7 +3,7 @@ import { chunkTurns, parseTranscript, type Turn } from "@mnemon/core";
 import type { Sql } from "postgres";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createMeetingStore, type MeetingStore, migrate } from "../src/index.ts";
-import { createTestDatabase } from "./test-database.ts";
+import { createTestDatabase, fakeEmbeddings } from "./test-database.ts";
 
 const source = readFileSync(
   new URL("../../core/fixtures/steering-committee.txt", import.meta.url),
@@ -13,6 +13,7 @@ const parsed = parseTranscript(source);
 if (!parsed.ok) throw new Error("fixture must parse");
 const turns = parsed.turns;
 const chunks = chunkTurns(turns);
+const embeddings = fakeEmbeddings(chunks.length);
 
 describe("meeting store", () => {
   let sql: Sql;
@@ -29,7 +30,13 @@ describe("meeting store", () => {
   });
 
   it("returns a saved meeting with its transcript, turns and chunks unchanged", async () => {
-    const { id } = await store.save({ title: "AMT-208 steering committee", source, turns, chunks });
+    const { id } = await store.save({
+      title: "AMT-208 steering committee",
+      source,
+      turns,
+      chunks,
+      embeddings,
+    });
 
     const meeting = await store.get(id);
 
@@ -38,6 +45,7 @@ describe("meeting store", () => {
       title: "AMT-208 steering committee",
       sourceText: source,
       sourceSha256: "e142e42eb70c2958070dac30bb8abf0081bd62eac33e26c829b5692ff6d2b160",
+      embeddingModel: "fake-embed-1",
     });
     expect(meeting?.createdAt).toBeInstanceOf(Date);
     expect(meeting?.turns).toEqual(turns);
@@ -57,6 +65,7 @@ describe("meeting store", () => {
       source: "[00:00:01] Dana Wu: Quick check-in.",
       turns: [turns[0] as Turn],
       chunks: chunkTurns([turns[0] as Turn]),
+      embeddings: fakeEmbeddings(1),
     });
 
     const listed = await store.list();
@@ -78,8 +87,15 @@ describe("meeting store", () => {
         source,
         turns,
         chunks: [chunkCitingAMissingTurn as (typeof chunks)[number]],
+        embeddings: fakeEmbeddings(1),
       }),
     ).rejects.toThrow();
     expect(await store.list()).toEqual(before);
+  });
+
+  it("refuses embeddings that don't match the chunks one to one", async () => {
+    await expect(
+      store.save({ title: "Mismatch", source, turns, chunks, embeddings: fakeEmbeddings(1) }),
+    ).rejects.toThrow(/5 chunks.*1 embedding/);
   });
 });
