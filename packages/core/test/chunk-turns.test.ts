@@ -1,0 +1,166 @@
+import { describe, expect, it } from "vitest";
+import {
+  approximateTokenCounter,
+  type Chunk,
+  chunkTurns,
+  DEFAULT_CHUNK_OPTIONS,
+  type TokenCounter,
+  type Turn,
+} from "../src/index.ts";
+
+/** One token per whitespace-separated word, so costs in these tests are easy to read. */
+const wordCounter: TokenCounter = {
+  count: (text) => text.split(/\s+/).filter(Boolean).length,
+};
+
+/**
+ * Turns whose rendered line ("[HH:MM:SS] S<i>: w w ...") costs exactly the given
+ * number of words: two for the timestamp and speaker, the rest for the text.
+ */
+function turnsCosting(costs: readonly number[]): Turn[] {
+  return costs.map((cost, index) => ({
+    index,
+    speaker: `S${index}`,
+    startSeconds: index * 10,
+    text: Array.from({ length: cost - 2 }, () => "w").join(" "),
+    sourceLines: { start: index + 1, end: index + 1 },
+  }));
+}
+
+const ranges = (chunks: readonly Chunk[]) =>
+  chunks.map((c) => [c.turnRange.first, c.turnRange.last, c.oversize]);
+
+describe("chunkTurns", () => {
+  it("puts turns that fit the budget into one chunk, rendered with speaker and timestamp", () => {
+    const turns: Turn[] = [
+      {
+        index: 0,
+        speaker: "Sam Okafor",
+        startSeconds: 5,
+        text: "Shall we start?",
+        sourceLines: { start: 1, end: 1 },
+      },
+      {
+        index: 1,
+        speaker: "Priya Nair",
+        startSeconds: 3725,
+        text: "Yes.",
+        sourceLines: { start: 2, end: 3 },
+      },
+    ];
+
+    expect(
+      chunkTurns(turns, { maxTokens: 100, overlapTurns: 0, tokenCounter: wordCounter }),
+    ).toEqual([
+      {
+        index: 0,
+        turnRange: { first: 0, last: 1 },
+        startSeconds: 5,
+        endSeconds: 3725,
+        speakers: ["Sam Okafor", "Priya Nair"],
+        text: "[00:00:05] Sam Okafor: Shall we start?\n[01:02:05] Priya Nair: Yes.",
+        tokenCount: 10,
+        oversize: false,
+      },
+    ]);
+  });
+
+  it("starts a new chunk when the next turn would exceed the budget", () => {
+    const chunks = chunkTurns(turnsCosting([5, 5, 5, 5, 5]), {
+      maxTokens: 10,
+      overlapTurns: 0,
+      tokenCounter: wordCounter,
+    });
+
+    expect(ranges(chunks)).toEqual([
+      [0, 1, false],
+      [2, 3, false],
+      [4, 4, false],
+    ]);
+    expect(chunks.map((c) => c.index)).toEqual([0, 1, 2]);
+  });
+
+  it("repeats the last overlapTurns turns of a chunk at the start of the next", () => {
+    const chunks = chunkTurns(turnsCosting([5, 5, 5, 5, 5, 5]), {
+      maxTokens: 15,
+      overlapTurns: 1,
+      tokenCounter: wordCounter,
+    });
+
+    expect(ranges(chunks)).toEqual([
+      [0, 2, false],
+      [2, 4, false],
+      [4, 5, false],
+    ]);
+  });
+
+  it("gives a turn longer than the budget a chunk of its own, flagged oversize and unsplit", () => {
+    const turns = turnsCosting([3, 20, 3]);
+    const chunks = chunkTurns(turns, { maxTokens: 10, overlapTurns: 1, tokenCounter: wordCounter });
+
+    expect(ranges(chunks)).toEqual([
+      [0, 0, false],
+      [1, 1, true],
+      [2, 2, false],
+    ]);
+    expect(chunks[1]?.tokenCount).toBe(20);
+    expect(chunks[1]?.text).toBe(`[00:00:10] S1: ${turns[1]?.text}`);
+  });
+
+  it("carries fewer overlap turns when carrying them all would push the next turn over budget", () => {
+    const chunks = chunkTurns(turnsCosting([4, 4, 4, 10]), {
+      maxTokens: 13,
+      overlapTurns: 1,
+      tokenCounter: wordCounter,
+    });
+
+    expect(ranges(chunks)).toEqual([
+      [0, 2, false],
+      [3, 3, false],
+    ]);
+  });
+
+  it("returns no chunks for no turns", () => {
+    expect(chunkTurns([])).toEqual([]);
+  });
+
+  it("counts tokens with the characters / 4 approximation by default", () => {
+    // "[00:00:05] Sam Okafor: Shall we start?" is 38 characters: ceil(38 / 4) = 10.
+    const [chunk] = chunkTurns([
+      {
+        index: 0,
+        speaker: "Sam Okafor",
+        startSeconds: 5,
+        text: "Shall we start?",
+        sourceLines: { start: 1, end: 1 },
+      },
+    ]);
+
+    expect(chunk?.tokenCount).toBe(10);
+  });
+
+  it("uses documented provisional defaults", () => {
+    expect(DEFAULT_CHUNK_OPTIONS).toEqual({ maxTokens: 300, overlapTurns: 1 });
+  });
+
+  it.each([
+    { maxTokens: 0 },
+    { maxTokens: -5 },
+    { maxTokens: 2.5 },
+    { maxTokens: Number.NaN },
+    { overlapTurns: -1 },
+    { overlapTurns: 0.5 },
+  ])("rejects invalid options %o as a programming error", (options) => {
+    expect(() => chunkTurns(turnsCosting([3]), options)).toThrow(RangeError);
+  });
+});
+
+describe("approximateTokenCounter", () => {
+  it.each([
+    ["", 0],
+    ["abcd", 1],
+    ["abcde", 2],
+  ])("counts %j as %i tokens", (text, expected) => {
+    expect(approximateTokenCounter.count(text)).toBe(expected);
+  });
+});

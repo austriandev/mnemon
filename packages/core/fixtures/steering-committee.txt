@@ -1,0 +1,75 @@
+[00:00:04] Dana Wu: Good morning, everyone. This is the AMT-208 programme steering
+committee for October. We have enrollment, the safety review, the manufacturing
+vendor, budget and the interim analysis timeline.
+[00:00:21] Dana Wu: Marcus, can you start with enrollment?
+[00:00:26] Marcus Lindqvist: Sure. We're at 142 of 220 patients across nine sites.
+That's about three weeks behind the plan we approved in June.
+[00:00:44] Dr. Elena Ortiz: Is the gap spread evenly, or is it a couple of sites?
+[00:00:50] Marcus Lindqvist: Mostly two sites. Brackenford and the Wrenmoor clinic
+together account for almost all of the shortfall. The other seven are on plan.
+[00:01:09] Priya Nair: Do we know why? Is it screening failures or slow activation?
+[00:01:15] Marcus Lindqvist: Screen failures at Brackenford, mostly on the renal
+function criterion. Wrenmoor lost their study coordinator in August.
+[00:01:34] Dana Wu: What are the options?
+[00:01:37] Marcus Lindqvist: We can add two sites from the backup list, or we can
+accept the delay. Adding sites costs roughly four weeks to activate each.
+[00:01:55] Dr. Elena Ortiz: I'd rather add sites than loosen the renal criterion.
+That criterion is there for a reason.
+[00:02:06] Dana Wu: Agreed. Let's record that: we add two backup sites and the
+eligibility criteria stay as they are.
+[00:02:15] Sam Okafor: I can take the site contracts. I'll have both agreements out
+for signature by the twenty-fourth.
+[00:02:24] Dana Wu: Thank you, Sam. Marcus, anything else on enrollment?
+[00:02:28] Marcus Lindqvist: No, that's it.
+[00:02:31] Dana Wu: Then the safety review. Elena.
+[00:02:35] Dr. Elena Ortiz: The data monitoring committee met last week. No new
+signals overall, but they asked for more detail on the liver enzyme elevations
+in the 30 mg cohort. Three patients, all transient, all resolved.
+[00:03:02] Dr. Hana Sato: Were any of those above three times the upper limit?
+[00:03:06] Dr. Elena Ortiz: One patient briefly, yes. That's why they asked.
+[00:03:12] Dr. Hana Sato: Then I don't think we can escalate anyone to 30 mg until
+the committee has seen the full listings.
+[00:03:20] Dr. Elena Ortiz: That's my view too. We should hold the dose at 20 mg
+until the safety review comes back.
+[00:03:31] Dana Wu: Is anyone against holding at 20 mg?
+[00:03:35] Priya Nair: No. It's the conservative call and it's the right one.
+[00:03:39] Dana Wu: Decision, then: dosing stays at 20 mg for all new patients until
+the data monitoring committee completes its review of the liver data.
+[00:03:52] Dr. Hana Sato: I'll prepare the patient listings and the narrative for
+the three cases and send them to the committee by Friday.
+[00:04:01] Dr. Elena Ortiz: Copy me on that, please.
+[00:04:04] Dr. Hana Sato: Will do.
+[00:04:07] Dana Wu: Next, the manufacturing vendor. Priya.
+[00:04:11] Priya Nair: Our fill-finish vendor, Quellmark Fill Services, had two
+deviations in the last batch record review. Both were documentation issues, but
+it's the second quarter in a row.
+[00:04:33] Sam Okafor: Is there a supply risk for the trial?
+[00:04:37] Priya Nair: Not for the next six months. We have enough released drug
+product on hand. The risk is the batch planned for March.
+[00:04:49] Dana Wu: What do you recommend?
+[00:04:52] Priya Nair: A for-cause audit before we release the March batch order.
+If you agree, I'll take the vendor audit and have a plan to you within two weeks.
+[00:05:07] Dana Wu: Good. Sam, does an audit affect the vendor contract?
+[00:05:11] Sam Okafor: The quality agreement allows it with thirty days' notice. I'll
+send the notice letter once Priya confirms the audit dates.
+[00:05:21] Dana Wu: Budget. Sam, you're up again.
+[00:05:24] Sam Okafor: We're under budget on site payments because of the slow
+enrollment, about 310 thousand. The two new sites will use around half of that.
+[00:05:39] Marcus Lindqvist: Could we move the remainder to the audit?
+[00:05:43] Sam Okafor: That's my proposal. Move 150 thousand from site payments to
+quality and vendor oversight for this fiscal year.
+[00:05:53] Dana Wu: Any objections? None. The reallocation is approved.
+[00:05:58] Dana Wu: Last item, the interim analysis. Hana, where does it stand?
+[00:06:03] Dr. Hana Sato: With the enrollment delay, we won't have the data for
+the planned second-quarter interim. Realistically it moves to the third quarter.
+[00:06:17] Dr. Elena Ortiz: And the dose hold may push it further if the committee
+takes longer than a month.
+[00:06:24] Dana Wu: Then let's agree to move the interim analysis to the third
+quarter and revisit at the next meeting if the hold continues.
+[00:06:33] Marcus Lindqvist: I'll update the integrated timeline and the risk register
+to reflect that, and circulate both before the next meeting.
+[00:06:42] Dana Wu: Thank you. To recap: two new sites, dose held at 20 mg, a
+for-cause audit of the fill-finish vendor, 150 thousand reallocated, and the
+interim moves to the third quarter.
+[00:07:01] Priya Nair: That matches my notes.
+[00:07:04] Dana Wu: Next meeting is the fourteenth of November. Thanks, everyone.

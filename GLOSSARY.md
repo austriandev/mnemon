@@ -1,0 +1,31 @@
+# Mnemon
+
+Mnemon answers questions about meetings from their transcripts, and every answer
+cites the moment in the transcript it came from.
+
+## Language
+
+**Meeting**:
+One recorded session, known to Mnemon through its transcript: an ordered sequence
+of turns.
+_Avoid_: call, session, recording
+
+**Turn**:
+One speaker's uninterrupted contribution to a meeting, with the time it starts and
+the lines of the transcript it came from.
+_Avoid_: utterance, segment, line
+
+**Chunk**:
+A run of whole, consecutive turns from one meeting, sized for retrieval. Neighbouring
+chunks may share turns.
+_Avoid_: passage, window, segment
+
+**Record**:
+Something extracted from a meeting that people ask about: a decision, an action item
+or a topic, each tied to the turns that support it.
+_Avoid_: insight, entity, note
+
+**Citation**:
+A pointer from an answer or record back to the turns it rests on: who said it, when,
+and where in the transcript.
+_Avoid_: source, reference, link
