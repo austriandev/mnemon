@@ -20,7 +20,11 @@ export type ParseErrorCode =
   /** A turn has a speaker but no text, on its own line or on continuation lines. */
   | "empty-text"
   /** Text appears before the first timestamped turn, so it belongs to no speaker. */
-  | "orphan-line";
+  | "orphan-line"
+  /** A timestamp is earlier than the one on the turn line before it. */
+  | "timestamp-backwards"
+  /** The file contains no valid turn. */
+  | "no-turns";
 
 export interface ParseError {
   readonly code: ParseErrorCode;

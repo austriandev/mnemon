@@ -50,6 +50,49 @@ describe("parseTranscript rejects malformed input with located errors", () => {
     ]);
   });
 
+  it("reports a timestamp earlier than the one before it, once per inversion", () => {
+    const source = [
+      "[00:10:00] Sam Okafor: One.",
+      "[00:09:00] Priya Nair: Two.",
+      "[00:09:30] Sam Okafor: Three.",
+    ].join("\n");
+
+    expect(errorsOf(source)).toEqual([{ code: "timestamp-backwards", line: 2 }]);
+  });
+
+  it("allows consecutive turns with the same timestamp", () => {
+    const result = parseTranscript("[00:00:05] Sam Okafor: Yes.\n[00:00:05] Priya Nair: Yes.");
+
+    expect(result.ok).toBe(true);
+  });
+
+  it.each([
+    ["an empty file", ""],
+    ["only blank lines", "\n  \n\t\n"],
+    ["prose with no timestamps", "Minutes of the meeting.\nEveryone agreed."],
+  ])("reports a transcript with no turns (%s)", (_, source) => {
+    expect(errorsOf(source)).toEqual([{ code: "no-turns", line: null }]);
+  });
+
+  it("reports every error in line order, not only the first", () => {
+    const source = [
+      "Preamble",
+      "[00:00:10] Sam Okafor: Fine.",
+      "[00:00:05] Priya Nair: Backwards.",
+      "[00:00:20] : No speaker.",
+      "and its continuation line",
+      "[00:00:30] Dana Wu: Fine.",
+      "[00:99] Dana Wu: Bad stamp.",
+    ].join("\n");
+
+    expect(errorsOf(source)).toEqual([
+      { code: "orphan-line", line: 1 },
+      { code: "timestamp-backwards", line: 3 },
+      { code: "empty-speaker", line: 4 },
+      { code: "invalid-timestamp", line: 7 },
+    ]);
+  });
+
   it("explains the problem in a human-readable message", () => {
     const result = parseTranscript("[00:00:01] Sam Okafor: Start.\n[00:12:75] Priya Nair: Hi.");
 

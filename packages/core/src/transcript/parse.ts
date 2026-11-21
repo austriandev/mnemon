@@ -24,6 +24,10 @@ export function parseTranscript(source: string): ParseResult {
   // "broken" means the current turn line was rejected: lines continuing it are
   // absorbed so they are neither reported again nor attached to an earlier turn.
   let open: OpenTurn | "broken" | undefined;
+  let sawTurnLine = false;
+  // The last valid timestamp seen, compared with the next one so each place the
+  // clock goes backwards is reported once.
+  let previousStamp: { seconds: number; text: string; line: number } | undefined;
 
   const reject = (code: ParseError["code"], line: number, message: string) => {
     errors.push({ code, line, message: `Line ${line}: ${message}` });
@@ -55,6 +59,7 @@ export function parseTranscript(source: string): ParseResult {
 
     const prefixed = TIMESTAMP_PREFIX.exec(line);
     if (prefixed) {
+      sawTurnLine = true;
       close();
       const [, stamp = "", rest = ""] = prefixed;
       const time = TIMESTAMP.exec(stamp);
@@ -67,6 +72,17 @@ export function parseTranscript(source: string): ParseResult {
         return;
       }
       const [, hh = "0", mm = "0", ss = "0"] = time;
+      const startSeconds = Number(hh) * 3600 + Number(mm) * 60 + Number(ss);
+      const earlier = previousStamp;
+      previousStamp = { seconds: startSeconds, text: stamp, line: lineNumber };
+      if (earlier && startSeconds < earlier.seconds) {
+        reject(
+          "timestamp-backwards",
+          lineNumber,
+          `[${stamp}] is earlier than [${earlier.text}] on line ${earlier.line}.`,
+        );
+        return;
+      }
       const parts = SPEAKER_AND_TEXT.exec(rest.trim());
       if (!parts) {
         reject("missing-speaker", lineNumber, `expected "Speaker: text" after the timestamp.`);
@@ -80,7 +96,7 @@ export function parseTranscript(source: string): ParseResult {
       }
       open = {
         speaker,
-        startSeconds: Number(hh) * 3600 + Number(mm) * 60 + Number(ss),
+        startSeconds,
         textParts: [text.trim()],
         startLine: lineNumber,
         endLine: lineNumber,
@@ -97,5 +113,13 @@ export function parseTranscript(source: string): ParseResult {
   });
   close();
 
+  // With no line even trying to open a turn, "no turns" is the single cause: the
+  // text it does contain is not reported as orphaned line by line.
+  if (!sawTurnLine) {
+    return {
+      ok: false,
+      errors: [{ code: "no-turns", line: null, message: "The transcript contains no turns." }],
+    };
+  }
   return errors.length > 0 ? { ok: false, errors } : { ok: true, turns };
 }
