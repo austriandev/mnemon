@@ -10,4 +10,19 @@ export interface Turn {
   readonly sourceLines: { readonly start: number; readonly end: number };
 }
 
-export type ParseResult = { readonly ok: true; readonly turns: readonly Turn[] };
+export type ParseErrorCode = "invalid-timestamp";
+
+export interface ParseError {
+  readonly code: ParseErrorCode;
+  /** 1-based source line the error points at, or null when it concerns the whole file. */
+  readonly line: number | null;
+  readonly message: string;
+}
+
+/**
+ * The outcome of parsing a transcript. Malformed input is never repaired:
+ * any error rejects the whole transcript, and every error found is reported.
+ */
+export type ParseResult =
+  | { readonly ok: true; readonly turns: readonly Turn[] }
+  | { readonly ok: false; readonly errors: readonly ParseError[] };
