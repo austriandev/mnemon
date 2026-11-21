@@ -1,4 +1,4 @@
-// pnpm search "<question>" [--meeting <id>] [--limit 5]
+// pnpm retrieve "<question>" [--meeting <id>] [--limit 5]
 // Hybrid retrieval over stored meetings; shows why each chunk was retrieved.
 import { parseArgs } from "node:util";
 import { retrieve } from "@mnemon/core";
@@ -10,7 +10,7 @@ const { values, positionals } = parseArgs({
 });
 const question = positionals.join(" ");
 if (!question.trim()) {
-  console.error('Usage: pnpm search "<question>" [--meeting <id>] [--limit 5]');
+  console.error('Usage: pnpm retrieve "<question>" [--meeting <id>] [--limit 5]');
   process.exit(2);
 }
 

@@ -25,7 +25,7 @@ embed and search.
 
 ```sh
 pnpm ingest packages/core/fixtures/steering-committee.txt --title "AMT-208 steering committee"
-pnpm search "Who is doing the vendor audit?"
+pnpm retrieve "Who is doing the vendor audit?"
 ```
 
 `ingest` prints the expected embedding cost before calling the API; every model call
