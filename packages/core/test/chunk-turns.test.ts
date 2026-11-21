@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { type Chunk, chunkTurns, type TokenCounter, type Turn } from "../src/index.ts";
+import {
+  approximateTokenCounter,
+  type Chunk,
+  chunkTurns,
+  DEFAULT_CHUNK_OPTIONS,
+  type TokenCounter,
+  type Turn,
+} from "../src/index.ts";
 
 /** One token per whitespace-separated word, so costs in these tests are easy to read. */
 const wordCounter: TokenCounter = {
@@ -115,5 +122,45 @@ describe("chunkTurns", () => {
 
   it("returns no chunks for no turns", () => {
     expect(chunkTurns([])).toEqual([]);
+  });
+
+  it("counts tokens with the characters / 4 approximation by default", () => {
+    // "[00:00:05] Sam Okafor: Shall we start?" is 38 characters: ceil(38 / 4) = 10.
+    const [chunk] = chunkTurns([
+      {
+        index: 0,
+        speaker: "Sam Okafor",
+        startSeconds: 5,
+        text: "Shall we start?",
+        sourceLines: { start: 1, end: 1 },
+      },
+    ]);
+
+    expect(chunk?.tokenCount).toBe(10);
+  });
+
+  it("uses documented provisional defaults", () => {
+    expect(DEFAULT_CHUNK_OPTIONS).toEqual({ maxTokens: 300, overlapTurns: 1 });
+  });
+
+  it.each([
+    { maxTokens: 0 },
+    { maxTokens: -5 },
+    { maxTokens: 2.5 },
+    { maxTokens: Number.NaN },
+    { overlapTurns: -1 },
+    { overlapTurns: 0.5 },
+  ])("rejects invalid options %o as a programming error", (options) => {
+    expect(() => chunkTurns(turnsCosting([3]), options)).toThrow(RangeError);
+  });
+});
+
+describe("approximateTokenCounter", () => {
+  it.each([
+    ["", 0],
+    ["abcd", 1],
+    ["abcde", 2],
+  ])("counts %j as %i tokens", (text, expected) => {
+    expect(approximateTokenCounter.count(text)).toBe(expected);
   });
 });

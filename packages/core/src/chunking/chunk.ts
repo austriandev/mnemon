@@ -1,10 +1,34 @@
 import type { Turn } from "../transcript/types.ts";
+import { approximateTokenCounter } from "./tokens.ts";
 import type { Chunk, ChunkOptions } from "./types.ts";
 
+/**
+ * Provisional defaults, to be settled by the retrieval eval and recorded in
+ * ADR-0003. Until then they are a reasoned guess, not a measured choice.
+ */
+export const DEFAULT_CHUNK_OPTIONS = { maxTokens: 300, overlapTurns: 1 } as const;
+
+/**
+ * Groups a meeting's turns into chunks of whole, consecutive turns.
+ *
+ * Expects turns in meeting order, as `parseTranscript` returns them. Each chunk
+ * stays within `maxTokens` unless it is a single oversize turn. Consecutive chunks
+ * share `overlapTurns` turns, fewer only when the previous chunk is shorter than
+ * that or when carrying them all would push the next turn over budget.
+ *
+ * @throws RangeError when `maxTokens` is not a positive integer or `overlapTurns`
+ *   is not a non-negative integer: those are programming errors, not bad input.
+ */
 export function chunkTurns(turns: readonly Turn[], options: ChunkOptions = {}): Chunk[] {
-  const maxTokens = options.maxTokens ?? 300;
-  const overlapTurns = options.overlapTurns ?? 1;
-  const counter = options.tokenCounter ?? { count: (text: string) => Math.ceil(text.length / 4) };
+  const maxTokens = options.maxTokens ?? DEFAULT_CHUNK_OPTIONS.maxTokens;
+  const overlapTurns = options.overlapTurns ?? DEFAULT_CHUNK_OPTIONS.overlapTurns;
+  const counter = options.tokenCounter ?? approximateTokenCounter;
+  if (!Number.isInteger(maxTokens) || maxTokens < 1) {
+    throw new RangeError(`maxTokens must be a positive integer, got ${maxTokens}`);
+  }
+  if (!Number.isInteger(overlapTurns) || overlapTurns < 0) {
+    throw new RangeError(`overlapTurns must be a non-negative integer, got ${overlapTurns}`);
+  }
   const cost = (from: number, to: number) => counter.count(render(turns.slice(from, to + 1)));
 
   const chunks: Chunk[] = [];
