@@ -86,4 +86,34 @@ describe("chunkTurns", () => {
       [4, 5, false],
     ]);
   });
+
+  it("gives a turn longer than the budget a chunk of its own, flagged oversize and unsplit", () => {
+    const turns = turnsCosting([3, 20, 3]);
+    const chunks = chunkTurns(turns, { maxTokens: 10, overlapTurns: 1, tokenCounter: wordCounter });
+
+    expect(ranges(chunks)).toEqual([
+      [0, 0, false],
+      [1, 1, true],
+      [2, 2, false],
+    ]);
+    expect(chunks[1]?.tokenCount).toBe(20);
+    expect(chunks[1]?.text).toBe(`[00:00:10] S1: ${turns[1]?.text}`);
+  });
+
+  it("carries fewer overlap turns when carrying them all would push the next turn over budget", () => {
+    const chunks = chunkTurns(turnsCosting([4, 4, 4, 10]), {
+      maxTokens: 13,
+      overlapTurns: 1,
+      tokenCounter: wordCounter,
+    });
+
+    expect(ranges(chunks)).toEqual([
+      [0, 2, false],
+      [3, 3, false],
+    ]);
+  });
+
+  it("returns no chunks for no turns", () => {
+    expect(chunkTurns([])).toEqual([]);
+  });
 });
