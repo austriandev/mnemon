@@ -11,6 +11,22 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
+    services:
+      db:
+        image: pgvector/pgvector:0.8.7-pg18
+        env:
+          POSTGRES_USER: mnemon
+          POSTGRES_PASSWORD: mnemon
+          POSTGRES_DB: mnemon
+        ports:
+          - 54320:5432
+        options: >-
+          --health-cmd "pg_isready -U mnemon -d mnemon"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 15
+    env:
+      MNEMON_DATABASE_URL: postgres://mnemon:mnemon@localhost:54320/mnemon
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
@@ -21,4 +37,5 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm lint
+      - run: pnpm db:migrate
       - run: pnpm test
