@@ -19,6 +19,37 @@ describe("parseTranscript rejects malformed input with located errors", () => {
     ]);
   });
 
+  it("reports a timestamped line with no 'Speaker: ' separator", () => {
+    expect(errorsOf("[00:00:01] Sam Okafor said we should start.")).toEqual([
+      { code: "missing-speaker", line: 1 },
+    ]);
+  });
+
+  it.each([
+    ["nothing before the colon", "[00:00:01]: We should start."],
+    ["only whitespace before the colon", "[00:00:01]   : We should start."],
+  ])("reports an empty speaker (%s)", (_, badLine) => {
+    expect(errorsOf(badLine)).toEqual([{ code: "empty-speaker", line: 1 }]);
+  });
+
+  it("reports a turn that has a speaker but no text", () => {
+    expect(errorsOf("[00:00:01] Sam Okafor:\n[00:00:09] Priya Nair: Go ahead.")).toEqual([
+      { code: "empty-text", line: 1 },
+    ]);
+  });
+
+  it("allows a turn's text to start on the line after the speaker", () => {
+    const result = parseTranscript("[00:00:01] Sam Okafor:\nLet's begin.");
+
+    expect(result.ok && result.turns[0]?.text).toBe("Let's begin.");
+  });
+
+  it("reports text before the first turn once, at its first line", () => {
+    expect(errorsOf("Minutes, draft 2\nconfidential\n[00:00:01] Sam Okafor: Start.")).toEqual([
+      { code: "orphan-line", line: 1 },
+    ]);
+  });
+
   it("explains the problem in a human-readable message", () => {
     const result = parseTranscript("[00:00:01] Sam Okafor: Start.\n[00:12:75] Priya Nair: Hi.");
 

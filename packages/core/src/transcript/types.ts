@@ -10,7 +10,17 @@ export interface Turn {
   readonly sourceLines: { readonly start: number; readonly end: number };
 }
 
-export type ParseErrorCode = "invalid-timestamp";
+export type ParseErrorCode =
+  /** A line starts with a bracketed timestamp that is not [HH:MM:SS] or [MM:SS]. */
+  | "invalid-timestamp"
+  /** A timestamp is not followed by "Speaker: ". */
+  | "missing-speaker"
+  /** The speaker before ": " is empty. */
+  | "empty-speaker"
+  /** A turn has a speaker but no text, on its own line or on continuation lines. */
+  | "empty-text"
+  /** Text appears before the first timestamped turn, so it belongs to no speaker. */
+  | "orphan-line";
 
 export interface ParseError {
   readonly code: ParseErrorCode;

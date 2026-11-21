@@ -5,7 +5,9 @@ import type { ParseError, ParseResult, Turn } from "./types.ts";
 // as "[00:61:00]" is reported rather than read as text continuing the previous turn.
 const TIMESTAMP_PREFIX = /^\[([\d:]+)\](.*)$/;
 const TIMESTAMP = /^(?:(\d{2}):)?([0-5]\d):([0-5]\d)$/;
-const SPEAKER_AND_TEXT = /^(.*?): (.*)$/;
+// The speaker is everything up to the first ": " (or a ":" that ends the line, when
+// the text starts on the next line).
+const SPEAKER_AND_TEXT = /^(.*?):(?:\s+(.*))?$/;
 
 interface OpenTurn {
   speaker: string;
@@ -23,15 +25,25 @@ export function parseTranscript(source: string): ParseResult {
   // absorbed so they are neither reported again nor attached to an earlier turn.
   let open: OpenTurn | "broken" | undefined;
 
+  const reject = (code: ParseError["code"], line: number, message: string) => {
+    errors.push({ code, line, message: `Line ${line}: ${message}` });
+    open = "broken";
+  };
+
   const close = () => {
     if (open && open !== "broken") {
-      turns.push({
-        index: turns.length,
-        speaker: open.speaker,
-        startSeconds: open.startSeconds,
-        text: open.textParts.join(" "),
-        sourceLines: { start: open.startLine, end: open.endLine },
-      });
+      const text = open.textParts.filter((part) => part !== "").join(" ");
+      if (text === "") {
+        reject("empty-text", open.startLine, `the turn by "${open.speaker}" has no text.`);
+      } else {
+        turns.push({
+          index: turns.length,
+          speaker: open.speaker,
+          startSeconds: open.startSeconds,
+          text,
+          sourceLines: { start: open.startLine, end: open.endLine },
+        });
+      }
     }
     open = undefined;
   };
@@ -47,19 +59,27 @@ export function parseTranscript(source: string): ParseResult {
       const [, stamp = "", rest = ""] = prefixed;
       const time = TIMESTAMP.exec(stamp);
       if (!time) {
-        errors.push({
-          code: "invalid-timestamp",
-          line: lineNumber,
-          message: `Line ${lineNumber}: "[${stamp}]" is not a valid [HH:MM:SS] or [MM:SS] timestamp.`,
-        });
-        open = "broken";
+        reject(
+          "invalid-timestamp",
+          lineNumber,
+          `"[${stamp}]" is not a valid [HH:MM:SS] or [MM:SS] timestamp.`,
+        );
         return;
       }
       const [, hh = "0", mm = "0", ss = "0"] = time;
       const parts = SPEAKER_AND_TEXT.exec(rest.trim());
-      const [, speaker = "", text = ""] = parts ?? [];
+      if (!parts) {
+        reject("missing-speaker", lineNumber, `expected "Speaker: text" after the timestamp.`);
+        return;
+      }
+      const [, rawSpeaker = "", text = ""] = parts;
+      const speaker = rawSpeaker.trim();
+      if (speaker === "") {
+        reject("empty-speaker", lineNumber, "the speaker name is empty.");
+        return;
+      }
       open = {
-        speaker: speaker.trim(),
+        speaker,
         startSeconds: Number(hh) * 3600 + Number(mm) * 60 + Number(ss),
         textParts: [text.trim()],
         startLine: lineNumber,
@@ -68,7 +88,9 @@ export function parseTranscript(source: string): ParseResult {
       return;
     }
 
-    if (open && open !== "broken") {
+    if (open === undefined) {
+      reject("orphan-line", lineNumber, "text appears before the first timestamped turn.");
+    } else if (open !== "broken") {
       open.textParts.push(line);
       open.endLine = lineNumber;
     }
