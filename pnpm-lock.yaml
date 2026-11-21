@@ -40,6 +40,16 @@ importers:
         specifier: 5.1.1
         version: 5.1.1(@types/node@24.19.2)(vite@8.3.8(@types/node@24.19.2))
 
+  packages/voyage:
+    dependencies:
+      '@mnemon/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      vitest:
+        specifier: 5.1.1
+        version: 5.1.1(@types/node@24.19.2)(vite@8.3.8(@types/node@24.19.2))
+
 packages:
 
   '@biomejs/biome@2.6.8':
