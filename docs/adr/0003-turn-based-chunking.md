@@ -24,6 +24,9 @@ greedily under `maxTokens`. The rules at the edges:
 - **Token counting** sits behind a `TokenCounter` interface. The default,
   `approximateTokenCounter`, is `ceil(characters / 4)`. The real tokenizer replaces
   it once the embedding model is chosen.
+  First measurement: on the fixture's five chunks the approximation gives 1,376
+  tokens, and Voyage's `voyage-4-lite` tokenizer counts 1,698, a 19% undercount.
+  Budgets are therefore about a fifth larger in real tokens than they look.
 
 ## Provisional defaults
 

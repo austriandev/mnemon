@@ -6,9 +6,9 @@ status: accepted
 
 Mnemon stores everything in one Postgres database with the pgvector extension:
 meetings, turns and chunks now, and embeddings, full-text indexes and extracted
-records in later slices. Hybrid retrieval (BM25-style full text plus vector
-similarity, fused with RRF) then runs as a single SQL query in one transaction,
-with no second store to keep in sync. Locally it runs from `docker-compose.yml`
+records in later slices. Both halves of hybrid retrieval (full text and vector
+similarity) query the same tables, with no second store to keep in sync. The
+fusion step lives in the core; see ADR-0005. Locally the database runs from `docker-compose.yml`
 (`pgvector/pgvector:0.8.7-pg18`, bound to `127.0.0.1:54320`); CI runs the same
 image as a service container.
 
