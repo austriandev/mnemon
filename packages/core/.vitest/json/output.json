@@ -1,0 +1,681 @@
+{
+  "numTotalTestSuites": 12,
+  "numPassedTestSuites": 12,
+  "numFailedTestSuites": 0,
+  "numPendingTestSuites": 0,
+  "numTotalTests": 55,
+  "numPassedTests": 55,
+  "numFailedTests": 0,
+  "numPendingTests": 0,
+  "numTodoTests": 0,
+  "snapshot": {
+    "added": 0,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0,
+    "didUpdate": false
+  },
+  "startTime": 1795270162624,
+  "success": true,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["chunkTurns invariants"],
+          "fullName": "chunkTurns invariants every turn appears in at least one chunk",
+          "status": "passed",
+          "title": "every turn appears in at least one chunk",
+          "duration": 6.123082999999994,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["chunkTurns invariants"],
+          "fullName": "chunkTurns invariants no turn is split: each chunk holds whole turns, one line per turn",
+          "status": "passed",
+          "title": "no turn is split: each chunk holds whole turns, one line per turn",
+          "duration": 7.555041000000003,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["chunkTurns invariants"],
+          "fullName": "chunkTurns invariants chunks are in order, numbered from 0, and each adds at least one new turn",
+          "status": "passed",
+          "title": "chunks are in order, numbered from 0, and each adds at least one new turn",
+          "duration": 2.7879170000000073,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["chunkTurns invariants"],
+          "fullName": "chunkTurns invariants consecutive chunks leave no gap and share at most overlapTurns turns",
+          "status": "passed",
+          "title": "consecutive chunks leave no gap and share at most overlapTurns turns",
+          "duration": 2.3950420000000037,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["chunkTurns invariants"],
+          "fullName": "chunkTurns invariants overlap is exactly overlapTurns whenever overlapTurns + 1 turns always fit the budget",
+          "status": "passed",
+          "title": "overlap is exactly overlapTurns whenever overlapTurns + 1 turns always fit the budget",
+          "duration": 1.3951250000000073,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["chunkTurns invariants"],
+          "fullName": "chunkTurns invariants chunks stay within budget unless they are a single oversize turn",
+          "status": "passed",
+          "title": "chunks stay within budget unless they are a single oversize turn",
+          "duration": 2.228499999999997,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["chunkTurns invariants"],
+          "fullName": "chunkTurns invariants each chunk's times and speakers describe its own turns",
+          "status": "passed",
+          "title": "each chunk's times and speakers describe its own turns",
+          "duration": 5.043875,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795270162715,
+      "endTime": 1795270162742.044,
+      "status": "passed",
+      "message": "",
+      "name": "/Users/matrix/projects/mnemon/packages/core/test/chunk-turns.properties.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["chunkTurns"],
+          "fullName": "chunkTurns puts turns that fit the budget into one chunk, rendered with speaker and timestamp",
+          "status": "passed",
+          "title": "puts turns that fit the budget into one chunk, rendered with speaker and timestamp",
+          "duration": 1.0433329999999899,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["chunkTurns"],
+          "fullName": "chunkTurns starts a new chunk when the next turn would exceed the budget",
+          "status": "passed",
+          "title": "starts a new chunk when the next turn would exceed the budget",
+          "duration": 0.5934999999999917,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["chunkTurns"],
+          "fullName": "chunkTurns repeats the last overlapTurns turns of a chunk at the start of the next",
+          "status": "passed",
+          "title": "repeats the last overlapTurns turns of a chunk at the start of the next",
+          "duration": 0.1520839999999879,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["chunkTurns"],
+          "fullName": "chunkTurns gives a turn longer than the budget a chunk of its own, flagged oversize and unsplit",
+          "status": "passed",
+          "title": "gives a turn longer than the budget a chunk of its own, flagged oversize and unsplit",
+          "duration": 0.1844999999999999,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["chunkTurns"],
+          "fullName": "chunkTurns carries fewer overlap turns when carrying them all would push the next turn over budget",
+          "status": "passed",
+          "title": "carries fewer overlap turns when carrying them all would push the next turn over budget",
+          "duration": 0.08908300000000224,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["chunkTurns"],
+          "fullName": "chunkTurns returns no chunks for no turns",
+          "status": "passed",
+          "title": "returns no chunks for no turns",
+          "duration": 0.06262499999999704,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["chunkTurns"],
+          "fullName": "chunkTurns counts tokens with the characters / 4 approximation by default",
+          "status": "passed",
+          "title": "counts tokens with the characters / 4 approximation by default",
+          "duration": 0.06191599999999653,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["chunkTurns"],
+          "fullName": "chunkTurns uses documented provisional defaults",
+          "status": "passed",
+          "title": "uses documented provisional defaults",
+          "duration": 0.059749999999993975,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["chunkTurns"],
+          "fullName": "chunkTurns rejects invalid options { maxTokens: 0 } as a programming error",
+          "status": "passed",
+          "title": "rejects invalid options { maxTokens: 0 } as a programming error",
+          "duration": 0.1290830000000085,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["chunkTurns"],
+          "fullName": "chunkTurns rejects invalid options { maxTokens: -5 } as a programming error",
+          "status": "passed",
+          "title": "rejects invalid options { maxTokens: -5 } as a programming error",
+          "duration": 0.07279199999999264,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["chunkTurns"],
+          "fullName": "chunkTurns rejects invalid options { maxTokens: 2.5 } as a programming error",
+          "status": "passed",
+          "title": "rejects invalid options { maxTokens: 2.5 } as a programming error",
+          "duration": 0.03900000000000148,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["chunkTurns"],
+          "fullName": "chunkTurns rejects invalid options { maxTokens: NaN } as a programming error",
+          "status": "passed",
+          "title": "rejects invalid options { maxTokens: NaN } as a programming error",
+          "duration": 0.19387500000000557,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["chunkTurns"],
+          "fullName": "chunkTurns rejects invalid options { overlapTurns: -1 } as a programming error",
+          "status": "passed",
+          "title": "rejects invalid options { overlapTurns: -1 } as a programming error",
+          "duration": 0.08808299999999747,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["chunkTurns"],
+          "fullName": "chunkTurns rejects invalid options { overlapTurns: 0.5 } as a programming error",
+          "status": "passed",
+          "title": "rejects invalid options { overlapTurns: 0.5 } as a programming error",
+          "duration": 0.05562500000000625,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["approximateTokenCounter"],
+          "fullName": "approximateTokenCounter counts \"\" as 0 tokens",
+          "status": "passed",
+          "title": "counts \"\" as 0 tokens",
+          "duration": 0.08416700000000787,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["approximateTokenCounter"],
+          "fullName": "approximateTokenCounter counts \"abcd\" as 1 tokens",
+          "status": "passed",
+          "title": "counts \"abcd\" as 1 tokens",
+          "duration": 0.03883299999999679,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["approximateTokenCounter"],
+          "fullName": "approximateTokenCounter counts \"abcde\" as 2 tokens",
+          "status": "passed",
+          "title": "counts \"abcde\" as 2 tokens",
+          "duration": 0.034624999999991246,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795270162710,
+      "endTime": 1795270162714.0388,
+      "status": "passed",
+      "message": "",
+      "name": "/Users/matrix/projects/mnemon/packages/core/test/chunk-turns.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["steering-committee fixture"],
+          "fullName": "steering-committee fixture parses cleanly into 47 turns",
+          "status": "passed",
+          "title": "parses cleanly into 47 turns",
+          "duration": 0.9195409999999953,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["steering-committee fixture"],
+          "fullName": "steering-committee fixture keeps the dose decision traceable to who said it, when, and where in the file",
+          "status": "passed",
+          "title": "keeps the dose decision traceable to who said it, when, and where in the file",
+          "duration": 0.4991669999999999,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["malformed fixtures"],
+          "fullName": "malformed fixtures invalid-timestamp.txt is rejected with invalid-timestamp at line 3",
+          "status": "passed",
+          "title": "invalid-timestamp.txt is rejected with invalid-timestamp at line 3",
+          "duration": 0.40100000000001046,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["malformed fixtures"],
+          "fullName": "malformed fixtures backwards-timestamp.txt is rejected with timestamp-backwards at line 4",
+          "status": "passed",
+          "title": "backwards-timestamp.txt is rejected with timestamp-backwards at line 4",
+          "duration": 0.22266700000000128,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["malformed fixtures"],
+          "fullName": "malformed fixtures empty-speaker.txt is rejected with empty-speaker at line 2",
+          "status": "passed",
+          "title": "empty-speaker.txt is rejected with empty-speaker at line 2",
+          "duration": 0.19795900000001154,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["malformed fixtures"],
+          "fullName": "malformed fixtures missing-speaker.txt is rejected with missing-speaker at line 2",
+          "status": "passed",
+          "title": "missing-speaker.txt is rejected with missing-speaker at line 2",
+          "duration": 0.14370800000000372,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["malformed fixtures"],
+          "fullName": "malformed fixtures empty-text.txt is rejected with empty-text at line 1",
+          "status": "passed",
+          "title": "empty-text.txt is rejected with empty-text at line 1",
+          "duration": 0.19020899999999585,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["malformed fixtures"],
+          "fullName": "malformed fixtures orphan-preamble.txt is rejected with orphan-line at line 1",
+          "status": "passed",
+          "title": "orphan-preamble.txt is rejected with orphan-line at line 1",
+          "duration": 0.17300000000000182,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["malformed fixtures"],
+          "fullName": "malformed fixtures no-turns.txt is rejected with no-turns at line null",
+          "status": "passed",
+          "title": "no-turns.txt is rejected with no-turns at line null",
+          "duration": 0.2285839999999979,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795270162710,
+      "endTime": 1795270162713.2285,
+      "status": "passed",
+      "message": "",
+      "name": "/Users/matrix/projects/mnemon/packages/core/test/fixtures.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["parseTranscript rejects malformed input with located errors"],
+          "fullName": "parseTranscript rejects malformed input with located errors reports an invalid timestamp (single-digit field)",
+          "status": "passed",
+          "title": "reports an invalid timestamp (single-digit field)",
+          "duration": 0.9671670000000034,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["parseTranscript rejects malformed input with located errors"],
+          "fullName": "parseTranscript rejects malformed input with located errors reports an invalid timestamp (seconds out of range)",
+          "status": "passed",
+          "title": "reports an invalid timestamp (seconds out of range)",
+          "duration": 0.10641700000000753,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["parseTranscript rejects malformed input with located errors"],
+          "fullName": "parseTranscript rejects malformed input with located errors reports an invalid timestamp (minutes out of range)",
+          "status": "passed",
+          "title": "reports an invalid timestamp (minutes out of range)",
+          "duration": 0.0677079999999961,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["parseTranscript rejects malformed input with located errors"],
+          "fullName": "parseTranscript rejects malformed input with located errors reports an invalid timestamp (too many fields)",
+          "status": "passed",
+          "title": "reports an invalid timestamp (too many fields)",
+          "duration": 0.07816599999999596,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["parseTranscript rejects malformed input with located errors"],
+          "fullName": "parseTranscript rejects malformed input with located errors reports a timestamped line with no 'Speaker: ' separator",
+          "status": "passed",
+          "title": "reports a timestamped line with no 'Speaker: ' separator",
+          "duration": 0.06716700000001197,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["parseTranscript rejects malformed input with located errors"],
+          "fullName": "parseTranscript rejects malformed input with located errors reports an empty speaker (nothing before the colon)",
+          "status": "passed",
+          "title": "reports an empty speaker (nothing before the colon)",
+          "duration": 0.05279200000001083,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["parseTranscript rejects malformed input with located errors"],
+          "fullName": "parseTranscript rejects malformed input with located errors reports an empty speaker (only whitespace before the colon)",
+          "status": "passed",
+          "title": "reports an empty speaker (only whitespace before the colon)",
+          "duration": 0.15983400000000358,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["parseTranscript rejects malformed input with located errors"],
+          "fullName": "parseTranscript rejects malformed input with located errors reports a turn that has a speaker but no text",
+          "status": "passed",
+          "title": "reports a turn that has a speaker but no text",
+          "duration": 0.06799999999999784,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["parseTranscript rejects malformed input with located errors"],
+          "fullName": "parseTranscript rejects malformed input with located errors allows a turn's text to start on the line after the speaker",
+          "status": "passed",
+          "title": "allows a turn's text to start on the line after the speaker",
+          "duration": 0.11324999999999363,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["parseTranscript rejects malformed input with located errors"],
+          "fullName": "parseTranscript rejects malformed input with located errors reports text before the first turn once, at its first line",
+          "status": "passed",
+          "title": "reports text before the first turn once, at its first line",
+          "duration": 0.16899999999999693,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["parseTranscript rejects malformed input with located errors"],
+          "fullName": "parseTranscript rejects malformed input with located errors reports a timestamp earlier than the one before it, once per inversion",
+          "status": "passed",
+          "title": "reports a timestamp earlier than the one before it, once per inversion",
+          "duration": 0.07320899999999142,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["parseTranscript rejects malformed input with located errors"],
+          "fullName": "parseTranscript rejects malformed input with located errors allows consecutive turns with the same timestamp",
+          "status": "passed",
+          "title": "allows consecutive turns with the same timestamp",
+          "duration": 0.05150000000000432,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["parseTranscript rejects malformed input with located errors"],
+          "fullName": "parseTranscript rejects malformed input with located errors reports a transcript with no turns (an empty file)",
+          "status": "passed",
+          "title": "reports a transcript with no turns (an empty file)",
+          "duration": 0.043082999999995764,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["parseTranscript rejects malformed input with located errors"],
+          "fullName": "parseTranscript rejects malformed input with located errors reports a transcript with no turns (only blank lines)",
+          "status": "passed",
+          "title": "reports a transcript with no turns (only blank lines)",
+          "duration": 0.025832999999991557,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["parseTranscript rejects malformed input with located errors"],
+          "fullName": "parseTranscript rejects malformed input with located errors reports a transcript with no turns (prose with no timestamps)",
+          "status": "passed",
+          "title": "reports a transcript with no turns (prose with no timestamps)",
+          "duration": 0.02687500000000398,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["parseTranscript rejects malformed input with located errors"],
+          "fullName": "parseTranscript rejects malformed input with located errors reports every error in line order, not only the first",
+          "status": "passed",
+          "title": "reports every error in line order, not only the first",
+          "duration": 0.28275000000000716,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["parseTranscript rejects malformed input with located errors"],
+          "fullName": "parseTranscript rejects malformed input with located errors explains the problem in a human-readable message",
+          "status": "passed",
+          "title": "explains the problem in a human-readable message",
+          "duration": 0.16554200000000208,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795270162709,
+      "endTime": 1795270162712.1655,
+      "status": "passed",
+      "message": "",
+      "name": "/Users/matrix/projects/mnemon/packages/core/test/parse-transcript-errors.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["parseTranscript"],
+          "fullName": "parseTranscript parses a timestamped line into a turn with speaker, start time and source line",
+          "status": "passed",
+          "title": "parses a timestamped line into a turn with speaker, start time and source line",
+          "duration": 1.866665999999995,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["parseTranscript"],
+          "fullName": "parseTranscript joins untimestamped lines onto the previous turn and ignores blank lines",
+          "status": "passed",
+          "title": "joins untimestamped lines onto the previous turn and ignores blank lines",
+          "duration": 0.41662499999999625,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["parseTranscript"],
+          "fullName": "parseTranscript accepts [MM:SS] timestamps alongside [HH:MM:SS]",
+          "status": "passed",
+          "title": "accepts [MM:SS] timestamps alongside [HH:MM:SS]",
+          "duration": 0.16400000000000148,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["parseTranscript"],
+          "fullName": "parseTranscript splits the speaker at the first ': ' so the text may contain colons",
+          "status": "passed",
+          "title": "splits the speaker at the first ': ' so the text may contain colons",
+          "duration": 0.2740000000000009,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["parseTranscript"],
+          "fullName": "parseTranscript accepts Windows line endings",
+          "status": "passed",
+          "title": "accepts Windows line endings",
+          "duration": 0.09950000000000614,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1795270162709,
+      "endTime": 1795270162712.274,
+      "status": "passed",
+      "message": "",
+      "name": "/Users/matrix/projects/mnemon/packages/core/test/parse-transcript.test.ts"
+    }
+  ]
+}

@@ -10,7 +10,10 @@
     "typecheck": "pnpm -r run typecheck",
     "lint": "biome check .",
     "format": "biome check --write .",
-    "test": "pnpm -r run test"
+    "test": "pnpm -r run test",
+    "db:up": "docker compose up -d --wait",
+    "db:down": "docker compose down",
+    "db:migrate": "pnpm --filter @mnemon/db run migrate"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.8",

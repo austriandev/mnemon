@@ -1,0 +1,20 @@
+# Local development database. The credentials are for this local container only.
+services:
+  db:
+    image: pgvector/pgvector:0.8.7-pg18
+    environment:
+      POSTGRES_USER: mnemon
+      POSTGRES_PASSWORD: mnemon
+      POSTGRES_DB: mnemon
+    ports:
+      - "127.0.0.1:${MNEMON_DB_PORT:-54320}:5432"
+    volumes:
+      - mnemon-db:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mnemon -d mnemon"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+volumes:
+  mnemon-db:
