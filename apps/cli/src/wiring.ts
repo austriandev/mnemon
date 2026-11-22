@@ -1,5 +1,5 @@
 // Composition root shared by the CLI commands: real adapters, configured from env.
-import { createAnthropicModel, type Effort } from "@mnemon/anthropic";
+import { type AnthropicModelId, createAnthropicModel, type Effort } from "@mnemon/anthropic";
 import { createChunkSearch, createMeetingStore, databaseUrl, migrate } from "@mnemon/db";
 import { createVoyageEmbedder } from "@mnemon/voyage";
 import postgres from "postgres";
@@ -12,6 +12,13 @@ process.on("uncaughtException", (error: Error & { code?: string }) => {
   process.exit(1);
 });
 
+// The model for each use, settled by the eval (ADR-0008): Sonnet 5.5 at medium matched
+// Opus 5.5 at high on every score, at under half the cost.
+const MODELS = {
+  extraction: { model: "claude-sonnet-5-5", effort: "medium" },
+  answering: { model: "claude-sonnet-5-5", effort: "medium" },
+} as const satisfies Record<string, { model: AnthropicModelId; effort: Effort }>;
+
 export async function connect() {
   const sql = postgres(databaseUrl(), { onnotice: () => {} });
   await migrate(sql);
@@ -21,8 +28,7 @@ export async function connect() {
     search: createChunkSearch(sql),
     embedder: createVoyageEmbedder({ apiKey: process.env.MNEMON_VOYAGE_API_KEY ?? "" }),
     // Created on first use, so commands that never call Claude don't need its key.
-    // Extraction runs at high effort (ADR-0006), answering at medium (ADR-0007).
-    languageModel: (effort: Effort = "high") =>
-      createAnthropicModel({ apiKey: process.env.MNEMON_ANTHROPIC_API_KEY ?? "", effort }),
+    languageModel: (use: keyof typeof MODELS) =>
+      createAnthropicModel({ apiKey: process.env.MNEMON_ANTHROPIC_API_KEY ?? "", ...MODELS[use] }),
   };
 }

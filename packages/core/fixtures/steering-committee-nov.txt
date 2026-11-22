@@ -1,0 +1,59 @@
+[00:00:03] Dana Wu: Good morning. This is the AMT-208 programme steering committee for
+November. Follow-ups from October first, then enrollment, the safety review outcome
+and the vendor audit.
+[00:00:18] Dana Wu: Sam, the site contracts.
+[00:00:21] Sam Okafor: Both backup site agreements were signed on the twenty-second,
+two days early. Holloway Park is activated and screening. Castlebridge is waiting on
+its ethics approval, expected in early December.
+[00:00:40] Marcus Lindqvist: With Holloway Park we're at 158 of 220. The gap to plan
+is down to about two weeks.
+[00:00:52] Dr. Elena Ortiz: And Wrenmoor?
+[00:00:55] Marcus Lindqvist: Wrenmoor hired a new study coordinator who started on the
+fourth. They randomised two patients last week.
+[00:01:08] Dana Wu: Good. Marcus, I'd like a revised enrollment forecast with both new
+sites in it.
+[00:01:14] Marcus Lindqvist: I'll have the revised forecast to you by the end of next
+week.
+[00:01:22] Dana Wu: Now the safety review. Elena.
+[00:01:25] Dr. Elena Ortiz: The data monitoring committee reviewed the listings Hana
+sent. Their conclusion: the three liver enzyme elevations were transient, no pattern,
+and no new safety signal. They have no objection to resuming dose escalation.
+[00:01:48] Dr. Hana Sato: They did ask for liver function tests every two weeks for
+the first eight weeks at 30 mg, instead of monthly.
+[00:02:01] Priya Nair: Does that need a protocol amendment?
+[00:02:04] Dr. Hana Sato: Yes, a substantial amendment. I can draft it.
+[00:02:09] Dana Wu: Then let's record it. We lift the hold: dose escalation to 30 mg
+resumes, with liver function tests every two weeks for the first eight weeks at 30
+mg, once the amendment is approved.
+[00:02:27] Dr. Elena Ortiz: Agreed. Until the amendment is approved, new patients stay
+at 20 mg.
+[00:02:35] Dr. Hana Sato: I'll circulate the draft amendment by the end of the month.
+[00:02:42] Dana Wu: Thank you. Priya, the vendor audit.
+[00:02:46] Priya Nair: The audit plan went to Dana on the fourth. Sam sent the notice
+letter to Quellmark the same day, so the thirty days' notice runs out on the fourth
+of December.
+[00:03:02] Priya Nair: The audit is booked for the week of the ninth of December, two
+auditors on site for three days.
+[00:03:12] Sam Okafor: Quellmark asked whether we'd accept a remote audit instead.
+[00:03:17] Priya Nair: I'd say no. The deviations were in batch records and line
+clearance, and we need to see the floor.
+[00:03:26] Dana Wu: Agreed, the audit stays on site.
+[00:03:30] Dana Wu: And the March batch?
+[00:03:33] Priya Nair: The March batch order stays on hold until the audit report is
+out. I expect the report before Christmas.
+[00:03:42] Sam Okafor: Should we line up a second fill-finish vendor, just in case?
+[00:03:47] Dana Wu: Not yet. If the audit finds a critical observation, we revisit
+that in January.
+[00:03:56] Dana Wu: Anything on budget?
+[00:03:59] Sam Okafor: The 150 thousand reallocation went through. About 60 thousand
+of it is committed to the audit, including travel.
+[00:04:10] Dana Wu: And the interim?
+[00:04:13] Dr. Hana Sato: Still the third quarter. Lifting the hold doesn't move it
+back, because the escalation cohort still needs its eight weeks of follow-up.
+[00:04:26] Marcus Lindqvist: I've updated the timeline and the risk register, they went
+out on the tenth. I'll fold the new forecast into the timeline as well.
+[00:04:36] Dana Wu: To recap: escalation to 30 mg resumes once the amendment is
+approved, the audit stays on site in the week of the ninth of December, the March
+batch stays on hold until the audit report, and the interim stays in the third
+quarter.
+[00:04:55] Dana Wu: Next meeting is the twelfth of December. Thanks, everyone.

@@ -51,7 +51,7 @@ try {
   if (existing?.recordsModel) {
     console.log(`Already ingested as meeting ${existing.id} ("${existing.title}"). Nothing to do.`);
   } else {
-    const model = languageModel();
+    const model = languageModel("extraction");
     const embedTokens = existing
       ? 0
       : chunks.reduce((sum, c) => sum + approximateTokenCounter.count(c.text), 0);
