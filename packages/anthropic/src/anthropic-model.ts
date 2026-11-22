@@ -17,6 +17,16 @@ export const ANTHROPIC_PRICE_PER_MILLION_TOKENS = {
 export type AnthropicModelId = keyof typeof ANTHROPIC_PRICE_PER_MILLION_TOKENS;
 export type Effort = "low" | "medium" | "high" | "xhigh" | "max";
 
+/**
+ * The model for each use, settled by the eval (ADR-0008): Sonnet 5.5 at medium matched
+ * Opus 5.5 at high on every score, at under half the cost. Every app reads this one table.
+ */
+export const CHOSEN_MODELS = {
+  extraction: { model: "claude-sonnet-5-5", effort: "medium" },
+  answering: { model: "claude-sonnet-5-5", effort: "medium" },
+} as const satisfies Record<string, { model: AnthropicModelId; effort: Effort }>;
+export type ModelUse = keyof typeof CHOSEN_MODELS;
+
 export interface ModelUsage {
   readonly provider: "anthropic";
   /** The model asked for. */

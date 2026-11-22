@@ -30,7 +30,8 @@ import {
   type SearchHit,
   type Turn,
 } from "@mnemon/core";
-import { createChunkSearch, createMeetingStore, databaseUrl, migrate } from "@mnemon/db";
+import { createChunkSearch, createMeetingStore, databaseUrl } from "@mnemon/db";
+import { migrate } from "@mnemon/db/migrate";
 import { createVoyageEmbedder } from "@mnemon/voyage";
 import postgres from "postgres";
 import {

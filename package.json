@@ -18,7 +18,10 @@
     "retrieve": "node --env-file-if-exists=.env apps/cli/src/retrieve.ts",
     "records": "node --env-file-if-exists=.env apps/cli/src/records.ts",
     "ask": "node --env-file-if-exists=.env apps/cli/src/ask.ts",
-    "eval": "node --env-file-if-exists=.env packages/eval/src/run.ts"
+    "eval": "node --env-file-if-exists=.env packages/eval/src/run.ts",
+    "web": "pnpm --filter @mnemon/web dev",
+    "web:build": "pnpm --filter @mnemon/web build",
+    "web:start": "pnpm --filter @mnemon/web start"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.8",

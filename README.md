@@ -24,7 +24,9 @@ pnpm db:down     # stop Postgres (data is kept in the mnemon-db volume)
 
 - `MNEMON_VOYAGE_API_KEY` (from https://dashboard.voyageai.com) to embed and search;
 - `MNEMON_ANTHROPIC_API_KEY` (from https://platform.claude.com/settings/keys) to
-  extract records at ingest and to answer questions.
+  extract records at ingest and to answer questions;
+- `MNEMON_ACCESS_CODE` for the web app: the code people enter to sign in. Without
+  it the app is open in development and refuses everyone in production.
 
 ```sh
 pnpm ingest packages/core/fixtures/steering-committee.txt --title "AMT-208 steering committee"
@@ -36,6 +38,19 @@ pnpm retrieve "Who is doing the vendor audit?"          # the chunks retrieval f
 `ingest` prints the expected cost before any paid call; every model call logs its
 tokens and cost as a JSON line on stderr. Ingesting a transcript that is already
 stored does nothing, except extract records for a meeting stored before extraction.
+
+## Web app
+
+```sh
+pnpm web                      # http://localhost:3000, reads the root .env
+pnpm web:build && pnpm web:start
+```
+
+`apps/web` is a thin Next.js shell over the same core and adapters as the CLI. Sign in
+with the access code, ask a question, and every sentence of the answer links to the
+turn it cites on the meeting's page. The web server doesn't migrate the database: run
+`pnpm db:migrate` first. Session cookies are `Secure` in production, so serve it over
+HTTPS. ADR-0009 has the design.
 
 ## Eval
 
@@ -62,6 +77,7 @@ settled a choice go in its ADR.
 - `packages/anthropic` (`@mnemon/anthropic`): Claude via the Anthropic SDK, implementing
   the core's `LanguageModel`.
 - `packages/eval` (`@mnemon/eval`): the labelled eval set, its scoring, and the runner.
+- `apps/web` (`@mnemon/web`): the Next.js app: sign-in gate, ask, meeting pages.
 - `apps/cli`: `ingest`, `records`, `ask` and `retrieve` commands wiring the packages together.
 - `docs/adr`: one record per architectural decision.
 - `GLOSSARY.md`: the domain language.
