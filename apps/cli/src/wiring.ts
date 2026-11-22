@@ -1,5 +1,5 @@
 // Composition root shared by the CLI commands: real adapters, configured from env.
-import { createAnthropicModel } from "@mnemon/anthropic";
+import { createAnthropicModel, type Effort } from "@mnemon/anthropic";
 import { createChunkSearch, createMeetingStore, databaseUrl, migrate } from "@mnemon/db";
 import { createVoyageEmbedder } from "@mnemon/voyage";
 import postgres from "postgres";
@@ -21,7 +21,8 @@ export async function connect() {
     search: createChunkSearch(sql),
     embedder: createVoyageEmbedder({ apiKey: process.env.MNEMON_VOYAGE_API_KEY ?? "" }),
     // Created on first use, so commands that never call Claude don't need its key.
-    languageModel: () =>
-      createAnthropicModel({ apiKey: process.env.MNEMON_ANTHROPIC_API_KEY ?? "" }),
+    // Extraction runs at high effort (ADR-0006), answering at medium (ADR-0007).
+    languageModel: (effort: Effort = "high") =>
+      createAnthropicModel({ apiKey: process.env.MNEMON_ANTHROPIC_API_KEY ?? "", effort }),
   };
 }

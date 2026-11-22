@@ -24,12 +24,13 @@ pnpm db:down     # stop Postgres (data is kept in the mnemon-db volume)
 
 - `MNEMON_VOYAGE_API_KEY` (from https://dashboard.voyageai.com) to embed and search;
 - `MNEMON_ANTHROPIC_API_KEY` (from https://platform.claude.com/settings/keys) to
-  extract records at ingest.
+  extract records at ingest and to answer questions.
 
 ```sh
 pnpm ingest packages/core/fixtures/steering-committee.txt --title "AMT-208 steering committee"
 pnpm records <meeting-id>     # decisions, action items and topics, each with its citations
-pnpm retrieve "Who is doing the vendor audit?"
+pnpm ask "Who is doing the vendor audit, and by when?"   # an answer citing its turns
+pnpm retrieve "Who is doing the vendor audit?"          # the chunks retrieval found, and why
 ```
 
 `ingest` prints the expected cost before any paid call; every model call logs its
@@ -39,13 +40,13 @@ stored does nothing, except extract records for a meeting stored before extracti
 ## Layout
 
 - `packages/core` (`@mnemon/core`): framework-free core. Transcript parsing,
-  chunking, record extraction (prompt, schema, citation checks) and retrieval;
-  answering in a later slice.
+  chunking, record extraction, retrieval and answering (prompts, schemas,
+  citation checks).
 - `packages/core/fixtures`: synthetic transcripts (fictional company and people).
 - `packages/db` (`@mnemon/db`): Postgres storage, SQL migrations and chunk search.
 - `packages/voyage` (`@mnemon/voyage`): Voyage AI embeddings, implementing the core's `Embedder`.
 - `packages/anthropic` (`@mnemon/anthropic`): Claude via the Anthropic SDK, implementing
   the core's `LanguageModel`.
-- `apps/cli`: `ingest`, `records` and `retrieve` commands wiring the packages together.
+- `apps/cli`: `ingest`, `records`, `ask` and `retrieve` commands wiring the packages together.
 - `docs/adr`: one record per architectural decision.
 - `GLOSSARY.md`: the domain language.

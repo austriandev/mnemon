@@ -25,6 +25,17 @@ Something extracted from a meeting that people ask about: a decision, an action 
 or a topic, each tied to the turns that support it.
 _Avoid_: insight, entity, note
 
+**Excerpt**:
+The turns of one meeting shown to the model for one question: the turns its
+retrieved chunks cover, in order, with gaps marked.
+_Avoid_: context, snippet
+
+**Answer**:
+A response to a question, as sentences that each cite the turns they rest on; or a
+statement that the meetings don't say. An answer whose citations don't check out is
+not shown.
+_Avoid_: response, reply
+
 **Citation**:
 A pointer from an answer or record back to the turns it rests on: who said it, when,
 and where in the transcript.

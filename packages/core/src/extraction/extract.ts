@@ -1,4 +1,5 @@
-import { formatTimestamp } from "../transcript/timestamp.ts";
+import { isObject } from "../json.ts";
+import { turnLine } from "../transcript/turn-line.ts";
 import type { Turn } from "../transcript/types.ts";
 import type {
   Citation,
@@ -99,15 +100,12 @@ export async function extractRecords(
 }
 
 export function buildPrompt(turns: readonly Turn[]): string {
-  const lines = turns.map(
-    (t) => `[turn ${t.index}] [${formatTimestamp(t.startSeconds)}] ${t.speaker}: ${t.text}`,
-  );
   return [
     "Extract the decisions, action items and topics from this meeting transcript.",
     "Each line is one turn: its number, its start time, the speaker, and what they said.",
     "",
     "<transcript>",
-    ...lines,
+    ...turns.map(turnLine),
     "</transcript>",
   ].join("\n");
 }
@@ -146,10 +144,6 @@ function validate(
     due: blankToNull(due),
     citations: checked,
   };
-}
-
-function isObject(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function isOptionalText(value: unknown): value is string | null {

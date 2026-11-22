@@ -216,6 +216,24 @@ describe("meeting store", () => {
     expect(await store.list()).toEqual(before);
   });
 
+  it("reads back a meeting's title and the turns asked for, in turn order", async () => {
+    const { id } = await store.save({ title: "Excerpted", ...oneTurnMeeting("excerpt source") });
+    const full = await store.save({ title: "Full", ...oneTurnMeeting("excerpt source 2"), turns });
+
+    expect(await store.excerpt(id, [0, 7])).toEqual({
+      meetingId: id,
+      title: "Excerpted",
+      turns: [turns[0]],
+    });
+    expect(await store.excerpt(full.id, [23, 22])).toEqual({
+      meetingId: full.id,
+      title: "Full",
+      turns: [turns[22], turns[23]],
+    });
+    expect(await store.excerpt("00000000-0000-4000-8000-000000000000", [0])).toBeUndefined();
+    expect(await store.excerpt("not-a-uuid", [0])).toBeUndefined();
+  });
+
   it("refuses embeddings that don't match the chunks one to one", async () => {
     await expect(
       store.save({ title: "Mismatch", source, turns, chunks, embeddings: fakeEmbeddings(1) }),
