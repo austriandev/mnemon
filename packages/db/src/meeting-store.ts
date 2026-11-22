@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import type { Chunk, MeetingRecord, Turn } from "@mnemon/core";
+import type { Chunk, Excerpt, MeetingRecord, Turn } from "@mnemon/core";
 import type { Sql, TransactionSql } from "postgres";
 import {
   CHUNK_COLUMNS,
@@ -72,6 +72,8 @@ export interface MeetingStore {
   get(id: string): Promise<StoredMeeting | undefined>;
   /** All meetings, newest first. */
   list(): Promise<MeetingSummary[]>;
+  /** The meeting's title and the turns with these indices, in turn order (the core's TranscriptSource). */
+  excerpt(meetingId: string, turnIndices: readonly number[]): Promise<Excerpt | undefined>;
 }
 
 async function insertRecords(
@@ -175,6 +177,18 @@ export function createMeetingStore(sql: Sql): MeetingStore {
         chunks: chunkRows.map(toChunk),
         records: toRecords(recordRowsFound, citationRows),
       };
+    },
+
+    async excerpt(meetingId, turnIndices) {
+      if (!UUID.test(meetingId)) return undefined;
+      const [meeting] = await sql<Pick<MeetingRow, "title">[]>`
+        select title from meetings where id = ${meetingId}`;
+      if (!meeting) return undefined;
+      const rows = await sql<TurnRow[]>`
+        select * from turns
+        where meeting_id = ${meetingId} and turn_index = any(${sql.array([...turnIndices])}::int[])
+        order by turn_index`;
+      return { meetingId, title: meeting.title, turns: rows.map(toTurn) };
     },
 
     async list() {

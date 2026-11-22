@@ -1,5 +1,21 @@
 // Public interface of @mnemon/core. Everything a caller may use is exported here.
 
+export {
+  ANSWER_SCHEMA,
+  ANSWER_SYSTEM_PROMPT,
+  answer,
+  buildPrompt as buildAnswerPrompt,
+} from "./answering/answer.ts";
+export { type AskOptions, ask } from "./answering/ask.ts";
+export type {
+  Answer,
+  AnswerCitation,
+  AnswerSentence,
+  AskResult,
+  Excerpt,
+  TranscriptSource,
+} from "./answering/types.ts";
+
 export { chunkTurns, DEFAULT_CHUNK_OPTIONS } from "./chunking/chunk.ts";
 export { approximateTokenCounter } from "./chunking/tokens.ts";
 export type { Chunk, ChunkOptions, TokenCounter } from "./chunking/types.ts";
