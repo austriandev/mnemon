@@ -15,7 +15,12 @@ describe("migrate", () => {
   });
 
   it("applies every migration to an empty database, then nothing on a second run", async () => {
-    expect(await migrate(sql)).toEqual(["0001_init", "0002_retrieval", "0003_unique_source"]);
+    expect(await migrate(sql)).toEqual([
+      "0001_init",
+      "0002_retrieval",
+      "0003_unique_source",
+      "0004_records",
+    ]);
     expect(await migrate(sql)).toEqual([]);
   });
 

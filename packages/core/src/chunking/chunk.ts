@@ -1,3 +1,4 @@
+import { formatTimestamp } from "../transcript/timestamp.ts";
 import type { Turn } from "../transcript/types.ts";
 import { approximateTokenCounter } from "./tokens.ts";
 import type { Chunk, ChunkOptions } from "./types.ts";
@@ -75,11 +76,4 @@ function render(turns: readonly Turn[]): string {
   return turns
     .map((turn) => `[${formatTimestamp(turn.startSeconds)}] ${turn.speaker}: ${turn.text}`)
     .join("\n");
-}
-
-function formatTimestamp(totalSeconds: number): string {
-  const hh = Math.floor(totalSeconds / 3600);
-  const mm = Math.floor((totalSeconds % 3600) / 60);
-  const ss = totalSeconds % 60;
-  return [hh, mm, ss].map((n) => String(n).padStart(2, "0")).join(":");
 }
