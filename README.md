@@ -37,6 +37,20 @@ pnpm retrieve "Who is doing the vendor audit?"          # the chunks retrieval f
 tokens and cost as a JSON line on stderr. Ingesting a transcript that is already
 stored does nothing, except extract records for a meeting stored before extraction.
 
+## Eval
+
+```sh
+pnpm eval                     # prints the plan and the expected cost; spends nothing
+pnpm eval --yes               # runs it: retrieval, record extraction, answers
+pnpm eval --only answers --configs sonnet --questions 5 --yes   # a slice
+```
+
+Three synthetic meetings (`packages/core/fixtures`) with hand-labelled gold records and
+22 questions, 3 of them unanswerable (`packages/eval/src/dataset.ts`). Each model
+configuration runs over the same data through the same code the app uses, in its own
+database (`mnemon_eval`). Results go to `packages/eval/results/`, and the numbers that
+settled a choice go in its ADR.
+
 ## Layout
 
 - `packages/core` (`@mnemon/core`): framework-free core. Transcript parsing,
@@ -47,6 +61,7 @@ stored does nothing, except extract records for a meeting stored before extracti
 - `packages/voyage` (`@mnemon/voyage`): Voyage AI embeddings, implementing the core's `Embedder`.
 - `packages/anthropic` (`@mnemon/anthropic`): Claude via the Anthropic SDK, implementing
   the core's `LanguageModel`.
+- `packages/eval` (`@mnemon/eval`): the labelled eval set, its scoring, and the runner.
 - `apps/cli`: `ingest`, `records`, `ask` and `retrieve` commands wiring the packages together.
 - `docs/adr`: one record per architectural decision.
 - `GLOSSARY.md`: the domain language.

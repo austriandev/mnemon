@@ -1,0 +1,20 @@
+{
+  "name": "@mnemon/eval",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@mnemon/anthropic": "workspace:*",
+    "@mnemon/core": "workspace:*",
+    "@mnemon/db": "workspace:*",
+    "@mnemon/voyage": "workspace:*",
+    "postgres": "3.4.9"
+  },
+  "devDependencies": {
+    "vitest": "5.1.1"
+  }
+}

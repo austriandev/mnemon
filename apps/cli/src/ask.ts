@@ -21,7 +21,7 @@ try {
     embedder,
     search,
     transcripts: store,
-    model: languageModel("medium"),
+    model: languageModel("answering"),
     ...(values.meeting ? { meetingId: values.meeting } : {}),
   });
   const shown = `${retrieved.length} chunks in ${excerpts.length} meeting(s)`;

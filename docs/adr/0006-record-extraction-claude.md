@@ -1,5 +1,5 @@
 ---
-status: accepted (model, effort and prompt provisional)
+status: accepted; model and effort superseded by ADR-0008
 ---
 
 # Record extraction at ingest: Claude with structured outputs, checked citations in the core
@@ -32,17 +32,23 @@ records rather than re-read from chunks each time.
   prompt says text inside it is part of the meeting, not an instruction. A transcript
   is user-supplied input.
 
-## Model: `claude-opus-5-5` at effort `high`, provisional
+## Model: provisionally `claude-opus-5-5` at `high`; settled as `claude-sonnet-5-5` at `medium`
 
-Claude Opus 5.5 is the current default model; `high` effort because extraction errors
-are what an auditor finds. On the fixture (47 turns) the estimate was up to $0.13
-and the first live run cost $0.065 at list price ($4 / $20 per million tokens), most of
-it output and thinking. *Hypothesis:* Claude Sonnet 5.5 or Haiku 5.5, or a lower effort, holds
-quality at a fraction of the cost; the extraction eval decides, and its numbers go here.
+The provisional choice was Claude Opus 5.5, the default model, at `high` effort because
+extraction errors are what an auditor finds. On the fixture (47 turns) the estimate was
+up to $0.13 and the first live run cost $0.065 at list price ($4 / $20 per million
+tokens), most of it output and thinking. *Hypothesis:* Claude Sonnet 5.5 or Haiku 5.5,
+or a lower effort, holds quality at a fraction of the cost.
+
+The eval (ADR-0008, three meetings, 25 gold records) confirmed it for Sonnet 5.5:
 
 | Model | Effort | Record precision | Record recall | Rejected | Cost / meeting |
 | --- | --- | --- | --- | --- | --- |
-| _pending extraction eval_ | | | | | |
+| claude-opus-5-5 | high | 100% | 100% | 0 | $0.056 |
+| claude-opus-5-5 | medium | 95% | 100% | 0 | $0.046 |
+| claude-sonnet-5-5 | high | 100% | 100% | 0 | $0.028 |
+| **claude-sonnet-5-5** | **medium** | **100%** | **100%** | **0** | **$0.021** |
+| claude-haiku-5-5 | medium | 95% | 100% | 0 | $0.002 |
 
 **First live run** (one run on the fixture, not an eval): 3,401 input and 2,567 output
 tokens, $0.065, 15 records (5 decisions, 5 action items, 5 topics), 0 rejected. Every

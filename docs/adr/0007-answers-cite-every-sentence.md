@@ -1,5 +1,5 @@
 ---
-status: accepted (model, effort and prompt provisional)
+status: accepted; model superseded by ADR-0008
 ---
 
 # Answers: every sentence cites a turn the model was shown, or the answer is not shown
@@ -32,11 +32,19 @@ by meeting and turn number, with a quote that must appear verbatim in that turn.
     ("…however, this was reversed"), which is worse than no answer in a regulated
     setting. Same rule as ADR-0002 and ADR-0006: rejected, never repaired.
 
-## Model: `claude-opus-5-5` at effort `medium`, provisional
+## Model: provisionally `claude-opus-5-5` at `medium`; settled as `claude-sonnet-5-5` at `medium`
 
-Answering is interactive and reasons over at most eight chunks, so it runs at
-`medium` effort; extraction, which reads a whole meeting once, stays at `high`.
-*Hypothesis:* `medium` loses no accuracy against `high` on this task; the eval decides.
+Answering is interactive and reasons over at most eight chunks, so it was provisionally
+set to Opus 5.5 at `medium` effort. *Hypothesis:* `medium` loses no accuracy against
+`high` on this task. The eval (ADR-0008, 22 questions) confirmed it, and found Sonnet
+5.5 at `medium` as accurate at under half the cost:
+
+| Model | Effort | Correct | Rejected | Cost / question | Median time |
+| --- | --- | --- | --- | --- | --- |
+| claude-opus-5-5 | medium | 22/22 | 0 | $0.0268 | 4.0 s |
+| claude-opus-5-5 | high | 22/22 | 0 | $0.0281 | 4.2 s |
+| **claude-sonnet-5-5** | **medium** | **22/22** | **0** | **$0.0124** | **3.7 s** |
+| claude-haiku-5-5 | medium | 21/22 | 0 | $0.0007 | 2.3 s |
 
 First live runs, on the fixture (one run each, not an eval):
 

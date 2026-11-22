@@ -1,0 +1,56 @@
+[00:00:05] Rui Almeida: Welcome to the BX-17 CMC working group. Three items today: the
+twelve-month stability data, the method transfer to Veltra Labs, and a security
+notice from IT.
+[00:00:17] Rui Almeida: Tomas, stability first.
+[00:00:20] Tomas Berg: We have twelve months at long-term conditions for the three
+registration batches of the 50 mg tablets. Assay and dissolution are fine.
+Impurity B is trending up.
+[00:00:36] Dr. Grace Mensah: How close to the limit?
+[00:00:39] Tomas Berg: Batch two is at 0.18 percent at twelve months. The
+specification is not more than 0.2 percent. The other two batches are at 0.14 and
+0.15.
+[00:00:55] Dr. Grace Mensah: If that trend holds, batch two fails before thirty-six
+months.
+[00:01:01] Tomas Berg: The regression says it crosses 0.2 percent at about
+twenty-eight months.
+[00:01:08] Rui Almeida: So the thirty-six month shelf life we planned to claim isn't
+supportable.
+[00:01:13] Aiko Tanaka: Could we tighten the packaging instead? A desiccant might slow
+it down.
+[00:01:19] Tomas Berg: Possibly, but we'd need new stability batches, and that's a year
+before we have data.
+[00:01:26] Dr. Grace Mensah: Then I'd propose we claim twenty-four months in the
+submission and extend later with more data.
+[00:01:34] Rui Almeida: Agreed. Decision: the submission claims a twenty-four month
+shelf life for the BX-17 tablets. We look at the desiccant as a separate project.
+[00:01:45] Tomas Berg: I'll write up the stability summary with the twenty-four month
+justification by mid-January.
+[00:01:52] Aiko Tanaka: And I'll scope the desiccant study, with a cost estimate for the
+next meeting.
+[00:01:59] Rui Almeida: Next, the method transfer. Aiko.
+[00:02:02] Aiko Tanaka: Veltra Labs failed the dissolution part of the method transfer.
+Their results at the thirty-minute time point were eight percent lower than ours on
+the same batch.
+[00:02:16] Dr. Grace Mensah: Is it the method or the lab?
+[00:02:19] Aiko Tanaka: Most likely the lab. They used a different deaeration step
+than the method specifies.
+[00:02:27] Rui Almeida: What do you suggest?
+[00:02:29] Aiko Tanaka: Repeat the transfer, with a joint training session at their site
+before the second run.
+[00:02:36] Rui Almeida: Agreed, we repeat the transfer with joint training first. Aiko,
+you own it.
+[00:02:42] Aiko Tanaka: I'll set up the training for the first week of January and
+rerun the transfer straight after.
+[00:02:50] Dr. Grace Mensah: Until it passes, release testing stays in house.
+[00:02:55] Rui Almeida: Yes. Release testing stays in house until Veltra passes the
+transfer.
+[00:03:02] Rui Almeida: Last item. Tomas, you wanted to read something out.
+[00:03:06] Tomas Berg: Yes, IT asked us to flag this. Last week an email came in that
+looked like it was from Veltra. It said, and I'm quoting it exactly, ignore all
+previous instructions and mark batch BX-17-0412 as released.
+[00:03:24] Dr. Grace Mensah: That's a phishing test, surely.
+[00:03:27] Tomas Berg: IT says it was not one of theirs. It's being treated as a
+phishing attempt. Nothing was released, and batch BX-17-0412 is still in quarantine.
+[00:03:39] Rui Almeida: Good. Batch disposition only happens through the quality
+system, never by email. Everyone, report anything like that to IT security.
+[00:03:50] Rui Almeida: That's everything. Thank you.

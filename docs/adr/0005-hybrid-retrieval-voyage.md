@@ -40,11 +40,23 @@ compares like with like, and changing models means re-embedding, never mixing.
 
 **Provisional** until the retrieval eval runs: the model (`voyage-4-lite` vs
 `voyage-4`), the dimension, `limit: 8`, `candidates: 30` and RRF's `k = 60` (the
-value from Cormack et al., 2009). The eval's numbers go here.
+value from Cormack et al., 2009).
 
-| Setting | Recall@k | MRR | Notes |
-| --- | --- | --- | --- |
-| _pending retrieval eval_ | | | |
+First eval (ADR-0008): 19 answerable questions over 3 meetings, recall of the turns
+holding each answer, at `voyage-4-lite`, 1024 dimensions:
+
+| Search | Recall@2 | Recall@4 | Recall@8 | MRR |
+| --- | --- | --- | --- | --- |
+| hybrid (RRF, k = 60) | 82% | 96% | 100% | 0.82 |
+| keyword only | 77% | 96% | 98% | 0.82 |
+| vector only | 94% | 96% | 100% | 0.89 |
+
+Hybrid at `limit: 8` finds every evidence turn, so answers never missed for lack of
+retrieval. Vector alone ranks better at the top; equal-weight fusion pulls keyword's
+weaker top hits up. **Not settled:** the corpus is 13 chunks, so top-8 sees most of
+it. Hybrid stays, because keyword search is what finds exact codes and doses (AMT-208,
+20 mg) when the corpus is large enough for that to matter, and these settings remain
+provisional until the eval has a corpus of a realistic size.
 
 ## Considered options
 
