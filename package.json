@@ -15,7 +15,8 @@
     "db:down": "docker compose down",
     "db:migrate": "pnpm --filter @mnemon/db run migrate",
     "ingest": "node --env-file-if-exists=.env apps/cli/src/ingest.ts",
-    "retrieve": "node --env-file-if-exists=.env apps/cli/src/retrieve.ts"
+    "retrieve": "node --env-file-if-exists=.env apps/cli/src/retrieve.ts",
+    "records": "node --env-file-if-exists=.env apps/cli/src/records.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.8",

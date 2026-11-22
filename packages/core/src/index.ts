@@ -3,6 +3,22 @@
 export { chunkTurns, DEFAULT_CHUNK_OPTIONS } from "./chunking/chunk.ts";
 export { approximateTokenCounter } from "./chunking/tokens.ts";
 export type { Chunk, ChunkOptions, TokenCounter } from "./chunking/types.ts";
+export {
+  buildPrompt as buildExtractionPrompt,
+  EXTRACTION_SCHEMA,
+  EXTRACTION_SYSTEM_PROMPT,
+  extractRecords,
+} from "./extraction/extract.ts";
+export type {
+  Citation,
+  Extraction,
+  JsonSchema,
+  LanguageModel,
+  MeetingRecord,
+  RecordKind,
+  RejectedRecord,
+  StructuredRequest,
+} from "./extraction/types.ts";
 export { DEFAULT_RRF_K, type Fused, fuseRankings } from "./retrieval/fuse.ts";
 export {
   DEFAULT_RETRIEVE_OPTIONS,
@@ -18,4 +34,5 @@ export type {
   SearchOptions,
 } from "./retrieval/types.ts";
 export { parseTranscript } from "./transcript/parse.ts";
+export { formatTimestamp } from "./transcript/timestamp.ts";
 export type { ParseError, ParseErrorCode, ParseResult, Turn } from "./transcript/types.ts";

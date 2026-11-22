@@ -1,13 +1,17 @@
 import { createHash } from "node:crypto";
-import type { Chunk, Turn } from "@mnemon/core";
-import type { Sql } from "postgres";
+import type { Chunk, MeetingRecord, Turn } from "@mnemon/core";
+import type { Sql, TransactionSql } from "postgres";
 import {
   CHUNK_COLUMNS,
   type ChunkRow,
+  type CitationRow,
   chunkRow,
   type MeetingRow,
+  type RecordRow,
+  recordRows,
   type TurnRow,
   toChunk,
+  toRecords,
   toTurn,
   turnRow,
 } from "./rows.ts";
@@ -20,6 +24,14 @@ export interface NewMeeting {
   readonly chunks: readonly Chunk[];
   /** One vector per chunk, in chunk order, and the model that produced them. */
   readonly embeddings: { readonly model: string; readonly vectors: readonly (readonly number[])[] };
+  /** The meeting's extracted records. Absent means not extracted yet. */
+  readonly records?: NewRecords;
+}
+
+export interface NewRecords {
+  /** The model that produced the records (the one that answered, after any fallback). */
+  readonly model: string;
+  readonly items: readonly MeetingRecord[];
 }
 
 export interface StoredMeeting {
@@ -28,9 +40,12 @@ export interface StoredMeeting {
   readonly sourceText: string;
   readonly sourceSha256: string;
   readonly embeddingModel: string;
+  /** The model that extracted the records, or null if the meeting has not been extracted. */
+  readonly recordsModel: string | null;
   readonly createdAt: Date;
   readonly turns: readonly Turn[];
   readonly chunks: readonly Chunk[];
+  readonly records: readonly MeetingRecord[];
 }
 
 export interface MeetingSummary {
@@ -48,11 +63,25 @@ export interface MeetingStore {
    */
   save(meeting: NewMeeting): Promise<{ id: string; created: boolean }>;
   /** The meeting stored from exactly this transcript, if any. Checked before paying to embed. */
-  findBySource(source: string): Promise<{ id: string; title: string } | undefined>;
+  findBySource(
+    source: string,
+  ): Promise<{ id: string; title: string; recordsModel: string | null } | undefined>;
+  /** Adds records to a meeting stored without them. A meeting's records are written once. */
+  addRecords(meetingId: string, records: NewRecords): Promise<void>;
   /** The meeting with that id, or undefined if there is none (including malformed ids). */
   get(id: string): Promise<StoredMeeting | undefined>;
   /** All meetings, newest first. */
   list(): Promise<MeetingSummary[]>;
+}
+
+async function insertRecords(
+  tx: TransactionSql,
+  meetingId: string,
+  items: readonly MeetingRecord[],
+): Promise<void> {
+  const { records, citations } = recordRows(meetingId, items);
+  if (records.length > 0) await tx`insert into records ${tx(records)}`;
+  if (citations.length > 0) await tx`insert into record_citations ${tx(citations)}`;
 }
 
 function sha256Of(source: string): string {
@@ -63,7 +92,7 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export function createMeetingStore(sql: Sql): MeetingStore {
   return {
-    async save({ title, source, turns, chunks, embeddings }) {
+    async save({ title, source, turns, chunks, embeddings, records }) {
       if (embeddings.vectors.length !== chunks.length) {
         throw new Error(
           `${chunks.length} chunks but ${embeddings.vectors.length} embeddings: they must match one to one`,
@@ -72,8 +101,8 @@ export function createMeetingStore(sql: Sql): MeetingStore {
       const sha256 = sha256Of(source);
       return sql.begin(async (tx) => {
         const [meeting] = await tx<{ id: string }[]>`
-          insert into meetings (title, source_text, source_sha256, embedding_model)
-          values (${title}, ${source}, ${sha256}, ${embeddings.model})
+          insert into meetings (title, source_text, source_sha256, embedding_model, records_model)
+          values (${title}, ${source}, ${sha256}, ${embeddings.model}, ${records?.model ?? null})
           on conflict (source_sha256) do nothing
           returning id`;
         if (!meeting) {
@@ -90,35 +119,61 @@ export function createMeetingStore(sql: Sql): MeetingStore {
             chunks.map((c, i) => chunkRow(meeting.id, c, embeddings.vectors[i] ?? [])),
           )}`;
         }
+        if (records) await insertRecords(tx, meeting.id, records.items);
         return { id: meeting.id, created: true };
       });
     },
 
     async findBySource(source) {
-      const [meeting] = await sql<{ id: string; title: string }[]>`
-        select id, title from meetings where source_sha256 = ${sha256Of(source)}`;
-      return meeting ? { id: meeting.id, title: meeting.title } : undefined;
+      const [meeting] = await sql<Pick<MeetingRow, "id" | "title" | "records_model">[]>`
+        select id, title, records_model from meetings where source_sha256 = ${sha256Of(source)}`;
+      return meeting
+        ? { id: meeting.id, title: meeting.title, recordsModel: meeting.records_model }
+        : undefined;
+    },
+
+    async addRecords(meetingId, { model, items }) {
+      await sql.begin(async (tx) => {
+        const [claimed] = await tx`
+          update meetings set records_model = ${model}
+          where id = ${meetingId} and records_model is null
+          returning id`;
+        if (!claimed) {
+          const [exists] = await tx`select 1 from meetings where id = ${meetingId}`;
+          throw new Error(
+            exists ? `Meeting ${meetingId} already has records` : `No meeting ${meetingId}`,
+          );
+        }
+        await insertRecords(tx, meetingId, items);
+      });
     },
 
     async get(id) {
       if (!UUID.test(id)) return undefined;
       const [meeting] = await sql<MeetingRow[]>`
-        select id, title, source_text, source_sha256, embedding_model, created_at
+        select id, title, source_text, source_sha256, embedding_model, records_model, created_at
         from meetings where id = ${id}`;
       if (!meeting) return undefined;
       const turnRows = await sql<TurnRow[]>`
         select * from turns where meeting_id = ${id} order by turn_index`;
       const chunkRows = await sql<ChunkRow[]>`
         select ${sql(CHUNK_COLUMNS)} from chunks where meeting_id = ${id} order by chunk_index`;
+      const recordRowsFound = await sql<RecordRow[]>`
+        select * from records where meeting_id = ${id} order by record_index`;
+      const citationRows = await sql<CitationRow[]>`
+        select * from record_citations where meeting_id = ${id}
+        order by record_index, citation_index`;
       return {
         id: meeting.id,
         title: meeting.title,
         sourceText: meeting.source_text,
         sourceSha256: meeting.source_sha256,
         embeddingModel: meeting.embedding_model,
+        recordsModel: meeting.records_model,
         createdAt: meeting.created_at,
         turns: turnRows.map(toTurn),
         chunks: chunkRows.map(toChunk),
+        records: toRecords(recordRowsFound, citationRows),
       };
     },
 

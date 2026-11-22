@@ -20,24 +20,32 @@ pnpm db:down     # stop Postgres (data is kept in the mnemon-db volume)
 ```
 
 `MNEMON_DATABASE_URL` defaults to the local container. Copy `.env.example` to
-`.env` and set `MNEMON_VOYAGE_API_KEY` (from https://dashboard.voyageai.com) to
-embed and search.
+`.env` and set:
+
+- `MNEMON_VOYAGE_API_KEY` (from https://dashboard.voyageai.com) to embed and search;
+- `MNEMON_ANTHROPIC_API_KEY` (from https://platform.claude.com/settings/keys) to
+  extract records at ingest.
 
 ```sh
 pnpm ingest packages/core/fixtures/steering-committee.txt --title "AMT-208 steering committee"
+pnpm records <meeting-id>     # decisions, action items and topics, each with its citations
 pnpm retrieve "Who is doing the vendor audit?"
 ```
 
-`ingest` prints the expected embedding cost before calling the API; every model call
-logs its tokens and cost as a JSON line on stderr.
+`ingest` prints the expected cost before any paid call; every model call logs its
+tokens and cost as a JSON line on stderr. Ingesting a transcript that is already
+stored does nothing, except extract records for a meeting stored before extraction.
 
 ## Layout
 
-- `packages/core` (`@mnemon/core`): framework-free core. Transcript parsing and
-  chunking today; extraction, retrieval and answering in later slices.
+- `packages/core` (`@mnemon/core`): framework-free core. Transcript parsing,
+  chunking, record extraction (prompt, schema, citation checks) and retrieval;
+  answering in a later slice.
 - `packages/core/fixtures`: synthetic transcripts (fictional company and people).
 - `packages/db` (`@mnemon/db`): Postgres storage, SQL migrations and chunk search.
 - `packages/voyage` (`@mnemon/voyage`): Voyage AI embeddings, implementing the core's `Embedder`.
-- `apps/cli`: `ingest` and `search` commands wiring the packages together.
+- `packages/anthropic` (`@mnemon/anthropic`): Claude via the Anthropic SDK, implementing
+  the core's `LanguageModel`.
+- `apps/cli`: `ingest`, `records` and `retrieve` commands wiring the packages together.
 - `docs/adr`: one record per architectural decision.
 - `GLOSSARY.md`: the domain language.

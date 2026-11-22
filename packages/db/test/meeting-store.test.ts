@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { chunkTurns, parseTranscript, type Turn } from "@mnemon/core";
+import { chunkTurns, type MeetingRecord, parseTranscript, type Turn } from "@mnemon/core";
 import type { Sql } from "postgres";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createMeetingStore, type MeetingStore, migrate } from "../src/index.ts";
@@ -14,6 +14,34 @@ if (!parsed.ok) throw new Error("fixture must parse");
 const turns = parsed.turns;
 const chunks = chunkTurns(turns);
 const embeddings = fakeEmbeddings(chunks.length);
+
+const records: MeetingRecord[] = [
+  {
+    index: 0,
+    kind: "decision",
+    summary: "Dosing stays at 20 mg until the DMC review.",
+    owner: null,
+    due: null,
+    citations: [{ turnIndex: 22, quote: "dosing stays at 20 mg for all new patients" }],
+  },
+  {
+    index: 1,
+    kind: "action_item",
+    summary: "Prepare listings and narratives for the three cases.",
+    owner: "Dr. Hana Sato",
+    due: "by Friday",
+    citations: [
+      { turnIndex: 23, quote: "I'll prepare the patient listings" },
+      { turnIndex: 23, quote: "by Friday" },
+    ],
+  },
+];
+
+/** A distinct one-turn meeting, so tests that save don't collide on the source hash. */
+function oneTurnMeeting(source: string) {
+  const turn = turns[0] as Turn;
+  return { source, turns: [turn], chunks: chunkTurns([turn]), embeddings: fakeEmbeddings(1) };
+}
 
 describe("meeting store", () => {
   let sql: Sql;
@@ -117,9 +145,75 @@ describe("meeting store", () => {
       embeddings: fakeEmbeddings(1),
     });
 
-    expect(await store.findBySource(source2)).toEqual({ id, title: "One line" });
+    expect(await store.findBySource(source2)).toEqual({
+      id,
+      title: "One line",
+      recordsModel: null,
+    });
     // One changed byte is a different transcript.
     expect(await store.findBySource(`${source2} `)).toBeUndefined();
+  });
+
+  it("returns a meeting's records and their citations as saved, with the model that made them", async () => {
+    const { id } = await store.save({
+      title: "With records",
+      source: `${source}\n[00:07:10] Dana Wu: With records.`,
+      turns,
+      chunks,
+      embeddings,
+      records: { model: "fake-llm-1", items: records },
+    });
+
+    const meeting = await store.get(id);
+
+    expect(meeting?.recordsModel).toBe("fake-llm-1");
+    expect(meeting?.records).toEqual(records);
+  });
+
+  it("marks a meeting saved without extraction as having no records yet", async () => {
+    const { id } = await store.save({
+      title: "No extraction",
+      ...oneTurnMeeting("[00:00:01] A: b."),
+    });
+
+    const meeting = await store.get(id);
+
+    expect(meeting?.recordsModel).toBeNull();
+    expect(meeting?.records).toEqual([]);
+    expect(await store.findBySource("[00:00:01] A: b.")).toEqual({
+      id,
+      title: "No extraction",
+      recordsModel: null,
+    });
+  });
+
+  it("adds records to a meeting stored before extraction, once", async () => {
+    const { id } = await store.save({ title: "Backfill", ...oneTurnMeeting("[00:00:01] B: c.") });
+    const first = {
+      ...(records[0] as MeetingRecord),
+      citations: [{ turnIndex: 0, quote: "Good" }],
+    };
+
+    await store.addRecords(id, { model: "fake-llm-1", items: [first] });
+
+    expect((await store.get(id))?.records).toEqual([first]);
+    await expect(store.addRecords(id, { model: "fake-llm-1", items: [first] })).rejects.toThrow(
+      /already has records/,
+    );
+  });
+
+  it("refuses a record citing a turn the meeting does not have, and saves nothing", async () => {
+    const before = await store.list();
+    const bad = { ...(records[0] as MeetingRecord), citations: [{ turnIndex: 999, quote: "x" }] };
+
+    await expect(
+      store.save({
+        title: "Bad citation",
+        ...oneTurnMeeting("[00:00:01] C: d."),
+        records: { model: "fake-llm-1", items: [bad] },
+      }),
+    ).rejects.toThrow();
+    expect(await store.list()).toEqual(before);
   });
 
   it("refuses embeddings that don't match the chunks one to one", async () => {

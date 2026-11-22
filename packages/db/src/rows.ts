@@ -1,4 +1,4 @@
-import type { Chunk, Turn } from "@mnemon/core";
+import type { Chunk, MeetingRecord, RecordKind, Turn } from "@mnemon/core";
 
 // Row shapes and their mapping to domain types. The one place snake_case meets camelCase.
 
@@ -8,6 +8,7 @@ export interface MeetingRow {
   source_text: string;
   source_sha256: string;
   embedding_model: string;
+  records_model: string | null;
   created_at: Date;
 }
 
@@ -105,4 +106,63 @@ export function toChunk(r: ChunkRow): Chunk {
     tokenCount: r.token_count,
     oversize: r.oversize,
   };
+}
+
+export interface RecordRow {
+  meeting_id: string;
+  record_index: number;
+  kind: RecordKind;
+  summary: string;
+  owner: string | null;
+  due: string | null;
+}
+
+export interface CitationRow {
+  meeting_id: string;
+  record_index: number;
+  citation_index: number;
+  turn_index: number;
+  quote: string;
+}
+
+export function recordRows(meetingId: string, records: readonly MeetingRecord[]) {
+  return {
+    records: records.map(
+      (r): RecordRow => ({
+        meeting_id: meetingId,
+        record_index: r.index,
+        kind: r.kind,
+        summary: r.summary,
+        owner: r.owner,
+        due: r.due,
+      }),
+    ),
+    citations: records.flatMap((r) =>
+      r.citations.map(
+        (c, i): CitationRow => ({
+          meeting_id: meetingId,
+          record_index: r.index,
+          citation_index: i,
+          turn_index: c.turnIndex,
+          quote: c.quote,
+        }),
+      ),
+    ),
+  };
+}
+
+/** Rebuilds records from rows ordered by record_index and citation_index. */
+export function toRecords(rows: readonly RecordRow[], citations: readonly CitationRow[]) {
+  return rows.map(
+    (r): MeetingRecord => ({
+      index: r.record_index,
+      kind: r.kind,
+      summary: r.summary,
+      owner: r.owner,
+      due: r.due,
+      citations: citations
+        .filter((c) => c.record_index === r.record_index)
+        .map((c) => ({ turnIndex: c.turn_index, quote: c.quote })),
+    }),
+  );
 }
