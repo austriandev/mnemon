@@ -26,6 +26,9 @@ The schema itself carries traceability:
 - Foreign keys from `chunks (meeting_id, first_turn | last_turn)` to `turns`
   stop a chunk from citing a turn that doesn't exist.
 - A meeting is saved whole or not at all.
+- A transcript is stored once (`source_sha256` is unique). Ingesting the same bytes
+  again returns the meeting already stored, so answers never cite two copies of
+  one conversation.
 
 ## Considered options
 

@@ -41,12 +41,22 @@ export interface MeetingSummary {
 }
 
 export interface MeetingStore {
-  /** Saves a meeting with all its turns and chunks, or nothing at all. */
-  save(meeting: NewMeeting): Promise<{ id: string }>;
+  /**
+   * Saves a meeting with all its turns and chunks, or nothing at all. A transcript
+   * is stored once: saving the same source again stores nothing and returns the
+   * meeting already stored, with `created: false`.
+   */
+  save(meeting: NewMeeting): Promise<{ id: string; created: boolean }>;
+  /** The meeting stored from exactly this transcript, if any. Checked before paying to embed. */
+  findBySource(source: string): Promise<{ id: string; title: string } | undefined>;
   /** The meeting with that id, or undefined if there is none (including malformed ids). */
   get(id: string): Promise<StoredMeeting | undefined>;
   /** All meetings, newest first. */
   list(): Promise<MeetingSummary[]>;
+}
+
+function sha256Of(source: string): string {
+  return createHash("sha256").update(source, "utf8").digest("hex");
 }
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -59,13 +69,19 @@ export function createMeetingStore(sql: Sql): MeetingStore {
           `${chunks.length} chunks but ${embeddings.vectors.length} embeddings: they must match one to one`,
         );
       }
-      const sha256 = createHash("sha256").update(source, "utf8").digest("hex");
+      const sha256 = sha256Of(source);
       return sql.begin(async (tx) => {
         const [meeting] = await tx<{ id: string }[]>`
           insert into meetings (title, source_text, source_sha256, embedding_model)
           values (${title}, ${source}, ${sha256}, ${embeddings.model})
+          on conflict (source_sha256) do nothing
           returning id`;
-        if (!meeting) throw new Error("insert into meetings returned no row");
+        if (!meeting) {
+          const [existing] = await tx<{ id: string }[]>`
+            select id from meetings where source_sha256 = ${sha256}`;
+          if (!existing) throw new Error("insert into meetings returned no row");
+          return { id: existing.id, created: false };
+        }
         if (turns.length > 0) {
           await tx`insert into turns ${tx(turns.map((t) => turnRow(meeting.id, t)))}`;
         }
@@ -74,8 +90,14 @@ export function createMeetingStore(sql: Sql): MeetingStore {
             chunks.map((c, i) => chunkRow(meeting.id, c, embeddings.vectors[i] ?? [])),
           )}`;
         }
-        return { id: meeting.id };
+        return { id: meeting.id, created: true };
       });
+    },
+
+    async findBySource(source) {
+      const [meeting] = await sql<{ id: string; title: string }[]>`
+        select id, title from meetings where source_sha256 = ${sha256Of(source)}`;
+      return meeting ? { id: meeting.id, title: meeting.title } : undefined;
     },
 
     async get(id) {

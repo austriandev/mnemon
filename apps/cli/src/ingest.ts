@@ -36,18 +36,30 @@ console.log(
 
 const { sql, store, embedder } = await connect();
 try {
-  const { vectors, tokens } = await embedder.embed(
-    chunks.map((c) => c.text),
-    "document",
-  );
-  const { id } = await store.save({
-    title: values.title ?? basename(path),
-    source,
-    turns: parsed.turns,
-    chunks,
-    embeddings: { model: embedder.model, vectors },
-  });
-  console.log(`Stored meeting ${id}. Embedded ${tokens} tokens with ${embedder.model}.`);
+  // A transcript is stored once; check before paying to embed it again.
+  const existing = await store.findBySource(source);
+  if (existing) {
+    console.log(
+      `Already ingested as meeting ${existing.id} ("${existing.title}"). Nothing embedded.`,
+    );
+  } else {
+    const { vectors, tokens } = await embedder.embed(
+      chunks.map((c) => c.text),
+      "document",
+    );
+    const { id, created } = await store.save({
+      title: values.title ?? basename(path),
+      source,
+      turns: parsed.turns,
+      chunks,
+      embeddings: { model: embedder.model, vectors },
+    });
+    console.log(
+      created
+        ? `Stored meeting ${id}. Embedded ${tokens} tokens with ${embedder.model}.`
+        : `Already ingested as meeting ${id} (saved by another run meanwhile).`,
+    );
+  }
 } finally {
   await sql.end();
 }

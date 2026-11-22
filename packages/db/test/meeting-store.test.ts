@@ -84,13 +84,42 @@ describe("meeting store", () => {
     await expect(
       store.save({
         title: "Broken",
-        source,
+        source: "[00:00:01] Dana Wu: A meeting that fails to save.",
         turns,
         chunks: [chunkCitingAMissingTurn as (typeof chunks)[number]],
         embeddings: fakeEmbeddings(1),
       }),
     ).rejects.toThrow();
     expect(await store.list()).toEqual(before);
+  });
+
+  it("returns the first meeting, and stores no copy, when the same transcript is saved again", async () => {
+    const copy = `${source}\n[00:07:00] Dana Wu: Re-sent for the minutes.`;
+    const first = await store.save({ title: "Original", source: copy, turns, chunks, embeddings });
+    const before = await store.list();
+
+    const again = await store.save({ title: "Re-upload", source: copy, turns, chunks, embeddings });
+
+    expect(first.created).toBe(true);
+    expect(again).toEqual({ id: first.id, created: false });
+    expect(await store.list()).toEqual(before);
+    expect((await store.get(first.id))?.title).toBe("Original");
+  });
+
+  it("finds a stored meeting by its exact transcript", async () => {
+    const source2 = "[00:00:01] Dana Wu: Only this one line.";
+    expect(await store.findBySource(source2)).toBeUndefined();
+    const { id } = await store.save({
+      title: "One line",
+      source: source2,
+      turns: [turns[0] as Turn],
+      chunks: chunkTurns([turns[0] as Turn]),
+      embeddings: fakeEmbeddings(1),
+    });
+
+    expect(await store.findBySource(source2)).toEqual({ id, title: "One line" });
+    // One changed byte is a different transcript.
+    expect(await store.findBySource(`${source2} `)).toBeUndefined();
   });
 
   it("refuses embeddings that don't match the chunks one to one", async () => {
