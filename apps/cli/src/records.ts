@@ -44,9 +44,11 @@ function print(record: MeetingRecord, turns: ReadonlyMap<number, Turn>) {
   for (const c of record.citations) {
     const turn = turns.get(c.turnIndex);
     if (!turn) continue;
+    const { start, end } = turn.sourceLines;
+    const lines = start === end ? `line ${start}` : `lines ${start}-${end}`;
     console.log(
-      `      [${formatTimestamp(turn.startSeconds)}] ${turn.speaker} (turn ${c.turnIndex}, ` +
-        `lines ${turn.sourceLines.start}-${turn.sourceLines.end}): "${c.quote}"`,
+      `      [${formatTimestamp(turn.startSeconds)}] ${turn.speaker} ` +
+        `(turn ${c.turnIndex}, ${lines}): "${c.quote}"`,
     );
   }
 }

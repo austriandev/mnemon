@@ -9,6 +9,7 @@ import {
   approximateTokenCounter,
   buildExtractionPrompt,
   chunkTurns,
+  EXTRACTION_SCHEMA,
   EXTRACTION_SYSTEM_PROMPT,
   type Extraction,
   extractRecords,
@@ -17,9 +18,10 @@ import {
 import { VOYAGE_PRICE_PER_MILLION_TOKENS } from "@mnemon/voyage";
 import { connect } from "./wiring.ts";
 
-// chars/4 undercounted real tokens by ~19% on the fixture (ADR-0003); pad estimates by 25%.
-const TOKEN_MARGIN = 1.25;
-// Room for adaptive thinking plus the JSON. An upper estimate, not a measurement.
+// The extraction prompt (turn labels, timestamps, schema) is denser than prose: the fixture's
+// 7,650 characters were 3,401 input tokens, ~2.25 per token (ADR-0006). Count 2 for headroom.
+const EXTRACTION_CHARS_PER_TOKEN = 2;
+// Room for adaptive thinking plus the JSON; the fixture used 2,567. An upper estimate.
 const EXPECTED_EXTRACTION_OUTPUT_TOKENS = 6_000;
 
 const { values, positionals } = parseArgs({
@@ -92,8 +94,11 @@ try {
 }
 
 function printExpectedCost(model: AnthropicModelId, embedTokens: number) {
-  const promptChars = EXTRACTION_SYSTEM_PROMPT.length + buildExtractionPrompt(turns).length;
-  const inputTokens = Math.ceil((promptChars / 4) * TOKEN_MARGIN);
+  const promptChars =
+    EXTRACTION_SYSTEM_PROMPT.length +
+    buildExtractionPrompt(turns).length +
+    JSON.stringify(EXTRACTION_SCHEMA).length;
+  const inputTokens = Math.ceil(promptChars / EXTRACTION_CHARS_PER_TOKEN);
   const extractUsd = estimateCostUsd(model, inputTokens, EXPECTED_EXTRACTION_OUTPUT_TOKENS);
   const embedUsd = (embedTokens * VOYAGE_PRICE_PER_MILLION_TOKENS["voyage-4-lite"]) / 1e6;
   const embedPart =

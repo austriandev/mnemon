@@ -35,14 +35,19 @@ records rather than re-read from chunks each time.
 ## Model: `claude-opus-5-5` at effort `high`, provisional
 
 Claude Opus 5.5 is the current default model; `high` effort because extraction errors
-are what an auditor finds. On the fixture (47 turns) the expected cost is about
-$0.13 per meeting at list price ($4 / $20 per million tokens), most of it output and
-thinking. *Hypothesis:* Claude Sonnet 5.5 or Haiku 5.5, or a lower effort, holds
+are what an auditor finds. On the fixture (47 turns) the estimate was up to $0.13
+and the first live run cost $0.065 at list price ($4 / $20 per million tokens), most of
+it output and thinking. *Hypothesis:* Claude Sonnet 5.5 or Haiku 5.5, or a lower effort, holds
 quality at a fraction of the cost; the extraction eval decides, and its numbers go here.
 
 | Model | Effort | Record precision | Record recall | Rejected | Cost / meeting |
 | --- | --- | --- | --- | --- | --- |
 | _pending extraction eval_ | | | | | |
+
+**First live run** (one run on the fixture, not an eval): 3,401 input and 2,567 output
+tokens, $0.065, 15 records (5 decisions, 5 action items, 5 topics), 0 rejected. Every
+summary checked by hand against the transcript. The prompt came to ~2.25 characters per
+token, so `pnpm ingest` estimates extraction input at 2 characters per token, not 4.
 
 **Server-side fallback is on** (`fallbacks: "default"`): if a safety classifier
 declines, the API re-runs the request on a fallback model in the same call. The model
