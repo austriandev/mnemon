@@ -1,5 +1,14 @@
 import { createHash } from "node:crypto";
-import type { Chunk, Excerpt, MeetingRecord, Turn } from "@mnemon/core";
+import type {
+  Chunk,
+  Excerpt,
+  MeetingRecord,
+  MeetingRepository,
+  NewMeeting,
+  NewRecords,
+  TranscriptSource,
+  Turn,
+} from "@mnemon/core";
 import type { Sql, TransactionSql } from "postgres";
 import {
   CHUNK_COLUMNS,
@@ -16,23 +25,8 @@ import {
   turnRow,
 } from "./rows.ts";
 
-export interface NewMeeting {
-  readonly title: string;
-  /** The transcript exactly as received; stored verbatim with its SHA-256. */
-  readonly source: string;
-  readonly turns: readonly Turn[];
-  readonly chunks: readonly Chunk[];
-  /** One vector per chunk, in chunk order, and the model that produced them. */
-  readonly embeddings: { readonly model: string; readonly vectors: readonly (readonly number[])[] };
-  /** The meeting's extracted records. Absent means not extracted yet. */
-  readonly records?: NewRecords;
-}
-
-export interface NewRecords {
-  /** The model that produced the records (the one that answered, after any fallback). */
-  readonly model: string;
-  readonly items: readonly MeetingRecord[];
-}
+// NewMeeting and NewRecords are the core's: the store implements its MeetingRepository.
+export type { NewMeeting, NewRecords };
 
 export interface StoredMeeting {
   readonly id: string;
@@ -55,7 +49,8 @@ export interface MeetingSummary {
   readonly turnCount: number;
 }
 
-export interface MeetingStore {
+/** The core's MeetingRepository and TranscriptSource, plus reads for the apps. */
+export interface MeetingStore extends MeetingRepository, TranscriptSource {
   /**
    * Saves a meeting with all its turns and chunks, or nothing at all. A transcript
    * is stored once: saving the same source again stores nothing and returns the

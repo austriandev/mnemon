@@ -35,6 +35,16 @@ export type {
   RejectedRecord,
   StructuredRequest,
 } from "./extraction/types.ts";
+export {
+  type IngestDeps,
+  type IngestPlan,
+  type IngestResult,
+  type MeetingRepository,
+  type NewMeeting,
+  type NewRecords,
+  planIngest,
+  runIngest,
+} from "./ingest/ingest.ts";
 export { DEFAULT_RRF_K, type Fused, fuseRankings } from "./retrieval/fuse.ts";
 export {
   DEFAULT_RETRIEVE_OPTIONS,

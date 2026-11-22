@@ -5,6 +5,24 @@ and get answers that cite the exact moment in the transcript.
 
 Work in progress. Setup, architecture and design notes land here as they are built.
 
+## Quickstart
+
+Needs Node 24, pnpm 9 (`corepack enable` picks up the pinned version), Docker, and two
+API keys: Voyage AI (https://dashboard.voyageai.com) and Anthropic
+(https://platform.claude.com/settings/keys).
+
+```sh
+pnpm install
+pnpm db:up && pnpm db:migrate   # Postgres + pgvector in Docker, schema applied
+cp .env.example .env            # then add MNEMON_VOYAGE_API_KEY and MNEMON_ANTHROPIC_API_KEY
+pnpm seed --yes                 # three synthetic meetings; prints the cost first (~$0.05)
+pnpm web                        # http://localhost:3000
+```
+
+Try "What is the current dosing decision for new patients?" (it spans two meetings,
+the second reversing the first), then open a source to land on the turn it cites.
+Without `--yes`, `pnpm seed` only prints what it would load and cost.
+
 ## Setup
 
 Requires Node 24, pnpm 9 (`corepack enable` picks up the pinned version) and Docker.

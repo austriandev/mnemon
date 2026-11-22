@@ -76,6 +76,8 @@ describe("answer", () => {
     expect(prompt).toContain(`<question>\n${QUESTION}\n</question>`);
     expect(prompt.indexOf("<question>")).toBeGreaterThan(prompt.lastIndexOf("</meeting>"));
     expect(requests[0]?.system).toMatch(/data/);
+    // Meeting numbers are the prompt's bookkeeping; a reader knows meetings by title.
+    expect(requests[0]?.system).toMatch(/by its title, never by its number/);
     expect(requests[0]?.schema).toMatchObject({ type: "object" });
   });
 
