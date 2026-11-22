@@ -2,7 +2,8 @@ import { readFileSync } from "node:fs";
 import { type ChunkSearch, chunkTurns, parseTranscript } from "@mnemon/core";
 import type { Sql } from "postgres";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { createChunkSearch, createMeetingStore, migrate } from "../src/index.ts";
+import { createChunkSearch, createMeetingStore } from "../src/index.ts";
+import { migrate } from "../src/migrate.ts";
 import { createTestDatabase, fakeEmbeddings, unitVector } from "./test-database.ts";
 
 const source = readFileSync(

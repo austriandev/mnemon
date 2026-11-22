@@ -1,6 +1,6 @@
 import type { Sql } from "postgres";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { migrate } from "../src/index.ts";
+import { migrate } from "../src/migrate.ts";
 import { createTestDatabase } from "./test-database.ts";
 
 describe("migrate", () => {

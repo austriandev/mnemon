@@ -25,3 +25,5 @@ evals/runs/
 .DS_Store
 .vscode/*
 !.vscode/extensions.json
+# Next.js
+apps/web/next-env.d.ts
