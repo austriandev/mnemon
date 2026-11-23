@@ -267,6 +267,31 @@ export const QUESTIONS: readonly GoldQuestion[] = [
     NOT_RELEASED,
     [{ meeting: "cmc", turns: [25, 27] }],
   ),
+  // Asking for every item of a kind: retrieval alone may not reach them all (ADR-0011).
+  q(
+    "list-oct",
+    "List every action item from the October AMT-208 steering committee, with its owner and deadline.",
+    [
+      ["contract", "agreements"],
+      ["listings"],
+      ["audit plan", "plan to you", "plan within two weeks"],
+      ["notice letter"],
+      ["risk register"],
+    ],
+    [{ meeting: "oct", turns: [11, 23, 31, 33, 43] }],
+  ),
+  q(
+    "list-nov",
+    "List every action item from the November AMT-208 steering committee, with its owner and deadline.",
+    [["forecast"], ["amendment"]],
+    [{ meeting: "nov", turns: [7, 15] }],
+  ),
+  q(
+    "list-cmc",
+    "List every action item from the BX-17 CMC working group, with its owner and deadline.",
+    [["stability summary"], ["desiccant"], ["training"]],
+    [{ meeting: "cmc", turns: [12, 13, 21] }],
+  ),
   none("none-japan", "What is the AMT-208 enrollment target for Japan?"),
   none("none-cro", "Which CRO runs the BX-17 phase 3 trial?"),
   none("none-50mg", "What did the committee decide about a 50 mg dose of AMT-208?"),

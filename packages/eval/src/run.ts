@@ -1,4 +1,7 @@
 // pnpm eval [--yes] [--only retrieval,extraction,answers] [--configs <substring>] [--questions n]
+//           [--ids a,b] [--limit n] [--records on|off]
+// --ids runs only those questions; --limit sets how many chunks answers retrieve (default 8);
+// --records off answers from retrieved turns alone, without the meetings' records.
 // pnpm eval --rescore packages/eval/results/<run>.json
 // Runs the labelled eval: retrieval, record extraction and answering, each model
 // configuration over the same data. Prints the expected cost and spends nothing
@@ -9,6 +12,7 @@ import { parseArgs } from "node:util";
 import {
   ANTHROPIC_PRICE_PER_MILLION_TOKENS,
   type AnthropicModelId,
+  CHOSEN_MODELS,
   createAnthropicModel,
   type Effort,
   type ModelUsage,
@@ -114,6 +118,9 @@ const { values } = parseArgs({
     only: { type: "string", default: "retrieval,extraction,answers" },
     configs: { type: "string" },
     questions: { type: "string" },
+    ids: { type: "string" },
+    limit: { type: "string" },
+    records: { type: "string", default: "on" },
     rescore: { type: "string" },
   },
 });
@@ -127,7 +134,25 @@ if (questionCount !== undefined && (!Number.isInteger(questionCount) || question
   console.error("--questions takes a positive whole number.");
   process.exit(2);
 }
-const questions = QUESTIONS.slice(0, questionCount);
+const ids = values.ids?.split(",");
+const unknown = ids?.filter((id) => !QUESTIONS.some((q) => q.id === id)) ?? [];
+if (unknown.length > 0) {
+  console.error(`Unknown question ids: ${unknown.join(", ")}`);
+  process.exit(2);
+}
+const questions = QUESTIONS.filter((q) => !ids || ids.includes(q.id)).slice(0, questionCount);
+const answerLimit = values.limit === undefined ? undefined : Number(values.limit);
+if (answerLimit !== undefined && (!Number.isInteger(answerLimit) || answerLimit < 1)) {
+  console.error("--limit takes a positive whole number.");
+  process.exit(2);
+}
+if (values.records !== "on" && values.records !== "off") {
+  console.error("--records takes on or off.");
+  process.exit(2);
+}
+const withRecords = values.records === "on";
+// How the answers were asked, saved with the results so runs can be compared.
+const answerSetup = { limit: answerLimit ?? 8, records: withRecords };
 
 const meetings = MEETINGS.map((m) => {
   const source = readFileSync(new URL(`../../core/fixtures/${m.file}`, import.meta.url), "utf8");
@@ -173,7 +198,8 @@ const extractionInput = (turns: readonly Turn[]) =>
       CHARS_PER_TOKEN,
   );
 const answerInput = Math.max(
-  ANSWER_INPUT_ALLOWANCE,
+  // Records add every meeting's record list and the turns it cites.
+  withRecords ? ANSWER_INPUT_ALLOWANCE * 1.5 : ANSWER_INPUT_ALLOWANCE,
   Math.ceil((ANSWER_SYSTEM_PROMPT.length + JSON.stringify(ANSWER_SCHEMA).length) / CHARS_PER_TOKEN),
 );
 const plan = [
@@ -184,8 +210,27 @@ const plan = [
       0,
     ),
   })),
+  // Answers with records need the meetings' records; the eval database keeps them once
+  // extracted, so this is paid on the first such run only. Counted here as if unpaid.
+  ...(withRecords && answerConfigs.length > 0
+    ? [
+        {
+          what: `records for answers: ${label(CHOSEN_MODELS.extraction)} x ${meetings.length} meetings (first run only)`,
+          usd: meetings.reduce(
+            (sum, m) =>
+              sum +
+              usd(
+                CHOSEN_MODELS.extraction.model,
+                extractionInput(m.turns),
+                EXTRACTION_OUTPUT_ALLOWANCE,
+              ),
+            0,
+          ),
+        },
+      ]
+    : []),
   ...answerConfigs.map((c) => ({
-    what: `answers ${label(c)} x ${questions.length} questions`,
+    what: `answers ${label(c)} x ${questions.length} questions (limit ${answerSetup.limit}, records ${values.records})`,
     usd: questions.length * usd(c.model, answerInput, ANSWER_OUTPUT_ALLOWANCE),
   })),
 ];
@@ -241,6 +286,22 @@ try {
     ids[m.key] = saved.id;
   }
 
+  // Answers read the meetings' records as the app does: extracted by the production
+  // extraction model, once, and kept in the eval database.
+  if (withRecords && answerConfigs.length > 0) {
+    for (const m of meetings) {
+      const found = await store.findBySource(m.source);
+      if (!found || found.recordsModel) continue;
+      const usage: ModelUsage[] = [];
+      const extraction = await extractRecords(m.turns, model(CHOSEN_MODELS.extraction, usage));
+      await store.addRecords(found.id, {
+        model: extraction.model ?? CHOSEN_MODELS.extraction.model,
+        items: extraction.records,
+      });
+      progress(`records for ${m.key}: ${extraction.records.length} extracted`);
+    }
+  }
+
   // One embedding request for every question; retrieval then reads from the cache.
   const { vectors } = await voyage.embed(
     questions.map((q) => q.question),
@@ -265,7 +326,10 @@ try {
     results.retrieval = await runRetrieval(questions.filter((q) => q.answerable));
   }
   if (extractionConfigs.length > 0) results.extraction = await runExtraction();
-  if (answerConfigs.length > 0) results.answers = await runAnswers();
+  if (answerConfigs.length > 0) {
+    results.answerSetup = answerSetup;
+    results.answers = await runAnswers();
+  }
 
   results.spentUsd = spent.reduce((sum, s) => sum + s.usd, 0);
   console.log(
@@ -273,7 +337,7 @@ try {
   );
   mkdirSync(new URL("../results/", import.meta.url), { recursive: true });
   const file = new URL(
-    `../results/${new Date().toISOString().slice(0, 16).replace(/[:T]/g, "-")}.json`,
+    `../results/${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.json`,
     import.meta.url,
   );
   writeFileSync(file, `${JSON.stringify(results, null, 2)}\n`);
@@ -352,6 +416,8 @@ try {
           search,
           transcripts: store,
           model: model(config, usage),
+          records: withRecords,
+          ...(answerLimit === undefined ? {} : { limit: answerLimit }),
         });
         const score = scoreAnswer(answer, question, ids);
         progress(

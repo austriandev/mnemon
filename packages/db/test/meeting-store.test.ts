@@ -171,6 +171,21 @@ describe("meeting store", () => {
     expect(meeting?.records).toEqual(records);
   });
 
+  it("reads back just a meeting's records, in order; none for an unknown or malformed id", async () => {
+    const { id } = await store.save({
+      title: "Records only",
+      source: `${source}\n[00:07:20] Dana Wu: Records only.`,
+      turns,
+      chunks,
+      embeddings,
+      records: { model: "fake-llm-1", items: records },
+    });
+
+    expect(await store.records(id)).toEqual(records);
+    expect(await store.records("00000000-0000-4000-8000-000000000000")).toEqual([]);
+    expect(await store.records("not-a-uuid")).toEqual([]);
+  });
+
   it("marks a meeting saved without extraction as having no records yet", async () => {
     const { id } = await store.save({
       title: "No extraction",

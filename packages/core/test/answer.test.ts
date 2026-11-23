@@ -81,6 +81,49 @@ describe("answer", () => {
     expect(requests[0]?.schema).toMatchObject({ type: "object" });
   });
 
+  it("lists a meeting's extracted records before its turns, each with the turns it rests on", async () => {
+    const { model, requests } = fakeModel({ status: "not_found", sentences: [], gaps: null });
+    const withRecords: Excerpt = {
+      ...steering,
+      records: [
+        {
+          index: 0,
+          kind: "action_item",
+          summary: "Write the vendor audit plan.",
+          owner: "Priya Nair",
+          due: "within two weeks",
+          citations: [{ turnIndex: 31, quote: "I'll take the vendor audit" }],
+        },
+        {
+          index: 1,
+          kind: "decision",
+          summary: "A for-cause audit happens before the March batch.",
+          owner: null,
+          due: null,
+          citations: [
+            { turnIndex: 31, quote: "A for-cause audit" },
+            { turnIndex: 32, quote: "before" },
+          ],
+        },
+      ],
+    };
+
+    await answer(QUESTION, [withRecords], model);
+
+    const prompt = requests[0]?.prompt ?? "";
+    expect(prompt).toContain(
+      "- action item: Write the vendor audit plan. Owner: Priya Nair. Due: within two weeks. [turn 31]",
+    );
+    expect(prompt).toContain(
+      "- decision: A for-cause audit happens before the March batch. [turns 31, 32]",
+    );
+    expect(prompt.indexOf("<records")).toBeGreaterThan(prompt.indexOf('<meeting number="1"'));
+    expect(prompt.indexOf("</records>")).toBeLessThan(prompt.indexOf("[turn 30] "));
+    // Records are a summary; the turns are the evidence, and only turns are cited.
+    expect(requests[0]?.system).toMatch(/records/);
+    expect(requests[0]?.system).toMatch(/cite the turns/i);
+  });
+
   it("marks the turns left out between two excerpted turns", async () => {
     const { model, requests } = fakeModel({ status: "not_found", sentences: [], gaps: null });
 
