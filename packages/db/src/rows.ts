@@ -13,6 +13,8 @@ export interface MeetingRow {
   embedding_model: string;
   records_model: string | null;
   created_at: Date;
+  /** Selected as held_on::text, so a date never shifts with the server's time zone. */
+  held_on: string | null;
 }
 
 export interface TurnRow {

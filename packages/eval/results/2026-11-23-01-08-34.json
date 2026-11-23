@@ -1,0 +1,215 @@
+{
+  "date": "2026-11-23T01:08:23.521Z",
+  "ids": {
+    "oct": "469e400d-01ed-415c-a05a-919c245053b4",
+    "nov": "f5da9d91-d971-4ef0-a735-4bc6465281ed",
+    "cmc": "1af47e3e-1193-4ccd-8ec3-1a49cfea765b"
+  },
+  "answerSetup": {
+    "limit": 8,
+    "records": true,
+    "dates": false
+  },
+  "answers": [
+    {
+      "config": {
+        "model": "claude-sonnet-5-5",
+        "effort": "medium"
+      },
+      "question": "date-amendment",
+      "ms": 3161,
+      "usage": [
+        {
+          "provider": "anthropic",
+          "model": "claude-sonnet-5-5",
+          "servedBy": "claude-sonnet-5-5",
+          "inputTokens": 6835,
+          "outputTokens": 240,
+          "cacheReadTokens": 0,
+          "cacheWriteTokens": 0,
+          "costUsd": 0.01607
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "sentences": [
+          {
+            "text": "Dr. Hana Sato committed to circulating the draft amendment by the end of the month, so it is due at the end of November.",
+            "citations": [
+              {
+                "meetingId": "f5da9d91-d971-4ef0-a735-4bc6465281ed",
+                "turnIndex": 15,
+                "quote": "I'll circulate the draft amendment by the end of the month."
+              }
+            ]
+          },
+          {
+            "text": "The amendment is a substantial protocol amendment, which Dr. Sato offered to draft.",
+            "citations": [
+              {
+                "meetingId": "f5da9d91-d971-4ef0-a735-4bc6465281ed",
+                "turnIndex": 12,
+                "quote": "Yes, a substantial amendment. I can draft it."
+              }
+            ]
+          }
+        ],
+        "gaps": "The meeting excerpts give no explicit date for the meeting itself, so the end of the month is placed as November only from the meeting's title (Nov).",
+        "model": "claude-sonnet-5-5"
+      },
+      "score": {
+        "outcome": "answered",
+        "correct": false,
+        "factsFound": 1,
+        "factsTotal": 2,
+        "citesEvidence": true
+      }
+    },
+    {
+      "config": {
+        "model": "claude-sonnet-5-5",
+        "effort": "medium"
+      },
+      "question": "date-stability",
+      "ms": 2330,
+      "usage": [
+        {
+          "provider": "anthropic",
+          "model": "claude-sonnet-5-5",
+          "servedBy": "claude-sonnet-5-5",
+          "inputTokens": 8273,
+          "outputTokens": 87,
+          "cacheReadTokens": 0,
+          "cacheWriteTokens": 0,
+          "costUsd": 0.017416
+        }
+      ],
+      "answer": {
+        "status": "not_found",
+        "model": "claude-sonnet-5-5"
+      },
+      "score": {
+        "outcome": "not_found",
+        "correct": false,
+        "factsFound": 0,
+        "factsTotal": 2,
+        "citesEvidence": null
+      }
+    },
+    {
+      "config": {
+        "model": "claude-sonnet-5-5",
+        "effort": "medium"
+      },
+      "question": "date-oct-followups",
+      "ms": 10844,
+      "usage": [
+        {
+          "provider": "anthropic",
+          "model": "claude-sonnet-5-5",
+          "servedBy": "claude-sonnet-5-5",
+          "inputTokens": 8454,
+          "outputTokens": 1488,
+          "cacheReadTokens": 0,
+          "cacheWriteTokens": 0,
+          "costUsd": 0.031788
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "sentences": [
+          {
+            "text": "The October meeting set four action items with a deadline: Sam Okafor's site agreements by the twenty-fourth, Dr. Hana Sato's patient listings by Friday, Priya Nair's audit plan within two weeks, and Marcus Lindqvist's timeline and risk register before the next meeting.",
+            "citations": [
+              {
+                "meetingId": "469e400d-01ed-415c-a05a-919c245053b4",
+                "turnIndex": 11,
+                "quote": "I'll have both agreements out for signature by the twenty-fourth."
+              },
+              {
+                "meetingId": "469e400d-01ed-415c-a05a-919c245053b4",
+                "turnIndex": 23,
+                "quote": "send them to the committee by Friday"
+              },
+              {
+                "meetingId": "469e400d-01ed-415c-a05a-919c245053b4",
+                "turnIndex": 31,
+                "quote": "have a plan to you within two weeks"
+              },
+              {
+                "meetingId": "469e400d-01ed-415c-a05a-919c245053b4",
+                "turnIndex": 43,
+                "quote": "circulate both before the next meeting"
+              }
+            ]
+          },
+          {
+            "text": "The November meeting confirms Sam's site agreements as done: both were signed on the twenty-second, two days early.",
+            "citations": [
+              {
+                "meetingId": "f5da9d91-d971-4ef0-a735-4bc6465281ed",
+                "turnIndex": 2,
+                "quote": "Both backup site agreements were signed on the twenty-second, two days early."
+              }
+            ]
+          },
+          {
+            "text": "The November meeting confirms Hana's listings as done: Elena said the data monitoring committee reviewed the listings Hana sent.",
+            "citations": [
+              {
+                "meetingId": "f5da9d91-d971-4ef0-a735-4bc6465281ed",
+                "turnIndex": 9,
+                "quote": "The data monitoring committee reviewed the listings Hana sent."
+              }
+            ]
+          },
+          {
+            "text": "The November meeting confirms Priya's audit plan as done: Priya said it went to Dana on the fourth.",
+            "citations": [
+              {
+                "meetingId": "f5da9d91-d971-4ef0-a735-4bc6465281ed",
+                "turnIndex": 17,
+                "quote": "The audit plan went to Dana on the fourth."
+              }
+            ]
+          },
+          {
+            "text": "The November meeting confirms Marcus's update as done: he said the timeline and risk register went out on the tenth.",
+            "citations": [
+              {
+                "meetingId": "f5da9d91-d971-4ef0-a735-4bc6465281ed",
+                "turnIndex": 30,
+                "quote": "I've updated the timeline and the risk register, they went out on the tenth."
+              }
+            ]
+          },
+          {
+            "text": "Sam's other October item, sending the notice letter to Quellmark once Priya confirmed the audit dates, had no fixed deadline. The November meeting confirms he sent it on the fourth.",
+            "citations": [
+              {
+                "meetingId": "469e400d-01ed-415c-a05a-919c245053b4",
+                "turnIndex": 33,
+                "quote": "I'll send the notice letter once Priya confirms the audit dates."
+              },
+              {
+                "meetingId": "f5da9d91-d971-4ef0-a735-4bc6465281ed",
+                "turnIndex": 17,
+                "quote": "Sam sent the notice letter to Quellmark the same day"
+              }
+            ]
+          }
+        ],
+        "gaps": "Neither meeting gives its date, so the deadlines can't be placed exactly. Only Sam's item is explicitly confirmed as on time (two days early); for Hana's, Priya's and Marcus's items the November meeting confirms completion but not whether the deadline was met.",
+        "model": "claude-sonnet-5-5"
+      },
+      "score": {
+        "outcome": "answered",
+        "correct": true,
+        "factsFound": 3,
+        "factsTotal": 3,
+        "citesEvidence": true
+      }
+    }
+  ],
+  "spentUsd": 0.065274
+}

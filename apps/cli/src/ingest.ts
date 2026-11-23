@@ -1,4 +1,4 @@
-// pnpm ingest <transcript.txt> [--title "Title"]
+// pnpm ingest <transcript.txt> [--title "Title"] [--date YYYY-MM-DD]
 // Parse, chunk, extract records with Claude, embed with Voyage, and store one
 // transcript. Prints the expected cost before any paid call.
 import { readFileSync } from "node:fs";
@@ -11,11 +11,11 @@ import { connect, paidOnUse } from "./wiring.ts";
 
 const { values, positionals } = parseArgs({
   allowPositionals: true,
-  options: { title: { type: "string" } },
+  options: { title: { type: "string" }, date: { type: "string" } },
 });
 const [path] = positionals;
 if (!path) {
-  console.error('Usage: pnpm ingest <transcript.txt> [--title "Title"]');
+  console.error('Usage: pnpm ingest <transcript.txt> [--title "Title"] [--date YYYY-MM-DD]');
   process.exit(2);
 }
 
@@ -25,7 +25,12 @@ const title = values.title?.trim() || basename(path);
 const app = await connect();
 const { sql, store } = app;
 try {
-  const plan = await planIngest(source, title, store);
+  const plan = await planIngest(
+    source,
+    title,
+    store,
+    values.date === undefined ? {} : { heldOn: values.date },
+  );
   if (plan.kind === "invalid") {
     console.error(`${path} was not ingested: ${plan.errors.length} problem(s).`);
     for (const error of plan.errors) console.error(`  ${error.code}: ${error.message}`);

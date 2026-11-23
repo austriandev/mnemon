@@ -38,6 +38,16 @@ export default async function MeetingPage({ params }: Params) {
         </Link>
         <h1 className="meeting-title">{meeting.title}</h1>
         <div className="meta meeting-meta tabular">
+          {meeting.heldOn ? (
+            <span>
+              Held{" "}
+              {new Date(`${meeting.heldOn}T12:00:00`).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+            </span>
+          ) : null}
           <span>{meeting.turns.length} turns</span>
           {last ? <span>{formatTimestamp(last.startSeconds)} long</span> : null}
           <span>{new Set(meeting.turns.map((t) => t.speaker)).size} speakers</span>

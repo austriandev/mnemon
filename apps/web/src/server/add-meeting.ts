@@ -9,7 +9,13 @@ const MAX_TRANSCRIPT_BYTES = 512 * 1024;
 const MAX_TITLE = 200;
 
 export type Submission =
-  | { readonly ok: true; readonly title: string; readonly source: string }
+  | {
+      readonly ok: true;
+      readonly title: string;
+      readonly source: string;
+      /** YYYY-MM-DD as the date input sends it; checked by planIngest. */
+      readonly heldOn?: string;
+    }
   | { readonly ok: false; readonly message: string };
 
 /** Reads the form: a pasted transcript, or else an uploaded file. Never parses it. */
@@ -33,7 +39,8 @@ export async function readSubmission(form: FormData): Promise<Submission> {
   if (source.trim() === "") {
     return { ok: false, message: "Paste a transcript or choose a .txt file." };
   }
-  return { ok: true, title, source };
+  const heldOn = String(form.get("heldOn") ?? "").trim();
+  return heldOn ? { ok: true, title, source, heldOn } : { ok: true, title, source };
 }
 
 export type PlanView =

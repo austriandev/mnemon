@@ -1,7 +1,8 @@
 // pnpm eval [--yes] [--only retrieval,extraction,answers] [--configs <substring>] [--questions n]
-//           [--ids a,b] [--limit n] [--records on|off]
+//           [--ids a,b] [--limit n] [--records on|off] [--dates on|off]
 // --ids runs only those questions; --limit sets how many chunks answers retrieve (default 8);
 // --records off answers from retrieved turns alone, without the meetings' records.
+// --dates off hides the meetings' dates and today's date from the answers.
 // pnpm eval --rescore packages/eval/results/<run>.json
 // Runs the labelled eval: retrieval, record extraction and answering, each model
 // configuration over the same data. Prints the expected cost and spends nothing
@@ -32,6 +33,7 @@ import {
   parseTranscript,
   retrieve,
   type SearchHit,
+  type TranscriptSource,
   type Turn,
 } from "@mnemon/core";
 import { createChunkSearch, createMeetingStore, databaseUrl } from "@mnemon/db";
@@ -39,6 +41,7 @@ import { migrate } from "@mnemon/db/migrate";
 import { createVoyageEmbedder } from "@mnemon/voyage";
 import postgres from "postgres";
 import {
+  EVAL_TODAY,
   GOLD_RECORDS,
   type GoldQuestion,
   MEETINGS,
@@ -121,6 +124,7 @@ const { values } = parseArgs({
     ids: { type: "string" },
     limit: { type: "string" },
     records: { type: "string", default: "on" },
+    dates: { type: "string", default: "on" },
     rescore: { type: "string" },
   },
 });
@@ -151,8 +155,18 @@ if (values.records !== "on" && values.records !== "off") {
   process.exit(2);
 }
 const withRecords = values.records === "on";
+if (values.dates !== "on" && values.dates !== "off") {
+  console.error("--dates takes on or off.");
+  process.exit(2);
+}
+const withDates = values.dates === "on";
 // How the answers were asked, saved with the results so runs can be compared.
-const answerSetup = { limit: answerLimit ?? 8, records: withRecords };
+const answerSetup = {
+  limit: answerLimit ?? 8,
+  records: withRecords,
+  dates: withDates,
+  ...(withDates ? { today: EVAL_TODAY } : {}),
+};
 
 const meetings = MEETINGS.map((m) => {
   const source = readFileSync(new URL(`../../core/fixtures/${m.file}`, import.meta.url), "utf8");
@@ -270,6 +284,7 @@ try {
     const found = await store.findBySource(m.source);
     if (found) {
       ids[m.key] = found.id;
+      if (!found.heldOn) await store.setHeldOn(found.id, m.heldOn);
       continue;
     }
     const { vectors } = await voyage.embed(
@@ -282,6 +297,7 @@ try {
       turns: m.turns,
       chunks: m.chunks,
       embeddings: { model: voyage.model, vectors },
+      heldOn: m.heldOn,
     });
     ids[m.key] = saved.id;
   }
@@ -301,6 +317,17 @@ try {
       progress(`records for ${m.key}: ${extraction.records.length} extracted`);
     }
   }
+
+  // --dates off: the same meetings, with their dates hidden from the answer.
+  const transcripts: TranscriptSource = withDates
+    ? store
+    : {
+        excerpt: async (id, turns) => {
+          const e = await store.excerpt(id, turns);
+          return e && { ...e, heldOn: null };
+        },
+        records: (id) => store.records(id),
+      };
 
   // One embedding request for every question; retrieval then reads from the cache.
   const { vectors } = await voyage.embed(
@@ -414,9 +441,10 @@ try {
         const { answer } = await ask(question.question, {
           embedder,
           search,
-          transcripts: store,
+          transcripts,
           model: model(config, usage),
           records: withRecords,
+          ...(withDates ? { today: EVAL_TODAY } : {}),
           ...(answerLimit === undefined ? {} : { limit: answerLimit }),
         });
         const score = scoreAnswer(answer, question, ids);

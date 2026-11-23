@@ -9,6 +9,8 @@ export interface Excerpt {
   readonly turns: readonly Turn[];
   /** The meeting's extracted records, when shown with it. The turns they cite are in turns. */
   readonly records?: readonly MeetingRecord[];
+  /** The day the meeting was held, YYYY-MM-DD, when known. */
+  readonly heldOn?: string | null;
 }
 
 /** Reads turns and records back from stored meetings. Implementations sit over a store. */

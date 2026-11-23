@@ -23,6 +23,8 @@ export interface NewMeeting {
   readonly embeddings: { readonly model: string; readonly vectors: readonly (readonly number[])[] };
   /** The meeting's extracted records. Absent means not extracted yet. */
   readonly records?: NewRecords;
+  /** The day the meeting was held, YYYY-MM-DD; null when not known. */
+  readonly heldOn?: string | null;
 }
 
 export interface NewRecords {
@@ -36,11 +38,15 @@ export interface MeetingRepository {
   /** The meeting stored from exactly this transcript, if any. */
   findBySource(
     source: string,
-  ): Promise<{ id: string; title: string; recordsModel: string | null } | undefined>;
+  ): Promise<
+    { id: string; title: string; recordsModel: string | null; heldOn?: string | null } | undefined
+  >;
   /** Saves the meeting whole, or nothing. Saving a stored transcript again creates nothing. */
   save(meeting: NewMeeting): Promise<{ id: string; created: boolean }>;
   /** Adds records to a meeting stored without them; a meeting's records are written once. */
   addRecords(meetingId: string, records: NewRecords): Promise<void>;
+  /** Dates a meeting stored without a date; a date, once set, is never changed. */
+  setHeldOn(meetingId: string, heldOn: string): Promise<void>;
 }
 
 /**
@@ -50,20 +56,26 @@ export interface MeetingRepository {
 /** Why a transcript cannot be ingested: a parse error, or a blank title. */
 export type IngestError =
   | ParseError
-  | { readonly code: "empty-title"; readonly line: null; readonly message: string };
+  | {
+      readonly code: "empty-title" | "invalid-date";
+      readonly line: null;
+      readonly message: string;
+    };
 
 export type IngestPlan =
   | { readonly kind: "invalid"; readonly errors: readonly IngestError[] }
-  /** Already stored with its records: nothing to do, nothing to pay. */
+  /** Already stored with its records: nothing to pay. May date a meeting that has no date. */
   | {
       readonly kind: "unchanged";
       readonly meeting: { readonly id: string; readonly title: string };
+      readonly dateToAdd?: string;
     }
   /** Stored before extraction existed: extract its records; its embeddings are already there. */
   | {
       readonly kind: "extract-only";
       readonly meeting: { readonly id: string; readonly title: string };
       readonly turns: readonly Turn[];
+      readonly dateToAdd?: string;
     }
   /** New: extract, embed, store. */
   | {
@@ -72,6 +84,7 @@ export type IngestPlan =
       readonly source: string;
       readonly turns: readonly Turn[];
       readonly chunks: readonly Chunk[];
+      readonly heldOn: string | null;
     };
 
 export type IngestResult =
@@ -92,10 +105,16 @@ export interface IngestDeps {
   readonly model: LanguageModel;
 }
 
+export interface PlanOptions {
+  /** The day the meeting was held, YYYY-MM-DD. */
+  readonly heldOn?: string;
+}
+
 export async function planIngest(
   source: string,
   title: string,
   repository: MeetingRepository,
+  { heldOn }: PlanOptions = {},
 ): Promise<IngestPlan> {
   const parsed = parseTranscript(source);
   const name = title.trim();
@@ -103,13 +122,21 @@ export async function planIngest(
   if (name === "") {
     errors.push({ code: "empty-title", line: null, message: "The meeting needs a title." });
   }
+  if (heldOn !== undefined && !isCalendarDate(heldOn)) {
+    errors.push({
+      code: "invalid-date",
+      line: null,
+      message: `"${heldOn}" is not a date in the form YYYY-MM-DD.`,
+    });
+  }
   if (!parsed.ok || errors.length > 0) return { kind: "invalid", errors };
   const existing = await repository.findBySource(source);
   if (existing) {
     const meeting = { id: existing.id, title: existing.title };
+    const date = heldOn && !existing.heldOn ? { dateToAdd: heldOn } : {};
     return existing.recordsModel
-      ? { kind: "unchanged", meeting }
-      : { kind: "extract-only", meeting, turns: parsed.turns };
+      ? { kind: "unchanged", meeting, ...date }
+      : { kind: "extract-only", meeting, turns: parsed.turns, ...date };
   }
   return {
     kind: "new",
@@ -117,7 +144,15 @@ export async function planIngest(
     source,
     turns: parsed.turns,
     chunks: chunkTurns(parsed.turns),
+    heldOn: heldOn ?? null,
   };
+}
+
+/** A real day written YYYY-MM-DD: "2026-02-30" is not one. */
+function isCalendarDate(text: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(text)) return false;
+  const date = new Date(`${text}T00:00:00Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === text;
 }
 
 // The extraction prompt (turn labels, timestamps, schema) is denser than prose: the fixture's
@@ -160,8 +195,10 @@ export async function runIngest(plan: IngestPlan, deps: IngestDeps): Promise<Ing
     case "invalid":
       throw new Error("Cannot ingest: the plan is invalid. Fix the errors it lists.");
     case "unchanged":
+      if (plan.dateToAdd) await deps.repository.setHeldOn(plan.meeting.id, plan.dateToAdd);
       return { kind: "unchanged", id: plan.meeting.id, title: plan.meeting.title };
     case "extract-only": {
+      if (plan.dateToAdd) await deps.repository.setHeldOn(plan.meeting.id, plan.dateToAdd);
       const extraction = await extractRecords(plan.turns, deps.model);
       await deps.repository.addRecords(plan.meeting.id, recordsOf(extraction, deps.model));
       return { kind: "backfilled", id: plan.meeting.id, extraction };
@@ -179,6 +216,7 @@ export async function runIngest(plan: IngestPlan, deps: IngestDeps): Promise<Ing
         chunks: plan.chunks,
         embeddings: { model: deps.embedder.model, vectors },
         records: recordsOf(extraction, deps.model),
+        heldOn: plan.heldOn,
       });
       return { kind: "stored", id, created, extraction, embeddingTokens: tokens };
     }

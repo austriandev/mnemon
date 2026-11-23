@@ -47,7 +47,7 @@ pnpm db:down     # stop Postgres (data is kept in the mnemon-db volume)
   it the app is open in development and refuses everyone in production.
 
 ```sh
-pnpm ingest packages/core/fixtures/steering-committee.txt --title "AMT-208 steering committee"
+pnpm ingest packages/core/fixtures/steering-committee.txt --title "AMT-208 steering committee" --date 2026-10-15
 pnpm records <meeting-id>     # decisions, action items and topics, each with its citations
 pnpm ask "Who is doing the vendor audit, and by when?"   # an answer citing its turns
 pnpm retrieve "Who is doing the vendor audit?"          # the chunks retrieval found, and why
@@ -68,7 +68,8 @@ pnpm web:build && pnpm web:start
 with the access code, ask a question, and every sentence of the answer links to the
 turn it cites on the meeting's page. Add your own meeting at `/meetings/new`: paste a
 transcript or choose a `.txt` file, and Mnemon shows what it will cost before
-anything is paid for (ADR-0010). The web server doesn't migrate the database: run
+anything is paid for (ADR-0010). Give the day it was held, and answers can tell what
+is due or overdue (ADR-0012). The web server doesn't migrate the database: run
 `pnpm db:migrate` first. Session cookies are `Secure` in production, so serve it over
 HTTPS. ADR-0009 has the design.
 
@@ -82,7 +83,8 @@ pnpm eval --only answers --ids list-oct,list-cmc --limit 3 --records off --yes
 ```
 
 Three synthetic meetings (`packages/core/fixtures`) with hand-labelled gold records and
-25 questions, 3 of them unanswerable and 3 asking for every action item of a meeting
+28 questions, 3 of them unanswerable, 3 asking for every action item of a meeting and 3
+that need deadlines placed in time
 (`packages/eval/src/dataset.ts`). `--limit` sets how many chunks an answer retrieves,
 and `--records off` answers without the meetings' records (ADR-0011). Each model
 configuration runs over the same data through the same code the app uses, in its own

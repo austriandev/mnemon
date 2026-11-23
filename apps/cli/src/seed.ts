@@ -15,6 +15,7 @@ const { values } = parseArgs({ options: { yes: { type: "boolean", default: false
 const demo = JSON.parse(readFileSync(new URL("demo-meetings.json", FIXTURES), "utf8")) as {
   file: string;
   title: string;
+  heldOn: string;
 }[];
 
 const app = await connect();
@@ -22,9 +23,9 @@ const { sql, store } = app;
 try {
   const modelId = CHOSEN_MODELS.extraction.model;
   const plans: { title: string; plan: IngestPlan }[] = [];
-  for (const { file, title } of demo) {
+  for (const { file, title, heldOn } of demo) {
     const source = readFileSync(new URL(file, FIXTURES), "utf8");
-    plans.push({ title, plan: await planIngest(source, title, store) });
+    plans.push({ title, plan: await planIngest(source, title, store, { heldOn }) });
   }
 
   console.log("Demo meetings:");
@@ -33,6 +34,13 @@ try {
     const cost = expectedCost(plan, modelId);
     total += cost.usd;
     console.log(`  ${title}: ${cost.line}`);
+  }
+  // Dating a meeting already stored is free, so it happens even without --yes.
+  for (const { title, plan } of plans) {
+    if (plan.kind === "unchanged" && plan.dateToAdd) {
+      await runIngest(plan, paidOnUse(app));
+      console.log(`  ${title}: dated ${plan.dateToAdd}`);
+    }
   }
   const todo = plans.filter(({ plan }) => plan.kind === "new" || plan.kind === "extract-only");
   if (plans.some(({ plan }) => plan.kind === "invalid")) {

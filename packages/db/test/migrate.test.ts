@@ -20,6 +20,7 @@ describe("migrate", () => {
       "0002_retrieval",
       "0003_unique_source",
       "0004_records",
+      "0005_held_on",
     ]);
     expect(await migrate(sql)).toEqual([]);
   });

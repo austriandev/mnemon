@@ -14,6 +14,7 @@ const repository = (
   findBySource: async () => stored,
   save: async () => ({ id: "m-new", created: true }),
   addRecords: async () => {},
+  setHeldOn: async () => {},
 });
 
 describe("presentPlan", () => {
@@ -70,6 +71,12 @@ describe("readSubmission", () => {
       title: "Oct",
       source: "[00:00:01] A: b\n",
     });
+  });
+
+  it("passes on the day the meeting was held, when given", async () => {
+    expect(
+      await readSubmission(form({ title: "Oct", source: "[00:00:01] A: b", heldOn: "2026-10-15" })),
+    ).toEqual({ ok: true, title: "Oct", source: "[00:00:01] A: b", heldOn: "2026-10-15" });
   });
 
   it("reads an uploaded file when nothing was pasted", async () => {

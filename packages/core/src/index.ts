@@ -3,6 +3,7 @@
 export {
   ANSWER_SCHEMA,
   ANSWER_SYSTEM_PROMPT,
+  type AnswerOptions,
   answer,
   buildPrompt as buildAnswerPrompt,
 } from "./answering/answer.ts";
@@ -45,6 +46,7 @@ export {
   type MeetingRepository,
   type NewMeeting,
   type NewRecords,
+  type PlanOptions,
   planIngest,
   runIngest,
 } from "./ingest/ingest.ts";

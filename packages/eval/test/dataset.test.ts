@@ -54,6 +54,15 @@ describe("the eval dataset", () => {
     }
   });
 
+  it("dates every meeting a derived fact depends on", () => {
+    for (const q of QUESTIONS.filter((q) => q.derived)) {
+      for (const e of q.evidence) {
+        const meeting = MEETINGS.find((m) => m.key === e.meeting);
+        expect(meeting?.heldOn, q.id).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      }
+    }
+  });
+
   it("has unique question ids, and no evidence for unanswerable questions", () => {
     expect(new Set(QUESTIONS.map((q) => q.id)).size).toBe(QUESTIONS.length);
     for (const q of QUESTIONS.filter((q) => !q.answerable)) expect(q.evidence, q.id).toEqual([]);

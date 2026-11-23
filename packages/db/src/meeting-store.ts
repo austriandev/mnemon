@@ -38,6 +38,8 @@ export interface StoredMeeting {
   /** The model that extracted the records, or null if the meeting has not been extracted. */
   readonly recordsModel: string | null;
   readonly createdAt: Date;
+  /** The day the meeting was held, YYYY-MM-DD, or null when not known. */
+  readonly heldOn: string | null;
   readonly turns: readonly Turn[];
   readonly chunks: readonly Chunk[];
   readonly records: readonly MeetingRecord[];
@@ -47,6 +49,7 @@ export interface MeetingSummary {
   readonly id: string;
   readonly title: string;
   readonly createdAt: Date;
+  readonly heldOn: string | null;
   readonly turnCount: number;
 }
 
@@ -61,7 +64,9 @@ export interface MeetingStore extends MeetingRepository, TranscriptSource {
   /** The meeting stored from exactly this transcript, if any. Checked before paying to embed. */
   findBySource(
     source: string,
-  ): Promise<{ id: string; title: string; recordsModel: string | null } | undefined>;
+  ): Promise<
+    { id: string; title: string; recordsModel: string | null; heldOn: string | null } | undefined
+  >;
   /** Adds records to a meeting stored without them. A meeting's records are written once. */
   addRecords(meetingId: string, records: NewRecords): Promise<void>;
   /** The meeting with that id, or undefined if there is none (including malformed ids). */
@@ -98,7 +103,7 @@ export function createMeetingStore(sql: Sql): MeetingStore {
   };
 
   return {
-    async save({ title, source, turns, chunks, embeddings, records }) {
+    async save({ title, source, turns, chunks, embeddings, records, heldOn }) {
       if (embeddings.vectors.length !== chunks.length) {
         throw new Error(
           `${chunks.length} chunks but ${embeddings.vectors.length} embeddings: they must match one to one`,
@@ -107,8 +112,10 @@ export function createMeetingStore(sql: Sql): MeetingStore {
       const sha256 = sha256Of(source);
       return sql.begin(async (tx) => {
         const [meeting] = await tx<{ id: string }[]>`
-          insert into meetings (title, source_text, source_sha256, embedding_model, records_model)
-          values (${title}, ${source}, ${sha256}, ${embeddings.model}, ${records?.model ?? null})
+          insert into meetings
+            (title, source_text, source_sha256, embedding_model, records_model, held_on)
+          values (${title}, ${source}, ${sha256}, ${embeddings.model}, ${records?.model ?? null},
+                  ${heldOn ?? null}::date)
           on conflict (source_sha256) do nothing
           returning id`;
         if (!meeting) {
@@ -131,11 +138,23 @@ export function createMeetingStore(sql: Sql): MeetingStore {
     },
 
     async findBySource(source) {
-      const [meeting] = await sql<Pick<MeetingRow, "id" | "title" | "records_model">[]>`
-        select id, title, records_model from meetings where source_sha256 = ${sha256Of(source)}`;
+      const [meeting] = await sql<Pick<MeetingRow, "id" | "title" | "records_model" | "held_on">[]>`
+        select id, title, records_model, held_on::text
+        from meetings where source_sha256 = ${sha256Of(source)}`;
       return meeting
-        ? { id: meeting.id, title: meeting.title, recordsModel: meeting.records_model }
+        ? {
+            id: meeting.id,
+            title: meeting.title,
+            recordsModel: meeting.records_model,
+            heldOn: meeting.held_on,
+          }
         : undefined;
+    },
+
+    async setHeldOn(meetingId, heldOn) {
+      await sql`
+        update meetings set held_on = ${heldOn}::date
+        where id = ${meetingId} and held_on is null`;
     },
 
     async addRecords(meetingId, { model, items }) {
@@ -157,7 +176,8 @@ export function createMeetingStore(sql: Sql): MeetingStore {
     async get(id) {
       if (!UUID.test(id)) return undefined;
       const [meeting] = await sql<MeetingRow[]>`
-        select id, title, source_text, source_sha256, embedding_model, records_model, created_at
+        select id, title, source_text, source_sha256, embedding_model, records_model,
+               created_at, held_on::text
         from meetings where id = ${id}`;
       if (!meeting) return undefined;
       const turnRows = await sql<TurnRow[]>`
@@ -172,6 +192,7 @@ export function createMeetingStore(sql: Sql): MeetingStore {
         embeddingModel: meeting.embedding_model,
         recordsModel: meeting.records_model,
         createdAt: meeting.created_at,
+        heldOn: meeting.held_on,
         turns: turnRows.map(toTurn),
         chunks: chunkRows.map(toChunk),
         records: await readRecords(id),
@@ -182,21 +203,21 @@ export function createMeetingStore(sql: Sql): MeetingStore {
 
     async excerpt(meetingId, turnIndices) {
       if (!UUID.test(meetingId)) return undefined;
-      const [meeting] = await sql<Pick<MeetingRow, "title">[]>`
-        select title from meetings where id = ${meetingId}`;
+      const [meeting] = await sql<Pick<MeetingRow, "title" | "held_on">[]>`
+        select title, held_on::text from meetings where id = ${meetingId}`;
       if (!meeting) return undefined;
       const rows = await sql<TurnRow[]>`
         select * from turns
         where meeting_id = ${meetingId} and turn_index = any(${sql.array([...turnIndices])}::int[])
         order by turn_index`;
-      return { meetingId, title: meeting.title, turns: rows.map(toTurn) };
+      return { meetingId, title: meeting.title, heldOn: meeting.held_on, turns: rows.map(toTurn) };
     },
 
     async list() {
       const rows = await sql<
-        (Pick<MeetingRow, "id" | "title" | "created_at"> & { turn_count: number })[]
+        (Pick<MeetingRow, "id" | "title" | "created_at" | "held_on"> & { turn_count: number })[]
       >`
-        select m.id, m.title, m.created_at,
+        select m.id, m.title, m.created_at, m.held_on::text,
                (select count(*)::int from turns t where t.meeting_id = m.id) as turn_count
         from meetings m
         order by m.created_at desc, m.id`;
@@ -204,6 +225,7 @@ export function createMeetingStore(sql: Sql): MeetingStore {
         id: r.id,
         title: r.title,
         createdAt: r.created_at,
+        heldOn: r.held_on,
         turnCount: r.turn_count,
       }));
     },
