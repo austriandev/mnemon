@@ -473,28 +473,6 @@ h3 {
   height: 64px;
 }
 
-.topbar nav {
-  display: flex;
-  gap: 4px;
-}
-
-.topbar nav a {
-  padding: 6px 12px;
-  border-radius: 8px;
-  color: var(--faint);
-  font-size: 14px;
-  font-weight: 500;
-  text-decoration: none;
-  transition:
-    background-color 0.15s var(--ease),
-    color 0.15s var(--ease);
-}
-
-.topbar nav a:hover {
-  color: var(--ink);
-  background: var(--tint);
-}
-
 .topbar .end {
   margin-left: auto;
   display: flex;
@@ -1090,10 +1068,6 @@ a.chip:hover {
 }
 
 @media (max-width: 560px) {
-  .topbar nav {
-    display: none;
-  }
-
   .login-hero {
     min-height: 300px;
     padding: 24px;
