@@ -63,6 +63,23 @@ describe("the eval dataset", () => {
     }
   });
 
+  it("includes a long meeting, 150+ turns with 20+ action items, to measure extraction recall", () => {
+    const long = MEETINGS.filter((m) => turns[m.key].length >= 150);
+    expect(long.length).toBeGreaterThan(0);
+    for (const m of long) {
+      const actions = GOLD_RECORDS[m.key].filter((g) => g.kind === "action_item" && !g.optional);
+      expect(actions.length, m.key).toBeGreaterThanOrEqual(20);
+    }
+  });
+
+  it("asks for every action item of each meeting, one fact per required action item", () => {
+    for (const m of MEETINGS) {
+      const list = QUESTIONS.find((q) => q.id === `list-${m.key}`);
+      const actions = GOLD_RECORDS[m.key].filter((g) => g.kind === "action_item" && !g.optional);
+      expect(list?.facts.length, m.key).toBe(actions.length);
+    }
+  });
+
   it("has unique question ids, and no evidence for unanswerable questions", () => {
     expect(new Set(QUESTIONS.map((q) => q.id)).size).toBe(QUESTIONS.length);
     for (const q of QUESTIONS.filter((q) => !q.answerable)) expect(q.evidence, q.id).toEqual([]);

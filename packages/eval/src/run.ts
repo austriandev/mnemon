@@ -1,8 +1,10 @@
 // pnpm eval [--yes] [--only retrieval,extraction,answers] [--configs <substring>] [--questions n]
-//           [--ids a,b] [--limit n] [--records on|off] [--dates on|off]
+//           [--ids a,b] [--limit n] [--records on|off] [--dates on|off] [--meetings a,b]
 // --ids runs only those questions; --limit sets how many chunks answers retrieve (default 8);
 // --records off answers from retrieved turns alone, without the meetings' records.
 // --dates off hides the meetings' dates and today's date from the answers.
+// --meetings runs extraction on those meetings only (oct, nov, cmc, kr44), or on
+// "joined": all four as one long meeting, a length probe that default runs leave out.
 // pnpm eval --rescore packages/eval/results/<run>.json
 // Runs the labelled eval: retrieval, record extraction and answering, each model
 // configuration over the same data. Prints the expected cost and spends nothing
@@ -23,12 +25,10 @@ import {
   ANSWER_SYSTEM_PROMPT,
   type Answer,
   ask,
-  buildExtractionPrompt,
   chunkTurns,
   type Embedder,
-  EXTRACTION_SCHEMA,
-  EXTRACTION_SYSTEM_PROMPT,
   type Extraction,
+  extractionTokens,
   extractRecords,
   parseTranscript,
   retrieve,
@@ -44,6 +44,7 @@ import {
   EVAL_TODAY,
   GOLD_RECORDS,
   type GoldQuestion,
+  type GoldRecord,
   MEETINGS,
   type MeetingKey,
   QUESTIONS,
@@ -56,6 +57,7 @@ import {
   scoreExtraction,
   scoreRetrieval,
 } from "./score.ts";
+import { stitch } from "./stitch.ts";
 
 interface ModelConfig {
   readonly model: AnthropicModelId;
@@ -65,7 +67,7 @@ const label = (c: ModelConfig) => `${c.model}/${c.effort}`;
 
 interface ExtractionCase {
   readonly config: ModelConfig;
-  readonly meeting: MeetingKey;
+  readonly meeting: ExtractionKey;
   readonly ms: number;
   readonly usage: readonly ModelUsage[];
   readonly extraction?: Extraction;
@@ -108,10 +110,9 @@ const CONCURRENCY = 4;
 
 // Cost estimate inputs (ADR-0006): ~2 characters per token on these prompts. Opus 5.5,
 // Sonnet 5.5 and Haiku 5.5 counted the same input tokens for the same prompt in run 1.
-// Output allowances are upper estimates: run 1's largest were 3,206 tokens for an
-// extraction and 884 for an answer.
+// Extraction is estimated as the app estimates it (extractionTokens, ADR-0013). The
+// answer allowances are upper estimates: run 1's largest output was 884 tokens.
 const CHARS_PER_TOKEN = 2;
-const EXTRACTION_OUTPUT_ALLOWANCE = 6_000;
 const ANSWER_INPUT_ALLOWANCE = 6_000;
 const ANSWER_OUTPUT_ALLOWANCE = 1_200;
 
@@ -125,6 +126,7 @@ const { values } = parseArgs({
     limit: { type: "string" },
     records: { type: "string", default: "on" },
     dates: { type: "string", default: "on" },
+    meetings: { type: "string" },
     rescore: { type: "string" },
   },
 });
@@ -168,12 +170,36 @@ const answerSetup = {
   ...(withDates ? { today: EVAL_TODAY } : {}),
 };
 
+const meetingKeys = values.meetings?.split(",");
+const unknownMeetings =
+  meetingKeys?.filter((k) => k !== "joined" && !MEETINGS.some((m) => m.key === k)) ?? [];
+if (unknownMeetings.length > 0) {
+  console.error(`Unknown meetings: ${unknownMeetings.join(", ")}`);
+  process.exit(2);
+}
+
 const meetings = MEETINGS.map((m) => {
   const source = readFileSync(new URL(`../../core/fixtures/${m.file}`, import.meta.url), "utf8");
   const parsed = parseTranscript(source);
   if (!parsed.ok) throw new Error(`${m.file} does not parse`);
   return { ...m, source, turns: parsed.turns, chunks: chunkTurns(parsed.turns) };
 });
+
+// Extraction runs on these; retrieval and answers always search every meeting.
+type ExtractionKey = MeetingKey | "joined";
+const joined = stitch(meetings.map((m) => ({ turns: m.turns, gold: GOLD_RECORDS[m.key] })));
+const targets: readonly {
+  key: ExtractionKey;
+  turns: readonly Turn[];
+  gold: readonly GoldRecord[];
+}[] = [
+  ...meetings.map((m) => ({ key: m.key, turns: m.turns, gold: GOLD_RECORDS[m.key] })),
+  { key: "joined", ...joined },
+];
+const target = (key: ExtractionKey) => targets.find((t) => t.key === key) ?? joined;
+const extractionMeetings = targets.filter((t) =>
+  meetingKeys ? meetingKeys.includes(t.key) : t.key !== "joined",
+);
 
 if (values.rescore) {
   const run = JSON.parse(readFileSync(values.rescore, "utf8")) as SavedRun;
@@ -182,7 +208,7 @@ if (values.rescore) {
     printExtraction(
       run.extraction.map((c) =>
         c.extraction
-          ? { ...c, score: scoreExtraction(c.extraction.records, GOLD_RECORDS[c.meeting]) }
+          ? { ...c, score: scoreExtraction(c.extraction.records, target(c.meeting).gold) }
           : c,
       ),
     );
@@ -204,13 +230,10 @@ function usd(model: AnthropicModelId, input: number, output: number) {
   const price = ANTHROPIC_PRICE_PER_MILLION_TOKENS[model];
   return (input * price.input + output * price.output) / 1e6;
 }
-const extractionInput = (turns: readonly Turn[]) =>
-  Math.ceil(
-    (EXTRACTION_SYSTEM_PROMPT.length +
-      buildExtractionPrompt(turns).length +
-      JSON.stringify(EXTRACTION_SCHEMA).length) /
-      CHARS_PER_TOKEN,
-  );
+const extractionUsd = (model: AnthropicModelId, turns: readonly Turn[]) => {
+  const { input, output } = extractionTokens(turns);
+  return usd(model, input, output);
+};
 const answerInput = Math.max(
   // Records add every meeting's record list and the turns it cites.
   withRecords ? ANSWER_INPUT_ALLOWANCE * 1.5 : ANSWER_INPUT_ALLOWANCE,
@@ -218,11 +241,8 @@ const answerInput = Math.max(
 );
 const plan = [
   ...extractionConfigs.map((c) => ({
-    what: `extraction ${label(c)} x ${meetings.length} meetings`,
-    usd: meetings.reduce(
-      (sum, m) => sum + usd(c.model, extractionInput(m.turns), EXTRACTION_OUTPUT_ALLOWANCE),
-      0,
-    ),
+    what: `extraction ${label(c)} x ${extractionMeetings.length} meetings`,
+    usd: extractionMeetings.reduce((sum, m) => sum + extractionUsd(c.model, m.turns), 0),
   })),
   // Answers with records need the meetings' records; the eval database keeps them once
   // extracted, so this is paid on the first such run only. Counted here as if unpaid.
@@ -231,13 +251,7 @@ const plan = [
         {
           what: `records for answers: ${label(CHOSEN_MODELS.extraction)} x ${meetings.length} meetings (first run only)`,
           usd: meetings.reduce(
-            (sum, m) =>
-              sum +
-              usd(
-                CHOSEN_MODELS.extraction.model,
-                extractionInput(m.turns),
-                EXTRACTION_OUTPUT_ALLOWANCE,
-              ),
+            (sum, m) => sum + extractionUsd(CHOSEN_MODELS.extraction.model, m.turns),
             0,
           ),
         },
@@ -401,14 +415,14 @@ try {
 
   async function runExtraction() {
     const cases = extractionConfigs.flatMap((config) =>
-      meetings.map((meeting) => ({ config, meeting })),
+      extractionMeetings.map((meeting) => ({ config, meeting })),
     );
     const done = await pool(cases, async ({ config, meeting }): Promise<ExtractionCase> => {
       const usage: ModelUsage[] = [];
       const started = Date.now();
       try {
         const extraction: Extraction = await extractRecords(meeting.turns, model(config, usage));
-        const score = scoreExtraction(extraction.records, GOLD_RECORDS[meeting.key]);
+        const score = scoreExtraction(extraction.records, meeting.gold);
         progress(
           `extraction ${label(config)} ${meeting.key}: ${score.hits} hits, ${score.extras.length} extras`,
         );
@@ -500,7 +514,8 @@ function printRetrieval(rows: RetrievalRows, note: string) {
 }
 
 function printExtraction(done: readonly ExtractionCase[]) {
-  console.log(`\nExtraction (${meetings.length} meetings; decisions and action items)`);
+  const keys = targets.map((t) => t.key).filter((k) => done.some((d) => d.meeting === k));
+  console.log(`\nExtraction (${keys.join(", ")}; decisions and action items)`);
   console.log(
     "| Model | Effort | Precision | Recall | Owners | Rejected | Errors | Cost / meeting | Time / meeting |\n" +
       "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
@@ -520,6 +535,31 @@ function printExtraction(done: readonly ExtractionCase[]) {
         `$${(costOf(rows) / rows.length).toFixed(3)} | ${(mean(rows.map((r) => r.ms)) / 1000).toFixed(0)} s |`,
     );
   }
+  // Recall by meeting, so a long meeting's misses aren't averaged away by short ones.
+  console.log(
+    `\nRecall by meeting (action items · decisions)\n| Model | Effort | ${keys.map((k) => `${k} (${turnCount(k)} turns)`).join(" | ")} |\n` +
+      `| --- | --- | ${keys.map(() => "---").join(" | ")} |`,
+  );
+  const missed: string[] = [];
+  for (const config of configsOf(done)) {
+    const cells = keys.map((k) => {
+      const score = done.find((d) => d.meeting === k && label(d.config) === label(config))?.score;
+      if (!score) return "error";
+      const required = target(k).gold.filter((g) => !g.optional);
+      const found = (kind: GoldRecord["kind"]) => {
+        const all = required.filter((g) => g.kind === kind).length;
+        return `${all - score.misses.filter((g) => g.kind === kind).length}/${all}`;
+      };
+      for (const g of score.misses) missed.push(`${label(config)} ${k}: ${g.kind} "${g.label}"`);
+      return `${found("action_item")} · ${found("decision")}`;
+    });
+    console.log(`| ${config.model} | ${config.effort} | ${cells.join(" | ")} |`);
+  }
+  for (const m of missed) console.log(`  missed: ${m}`);
+}
+
+function turnCount(key: ExtractionKey) {
+  return target(key).turns.length;
 }
 
 function printAnswers(done: readonly AnswerCase[]) {

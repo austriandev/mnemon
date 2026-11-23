@@ -7,7 +7,7 @@ interface Recorded {
   body: Record<string, unknown>;
 }
 
-/** A fetch that records requests and answers like the Messages API. */
+/** A fetch that records requests and answers like the Messages API, streamed or not. */
 function fakeMessages(reply: Record<string, unknown> = {}, status = 200) {
   const requests: Recorded[] = [];
   const fetch = async (url: string | URL | Request, init?: RequestInit): Promise<Response> => {
@@ -38,12 +38,48 @@ function fakeMessages(reply: Record<string, unknown> = {}, status = 200) {
       },
       ...reply,
     };
+    if (requests.at(-1)?.body.stream === true) {
+      return new Response(serverSentEvents(message), {
+        status: 200,
+        headers: { "content-type": "text/event-stream" },
+      });
+    }
     return new Response(JSON.stringify(message), {
       status: 200,
       headers: { "content-type": "application/json" },
     });
   };
   return { fetch, requests };
+}
+
+/** The message as the streaming API sends it: one event per block, usage at the end. */
+function serverSentEvents(message: Record<string, unknown>): string {
+  const { content, stop_reason, stop_details, usage, ...rest } = message as {
+    content: { type: string; text: string }[];
+    stop_reason: string;
+    stop_details: unknown;
+    usage: Record<string, number>;
+  };
+  const events: Record<string, unknown>[] = [
+    {
+      type: "message_start",
+      message: {
+        ...rest,
+        content: [],
+        stop_reason: null,
+        stop_details: null,
+        usage: { ...usage, output_tokens: 1 },
+      },
+    },
+    ...content.flatMap((block, index) => [
+      { type: "content_block_start", index, content_block: { type: "text", text: "" } },
+      { type: "content_block_delta", index, delta: { type: "text_delta", text: block.text } },
+      { type: "content_block_stop", index },
+    ]),
+    { type: "message_delta", delta: { stop_reason, stop_details, stop_sequence: null }, usage },
+    { type: "message_stop" },
+  ];
+  return events.map((e) => `event: ${e.type}\ndata: ${JSON.stringify(e)}\n\n`).join("");
 }
 
 const request = {
@@ -72,6 +108,16 @@ describe("createAnthropicModel", () => {
       output_config: { effort: "high", format: { type: "json_schema", schema: request.schema } },
       fallbacks: "default",
     });
+    expect(model.model).toBe("claude-opus-5-5");
+  });
+
+  it("streams the call, so a long meeting's extraction has room for its output", async () => {
+    const { fetch, requests } = fakeMessages();
+    const model = createAnthropicModel({ apiKey: "k", fetch, onUsage: () => {} });
+
+    await model.generateObject(request);
+
+    expect(requests[0]?.body).toMatchObject({ stream: true, max_tokens: 32_000 });
     expect(model.model).toBe("claude-opus-5-5");
   });
 

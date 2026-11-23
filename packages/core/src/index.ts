@@ -37,6 +37,7 @@ export type {
   StructuredRequest,
 } from "./extraction/types.ts";
 export {
+  extractionTokens,
   type IngestDeps,
   type IngestError,
   type IngestPlan,

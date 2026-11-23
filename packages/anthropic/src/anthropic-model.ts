@@ -62,7 +62,9 @@ export function createAnthropicModel({
   apiKey,
   model = "claude-opus-5-5",
   effort = "high",
-  maxTokens = 16_000,
+  // Streamed, so the SDK allows a ceiling this high. A 275-turn meeting took up to
+  // 14,729 output tokens at high effort (ADR-0013); 16,000 was too close.
+  maxTokens = 32_000,
   onUsage = logUsage,
   fetch,
   maxRetries = 2,
@@ -77,15 +79,17 @@ export function createAnthropicModel({
   return {
     model,
     async generateObject({ system, prompt, schema }: StructuredRequest) {
-      const response = await client.beta.messages.create({
-        model,
-        max_tokens: maxTokens,
-        betas: [FALLBACK_BETA],
-        fallbacks: "default",
-        system,
-        messages: [{ role: "user", content: prompt }],
-        output_config: { effort, format: { type: "json_schema", schema: { ...schema } } },
-      });
+      const response = await client.beta.messages
+        .stream({
+          model,
+          max_tokens: maxTokens,
+          betas: [FALLBACK_BETA],
+          fallbacks: "default",
+          system,
+          messages: [{ role: "user", content: prompt }],
+          output_config: { effort, format: { type: "json_schema", schema: { ...schema } } },
+        })
+        .finalMessage();
 
       const usage = response.usage;
       onUsage({

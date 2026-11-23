@@ -16,7 +16,9 @@ export interface ExtractionScore {
 /**
  * Matches predicted decisions and action items to gold records: same kind, and the
  * prediction cites at least one of the gold record's turns. Each gold record matches
- * once; required gold records are matched before optional ones.
+ * once; required gold records are matched before optional ones, and among action items
+ * the one whose owner the prediction names comes first, then the one sharing the most
+ * cited turns.
  */
 export function scoreExtraction(
   predicted: readonly MeetingRecord[],
@@ -34,7 +36,15 @@ export function scoreExtraction(
     const candidates = ordered.filter(
       (g) => g.kind === record.kind && g.turns.some((t) => cited.has(t)),
     );
-    const match = candidates.find((g) => !matched.has(g));
+    // A record citing turns of two action items belongs to the one whose owner it names.
+    // Then the one sharing the most cited turns. The sort is stable, so ties keep
+    // required before optional.
+    const owns = (g: GoldRecord) =>
+      g.owner !== undefined && sameOwner(record.owner, g.owner) ? 1 : 0;
+    const shared = (g: GoldRecord) => g.turns.filter((t) => cited.has(t)).length;
+    const [match] = candidates
+      .filter((g) => !matched.has(g))
+      .sort((a, b) => owns(b) - owns(a) || shared(b) - shared(a));
     if (!match) {
       // Citing only optional records is neutral; anything else unmatched is noise.
       if (!(candidates.length > 0 && candidates.every((g) => g.optional))) extras.push(record);

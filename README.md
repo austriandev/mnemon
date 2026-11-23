@@ -80,12 +80,16 @@ pnpm eval                     # prints the plan and the expected cost; spends no
 pnpm eval --yes               # runs it: retrieval, record extraction, answers
 pnpm eval --only answers --configs sonnet --questions 5 --yes   # a slice
 pnpm eval --only answers --ids list-oct,list-cmc --limit 3 --records off --yes
+pnpm eval --only extraction --meetings kr44,joined --configs sonnet --yes   # long meetings
 ```
 
-Three synthetic meetings (`packages/core/fixtures`) with hand-labelled gold records and
-28 questions, 3 of them unanswerable, 3 asking for every action item of a meeting and 3
+Four synthetic meetings (`packages/core/fixtures`) with hand-labelled gold records and
+31 questions, 3 of them unanswerable, 4 asking for every action item of a meeting and 3
 that need deadlines placed in time
-(`packages/eval/src/dataset.ts`). `--limit` sets how many chunks an answer retrieves,
+(`packages/eval/src/dataset.ts`). One meeting is long on purpose: 165 turns and 21
+action items (`kr44-clinical-operations.txt`). `--meetings joined` extracts from all four
+joined into one 275-turn meeting, to see how extraction holds up as meetings grow
+(ADR-0013). `--limit` sets how many chunks an answer retrieves,
 and `--records off` answers without the meetings' records (ADR-0011). Each model
 configuration runs over the same data through the same code the app uses, in its own
 database (`mnemon_eval`). Results go to `packages/eval/results/`, and the numbers that

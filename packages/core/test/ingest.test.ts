@@ -214,6 +214,21 @@ describe("ingestTokens", () => {
     expect(tokens.embedding).toBeGreaterThan(0);
   });
 
+  it("estimates more output for a longer meeting, covering what the long fixture took", async () => {
+    // ADR-0013: the 165-turn fixture took 9,444 input tokens and, at most, 8,177 output.
+    const long = readFileSync(
+      new URL("../fixtures/kr44-clinical-operations.txt", import.meta.url),
+      "utf8",
+    );
+    const plan = await planIngest(long, "KR-44", world().deps.repository);
+
+    const tokens = ingestTokens(plan);
+
+    expect(tokens.extractionInput).toBeGreaterThanOrEqual(9_444);
+    expect(tokens.extractionOutput).toBeGreaterThanOrEqual(8_177);
+    expect(tokens.extractionOutput).toBeLessThanOrEqual(32_000);
+  });
+
   it("counts no embedding for a meeting that is already embedded", async () => {
     const stored = world({ id: "m-1", title: "Oct", recordsModel: null });
     const backfill = await planIngest(source, "Oct", stored.deps.repository);

@@ -1,0 +1,284 @@
+[00:00:06] Ingrid Halvorsen: Okay, I think everyone's here. This is the KR-44 phase 2
+clinical operations review for November. It's a long agenda: enrollment and sites, data
+management, safety, drug supply, regulatory, quality, budget, and anything else at the
+end.
+[00:00:27] Ingrid Halvorsen: We have ninety minutes. If something needs a longer
+discussion we take it offline.
+[00:00:37] Tom Reilly: Can I ask that budget doesn't get squeezed into the last two
+minutes again?
+[00:00:46] Ingrid Halvorsen: Fair. I'll keep an eye on time. Rosa, enrollment first.
+[00:00:54] Rosa Delgado: We're at 96 of 160 randomised across eleven sites. That's eight
+patients behind the plan from the September review.
+[00:01:06] Dr. Malik Osei: Is that across the board or concentrated?
+[00:01:13] Rosa Delgado: Concentrated. Aldmoor and Kestrel Bay are the two sites behind.
+Between them they're eleven patients short of their targets. The other nine sites are on
+plan or slightly ahead.
+[00:01:30] Ingrid Halvorsen: What's going on at those two?
+[00:01:36] Rosa Delgado: Different reasons. Aldmoor has a high screen failure rate,
+about forty percent, mostly on the HbA1c window. Kestrel Bay had a new sub-investigator
+start in October and they're still slow on the consent process.
+[00:01:55] Dr. Malik Osei: The HbA1c window is narrow on purpose. I don't want to touch
+it.
+[00:02:04] Rosa Delgado: I'm not asking to change it. I think Aldmoor is pre-screening
+badly. They're bringing in patients who were never going to qualify.
+[00:02:17] Kenji Watanabe: The screening log backs that up. About a third of their
+failures had an HbA1c result on file that was already out of range.
+[00:02:30] Ingrid Halvorsen: So that's a training issue, not a protocol issue.
+[00:02:38] Rosa Delgado: Yes. I'd like to do targeted retraining at both sites: pre-
+screening at Aldmoor and the consent workflow at Kestrel Bay.
+[00:02:51] Tom Reilly: Do we need a third backup site on top of that? We talked about
+Thornbury in September.
+[00:03:01] Rosa Delgado: We could activate Thornbury, but activation is ten to twelve
+weeks and we'd be paying start-up fees for maybe four patients.
+[00:03:14] Dr. Malik Osei: I'd rather fix the two sites we have.
+[00:03:21] Ingrid Halvorsen: Agreed. No third backup site for now. We put the effort
+into retraining at Aldmoor and Kestrel Bay, and look at it again in January if they
+haven't recovered.
+[00:03:36] Rosa Delgado: Okay. I'll send the retraining plan to both sites by Friday,
+with dates for the sessions.
+[00:03:46] Ingrid Halvorsen: Thanks. Who's running the sessions?
+[00:03:52] Rosa Delgado: The CRAs for each site, and I'll join the Aldmoor one.
+[00:04:00] Kenji Watanabe: Can the CRAs bring the screening log with them? It's easier
+to walk through real cases.
+[00:04:10] Rosa Delgado: Good idea, I'll put that in the plan.
+[00:04:17] Ingrid Halvorsen: What about site activation more broadly, are we done?
+[00:04:25] Rosa Delgado: All eleven are active. The last one, Marrow Hill, activated two
+weeks ago and screened their first patient on Monday.
+[00:04:37] Dr. Malik Osei: Any issues with Marrow Hill's pharmacy? They had questions
+about storage at the initiation visit.
+[00:04:48] Rosa Delgado: Resolved. They've set up the fridge log, and Omar's team
+confirmed the first shipment arrived in range.
+[00:04:59] Omar Haddad: Confirmed, yes. All within two to eight degrees.
+[00:05:06] Ingrid Halvorsen: Good. Anything else on enrollment?
+[00:05:12] Rosa Delgado: One thing. The monitoring plan says on-site visits every six
+weeks, and with eleven sites the CRAs are stretched. I'd like to add a remote visit in
+between for the sites that are on plan.
+[00:05:29] Beatriz Lima: As long as source data verification for the primary endpoint
+still happens on site, I'm fine with remote visits in between.
+[00:05:42] Rosa Delgado: It would. Remote is for the regulatory binder, query follow-up
+and the screening log.
+[00:05:52] Ingrid Halvorsen: Then let's do it. Rosa, can you update the monitoring plan
+to add the remote visit?
+[00:06:02] Rosa Delgado: Yes. I'll have a revised monitoring plan for Beatriz to review
+before the next meeting.
+[00:06:12] Tom Reilly: Does that change the CRO's monitoring budget?
+[00:06:19] Rosa Delgado: Slightly down, if anything. Remote visits are billed at a lower
+rate.
+[00:06:28] Tom Reilly: Then could you get me a quote from the CRO for the extra remote
+visits, so I can update the forecast?
+[00:06:39] Rosa Delgado: I can, but I think it's already priced in. The change order
+from August included a remote rate card.
+[00:06:50] Tom Reilly: Oh, right, it did. Okay, skip the quote then. I'll work from the
+rate card.
+[00:06:59] Ingrid Halvorsen: Kenji, data management.
+[00:07:05] Kenji Watanabe: The headline is the query backlog. We have 412 open queries,
+and 138 of them are older than thirty days.
+[00:07:16] Dr. Malik Osei: That's a lot more than last month.
+[00:07:22] Kenji Watanabe: It went up after the October data review. We raised a batch
+of queries on the concomitant medication pages, about ninety of them.
+[00:07:35] Rosa Delgado: Most of those are at three sites. The coordinators told the
+CRAs they were waiting for a clarification on how to record combination products.
+[00:07:49] Kenji Watanabe: That clarification went out last week in the data entry
+guideline update, so I expect those to close quickly now.
+[00:08:01] Ingrid Halvorsen: What's the target?
+[00:08:06] Kenji Watanabe: I want every query older than thirty days closed by the end
+of the month. The rest follow the normal cycle.
+[00:08:18] Ingrid Halvorsen: Is that realistic?
+[00:08:23] Kenji Watanabe: It is if the CRAs chase the three sites. I'll send each CRA a
+list of their aged queries tomorrow.
+[00:08:34] Rosa Delgado: I'll make sure they prioritise it.
+[00:08:40] Dr. Malik Osei: Kenji, on the edit checks, where are we with the new ones for
+the liver panel?
+[00:08:50] Kenji Watanabe: Programmed and tested in the test environment. I need medical
+sign-off on the thresholds before they go live.
+[00:09:02] Dr. Malik Osei: Send me the spec and I'll review it.
+[00:09:09] Kenji Watanabe: I'll send you the edit check specification by next Wednesday.
+[00:09:17] Dr. Malik Osei: And I'll turn it around within a week of getting it.
+[00:09:25] Ingrid Halvorsen: What about database lock? Still on track for the fifteenth
+of March?
+[00:09:34] Kenji Watanabe: Still on track if the backlog clears. If it doesn't, we're
+looking at early April.
+[00:09:44] Tom Reilly: Moving lock to April costs us another month of CRO data
+management fees, about forty thousand.
+[00:09:55] Ingrid Halvorsen: Then we hold the fifteenth of March as the lock date and
+treat the backlog as the risk to manage.
+[00:10:06] Kenji Watanabe: Understood.
+[00:10:11] Lea Fontaine: Kenji, does the lock date affect the clinical study report
+timeline for the end-of-phase meeting?
+[00:10:22] Kenji Watanabe: The CSR follows lock by ten weeks, so late May.
+[00:10:29] Lea Fontaine: That works for a June end-of-phase meeting request. Any later
+and we'd miss the slot we discussed with the agency.
+[00:10:41] Ingrid Halvorsen: One more reason to hold March.
+[00:10:47] Kenji Watanabe: There's also the data call with the CRO. It's been every two
+weeks, and I'd like it weekly until the backlog is down.
+[00:10:59] Ingrid Halvorsen: Fine by me. Can you set that up with them?
+[00:11:06] Kenji Watanabe: Yes. I'll set up a weekly query call with the CRO, starting
+next week.
+[00:11:15] Ingrid Halvorsen: Safety. Malik.
+[00:11:20] Dr. Malik Osei: Three things: SAE reconciliation, the liver finding from the
+DMC, and an investigator letter.
+[00:11:31] Dr. Malik Osei: Reconciliation first. The clinical database and the safety
+database disagree on four serious adverse events. Two are onset dates, one is a
+causality assessment, and one is an event in the safety database with no matching record
+in the clinical database.
+[00:11:53] Beatriz Lima: The missing one is the concern. Do we know which site?
+[00:12:01] Dr. Malik Osei: Kestrel Bay. The site reported it by phone to the safety desk
+and never entered it in the EDC.
+[00:12:12] Rosa Delgado: That fits with the training issues there. I'll add SAE entry to
+the retraining.
+[00:12:22] Dr. Malik Osei: Good. I'll finish the reconciliation of all four before the
+DSUR data cutoff.
+[00:12:32] Lea Fontaine: The cutoff is the thirtieth of November.
+[00:12:39] Dr. Malik Osei: Then before the thirtieth.
+[00:12:45] Ingrid Halvorsen: And the liver finding?
+[00:12:51] Dr. Malik Osei: The DMC met on the fourth. No safety concerns overall, but
+they noted three patients with ALT above three times the upper limit, all in the first
+four weeks. All resolved without stopping the drug.
+[00:13:09] Dr. Malik Osei: They didn't ask for a protocol change. They recommended we
+look at earlier liver monitoring.
+[00:13:20] Beatriz Lima: What's the current schedule?
+[00:13:26] Dr. Malik Osei: Liver function tests at screening, at week four, and then
+every eight weeks.
+[00:13:35] Dr. Malik Osei: I'd like to add an ALT and AST check at week two for every
+patient randomised from now on. It's a local lab draw and doesn't need a new visit. It
+can go with the week two phone call as a home draw, or as a short site visit.
+[00:13:55] Lea Fontaine: Does that need an amendment?
+[00:14:01] Dr. Malik Osei: Adding a safety assessment, yes. It's a substantial amendment
+in most of our countries.
+[00:14:11] Ingrid Halvorsen: Is anyone against?
+[00:14:16] Tom Reilly: The cost is small. The lab fees are maybe twelve thousand across
+the study.
+[00:14:25] Ingrid Halvorsen: Then we add the week two liver function check, through an
+amendment.
+[00:14:34] Lea Fontaine: I'll draft the amendment. I can have it ready for internal
+review in two weeks.
+[00:14:44] Dr. Malik Osei: And the investigator letter. I want sites to hear about this
+from us before they read it in the amendment: a short letter explaining the DMC's
+recommendation and asking them to watch liver results closely in the first month.
+[00:15:04] Beatriz Lima: That has to go through quality review before it goes out.
+[00:15:12] Dr. Malik Osei: Understood. I'll draft the letter and send it to Beatriz for
+review by Monday.
+[00:15:22] Ingrid Halvorsen: And then it goes to all eleven sites?
+[00:15:29] Dr. Malik Osei: All eleven, and the CRAs follow up at their next visit.
+[00:15:37] Ingrid Halvorsen: Omar, supply.
+[00:15:42] Omar Haddad: Two items: kit expiry at the Aldmoor depot, and a temperature
+excursion on a shipment to Kestrel Bay.
+[00:15:53] Omar Haddad: Expiry first. Twenty-two kits at the Aldmoor depot expire at the
+end of January. With enrollment slower there, we won't use them in time.
+[00:16:07] Kenji Watanabe: Can't the IRT move them to another site?
+[00:16:14] Omar Haddad: Not across the border. That depot serves only the two sites in
+that country.
+[00:16:23] Omar Haddad: We have two options. Relabel with a new expiry date, which needs
+the new stability data and a relabelling operation at the depot. Or ship new kits and
+destroy the old ones.
+[00:16:39] Beatriz Lima: The twelve-month stability data came in last week. It supports
+extending expiry to eighteen months.
+[00:16:50] Omar Haddad: Then relabelling is cheaper. About four thousand, against about
+nineteen thousand for new kits and destruction.
+[00:17:02] Lea Fontaine: Relabelling on new stability data has to be notified to the
+agencies in both countries. That takes a few weeks.
+[00:17:14] Omar Haddad: We have ten weeks before expiry. It fits.
+[00:17:21] Ingrid Halvorsen: Then we relabel the Aldmoor kits with the extended expiry
+and don't ship replacements.
+[00:17:31] Omar Haddad: I'll start the relabelling request with the depot this week.
+[00:17:39] Lea Fontaine: And I'll send the notification to both agencies once Omar has a
+date from the depot.
+[00:17:49] Ingrid Halvorsen: Now the excursion.
+[00:17:54] Omar Haddad: A shipment to Kestrel Bay on the ninth showed nine degrees for
+about three hours on the logger. The kits are quarantined at the site.
+[00:18:08] Beatriz Lima: Is there stability data that covers nine degrees for three
+hours?
+[00:18:17] Omar Haddad: I believe so. The excursion data covers up to twenty-five
+degrees for forty-eight hours. But I need the quality decision in writing before the
+site can use them.
+[00:18:33] Beatriz Lima: Send me the logger file and the deviation report, and I'll give
+you the disposition.
+[00:18:43] Omar Haddad: I'll send both by Wednesday.
+[00:18:49] Rosa Delgado: Does Kestrel Bay have enough stock in the meantime?
+[00:18:57] Omar Haddad: Four kits that weren't in that shipment. Enough for two weeks at
+their current pace.
+[00:19:07] Ingrid Halvorsen: Fine. Omar, keep an eye on it.
+[00:19:13] Omar Haddad: I will.
+[00:19:17] Ingrid Halvorsen: Lea, regulatory.
+[00:19:22] Lea Fontaine: The DSUR is due at the end of January, with the data cutoff on
+the thirtieth of November, as I said. I'll circulate the draft DSUR by the tenth of
+January.
+[00:19:37] Dr. Malik Osei: The safety sections depend on the reconciliation, so I'll
+make sure that's clean first.
+[00:19:47] Lea Fontaine: Second, the ethics resubmission in Portugal. The committee came
+back with questions on the patient information sheet, mostly about the wording of the
+genetic sample section.
+[00:20:03] Ingrid Halvorsen: Lea, can you take the response?
+[00:20:09] Lea Fontaine: I can draft it, but I'm away for three weeks from the fifth of
+December, and the response is due on the twelfth.
+[00:20:21] Ingrid Halvorsen: Then Rosa, can you own the resubmission, with Lea's draft
+as the starting point?
+[00:20:31] Rosa Delgado: Yes, I'll own it. Lea, send me your draft before you leave, and
+I'll submit the response by the twelfth.
+[00:20:42] Lea Fontaine: I'll send it to you by the third.
+[00:20:48] Beatriz Lima: Our ethics advisor approved the genetic sample wording, so
+please don't change the substance, only the explanation.
+[00:21:00] Rosa Delgado: Understood.
+[00:21:05] Lea Fontaine: Third, and quickly: the end-of-phase meeting request. We said
+June. I'd like to confirm that in the regulatory plan.
+[00:21:17] Ingrid Halvorsen: Confirmed. We target a June end-of-phase meeting.
+[00:21:25] Lea Fontaine: Then I'll update the regulatory plan.
+[00:21:32] Ingrid Halvorsen: Beatriz, quality.
+[00:21:37] Beatriz Lima: CAPA-118, the one from the July audit on informed consent
+version control. The corrective actions are done; the effectiveness check is still open.
+[00:21:51] Beatriz Lima: I'd like to close it by the end of the year. That means
+sampling consent forms at three sites, including Kestrel Bay.
+[00:22:03] Ingrid Halvorsen: Are you doing that?
+[00:22:08] Beatriz Lima: I'll do the sampling myself in December and close the CAPA-118
+effectiveness check by the thirty-first.
+[00:22:19] Beatriz Lima: Second, inspection readiness. With an end-of-phase meeting in
+June, an inspection before the end of next year is likely. I want a mock inspection of
+the trial master file.
+[00:22:35] Tom Reilly: Before year end? This year's budget is mostly committed.
+[00:22:43] Beatriz Lima: I proposed December, but January works better for the sites
+too. Nobody wants auditors the week before Christmas.
+[00:22:55] Ingrid Halvorsen: January it is.
+[00:23:00] Beatriz Lima: I'll book the mock inspection with the external auditors for
+the second half of January.
+[00:23:10] Kenji Watanabe: Will they look at the EDC audit trail?
+[00:23:17] Beatriz Lima: Yes. Please make sure the audit trail reports can be run for a
+sample of patients.
+[00:23:27] Kenji Watanabe: They can. I'll do a test run of the audit trail reports
+before the inspection, so we're not surprised.
+[00:23:38] Ingrid Halvorsen: Tom, budget, with time to spare as promised.
+[00:23:45] Tom Reilly: We're at sixty-one percent of the annual budget with seventy-five
+percent of the year gone. The main underspend is travel, because so many visits went
+remote this year.
+[00:24:01] Tom Reilly: I'd like to move eighty thousand from travel into monitoring, to
+cover the extra remote visits and the retraining sessions.
+[00:24:14] Rosa Delgado: That would cover it.
+[00:24:19] Ingrid Halvorsen: Agreed: eighty thousand moves from travel to monitoring.
+[00:24:27] Tom Reilly: I'll send the updated forecast to finance by the tenth.
+[00:24:35] Tom Reilly: The other thing is the CRO's change request for the central lab
+switch. It's over my approval limit.
+[00:24:46] Ingrid Halvorsen: Then it goes to the portfolio board. I'll take the change
+request to the board on the second.
+[00:24:57] Tom Reilly: I'll send you the numbers.
+[00:25:03] Ingrid Halvorsen: Anything else?
+[00:25:08] Dr. Malik Osei: If the DMC asks for a dose adjustment at its next meeting, we
+might need a second amendment. I don't expect it, but it's possible.
+[00:25:21] Lea Fontaine: We'd want to fold it into the same amendment if we know in
+time.
+[00:25:30] Ingrid Halvorsen: Let's not plan for it yet.
+[00:25:36] Rosa Delgado: The study newsletter went out last week, by the way. Sites
+liked the enrollment leaderboard.
+[00:25:47] Omar Haddad: The face-to-face investigator meeting in February: do we have a
+venue?
+[00:25:56] Ingrid Halvorsen: Not yet. Omar, could you look at venues near Aldmoor? Most
+investigators are within two hours of it.
+[00:26:07] Omar Haddad: I'll send two or three venue options by the end of next week.
+[00:26:15] Kenji Watanabe: And the study contact list is out of date. Two CRAs have
+changed.
+[00:26:24] Ingrid Halvorsen: I'll update the contact list today.
+[00:26:30] Ingrid Halvorsen: Okay. Let me read back the decisions: no third site, and
+retraining at Aldmoor and Kestrel Bay; lock stays on the fifteenth of March; week two
+liver checks through an amendment; the Aldmoor kits are relabelled; a mock inspection in
+January; eighty thousand from travel to monitoring.
+[00:26:54] Beatriz Lima: And the remote monitoring visits.
+[00:27:00] Ingrid Halvorsen: And the remote visits, yes. Thanks, everyone. Same time
+next month.
