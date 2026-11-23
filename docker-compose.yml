@@ -1,4 +1,23 @@
-# Local development database. The credentials are for this local container only.
+# Local containers. The credentials are for this local database only.
+#
+#   pnpm db:up                          the database alone, for `pnpm web` and the CLI
+#   docker compose --profile app up -d  the database, migrations, then the web app
+#   scripts/app.sh up                   the same, with free ports found and a summary
+#
+# Host ports: MNEMON_DB_PORT (default 54320) and MNEMON_WEB_PORT (default 3000).
+
+# What the app and tools containers read: .env for the API keys and settings. The
+# database address is the db service on the compose network, whatever .env says for
+# running on the host. The access code comes from the shell, else from .env:
+# scripts/app.sh exports a generated one when .env has none.
+x-mnemon-env: &mnemon-env
+  env_file:
+    - path: .env
+      required: false
+  environment:
+    MNEMON_DATABASE_URL: postgres://mnemon:mnemon@db:5432/mnemon
+    MNEMON_ACCESS_CODE: ${MNEMON_ACCESS_CODE:-}
+
 services:
   db:
     image: pgvector/pgvector:0.8.7-pg18
@@ -15,6 +34,29 @@ services:
       interval: 2s
       timeout: 3s
       retries: 15
+
+  # Applies pending migrations, then exits. The same image seeds the demo meetings:
+  #   docker compose --profile app run --rm migrate node apps/cli/src/seed.ts [--yes]
+  migrate:
+    profiles: [app]
+    build: { context: ., target: tools }
+    image: mnemon-tools
+    <<: *mnemon-env
+    depends_on:
+      db: { condition: service_healthy }
+    restart: "no"
+
+  web:
+    profiles: [app]
+    build: { context: ., target: web }
+    image: mnemon-web
+    <<: *mnemon-env
+    ports:
+      - "127.0.0.1:${MNEMON_WEB_PORT:-3000}:3000"
+    depends_on:
+      db: { condition: service_healthy }
+      migrate: { condition: service_completed_successfully }
+    restart: unless-stopped
 
 volumes:
   mnemon-db:

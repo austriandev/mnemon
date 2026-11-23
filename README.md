@@ -18,21 +18,47 @@ The sign-in page is in [docs/screenshots/login.png](docs/screenshots/login.png).
 
 ## Quickstart
 
-Needs Node 24, pnpm 9 (`corepack enable` picks up the pinned version), Docker, and two
-API keys: Voyage AI (https://dashboard.voyageai.com) and Anthropic
-(https://platform.claude.com/settings/keys).
+Needs Docker (with Compose 2.24 or later) and two API keys: Voyage AI
+(https://dashboard.voyageai.com) and Anthropic (https://platform.claude.com/settings/keys).
 
 ```sh
-pnpm install
-pnpm db:up && pnpm db:migrate   # Postgres + pgvector in Docker, schema applied
-cp .env.example .env            # then add MNEMON_VOYAGE_API_KEY and MNEMON_ANTHROPIC_API_KEY
-pnpm seed --yes                 # three synthetic meetings; prints the cost first (up to ~$0.20, ~$0.07 in practice)
-pnpm web                        # http://localhost:3000
+cp .env.example .env        # then add MNEMON_VOYAGE_API_KEY and MNEMON_ANTHROPIC_API_KEY
+scripts/app.sh up --seed    # build, migrate, load three synthetic meetings, start
+```
+
+`up` builds the images, starts Postgres, applies migrations, then starts the app and
+waits until it answers. `--seed` shows what the demo meetings cost (up to ~$0.20,
+~$0.07 in practice) and asks before loading them. It ends with a summary:
+
+```text
+Mnemon is running
+  App        http://localhost:3000
+  Sign in    f807-2c4e-6924  (generated; set MNEMON_ACCESS_CODE in .env to choose your own)
+  Meetings   3 stored
+  Database   localhost:54320 (user mnemon, password mnemon)
+  Logs       scripts/app.sh logs
+  Stop       scripts/app.sh down
 ```
 
 Try "What is the current dosing decision for new patients?" (it spans two meetings,
 the second reversing the first), then open a source to land on the turn it cites.
-Without `--yes`, `pnpm seed` only prints what it would load and cost.
+
+**Ports.** If 3000 or 54320 is taken, `up` uses the next free port and says so, and
+moves again if another program takes a port while it starts. To choose: `--web-port
+8080 --db-port 55432`, or `MNEMON_WEB_PORT` and `MNEMON_DB_PORT` in the shell or `.env`.
+
+**By hand.** The script wraps plain Compose; everything it does can be run directly:
+
+```sh
+docker compose --profile app up -d --build    # db, then migrate, then web on :3000
+docker compose --profile app run --rm migrate node apps/cli/src/seed.ts --yes
+docker compose --profile app logs -f web
+docker compose --profile app down             # data stays in the mnemon-db volume
+```
+
+Set `MNEMON_ACCESS_CODE` in `.env` first when starting by hand: the container runs in
+production mode, which refuses everyone without one. Other commands: `scripts/app.sh
+help`, or `pnpm app:up`, `app:seed`, `app:logs`, `app:down`.
 
 A Voyage account with no payment method is limited to 3 requests a minute, and each
 question and each seeded meeting is one request. Mnemon waits out the limit rather
@@ -98,18 +124,22 @@ Where to read each part:
 | Model choice, settled by the eval | `packages/anthropic/src`, `packages/eval` | ADR-0008 |
 | Web shell, sign-in gate | `apps/web` | ADR-0009, ADR-0010 |
 | Spending limit | `packages/core/src/spending`, `apps/web/src/server` | ADR-0014 |
+| Containers, the start script | `Dockerfile`, `docker-compose.yml`, `scripts/app.sh` | ADR-0015 |
 
 Every model call logs its tokens and cost; the web app also records them in the
 `spend` table.
 
-## Setup
+## Development
 
-Requires Node 24, pnpm 9 (`corepack enable` picks up the pinned version) and Docker.
+Running from source, without the app container. Requires Node 24, pnpm 9 (`corepack
+enable` picks up the pinned version) and Docker for Postgres.
 
 ```sh
 pnpm install
 pnpm db:up       # Postgres 18 + pgvector on localhost:54320 (docker-compose.yml)
 pnpm db:migrate  # apply SQL migrations to MNEMON_DATABASE_URL
+pnpm seed --yes  # the demo meetings, as in the Quickstart (without --yes: cost only)
+pnpm web         # http://localhost:3000, sign-in off unless MNEMON_ACCESS_CODE is set
 pnpm typecheck   # strict TypeScript across the workspace
 pnpm lint        # Biome lint + format check (`pnpm format` to fix)
 pnpm test        # Vitest; database tests use their own throwaway databases
@@ -155,8 +185,9 @@ anything is paid for (ADR-0010). Give the day it was held, and answers can tell 
 is due or overdue (ADR-0012). Every paid call is recorded in the `spend` table, and
 once a day's spend would pass `MNEMON_DAILY_LIMIT_USD`, questions and new meetings are
 refused until midnight (ADR-0014). The web server doesn't migrate the database: run
-`pnpm db:migrate` first. Session cookies are `Secure` in production, so serve it over
-HTTPS. ADR-0009 has the design.
+`pnpm db:migrate` first, or let the `migrate` container do it (ADR-0015). Session
+cookies are `Secure` in production: browsers accept them on `http://localhost`, and
+anywhere else it must be served over HTTPS. ADR-0009 has the design.
 
 ## Eval
 
@@ -193,5 +224,6 @@ settled a choice go in its ADR.
 - `packages/eval` (`@mnemon/eval`): the labelled eval set, its scoring, and the runner.
 - `apps/web` (`@mnemon/web`): the Next.js app: sign-in gate, ask, meeting pages.
 - `apps/cli`: `ingest`, `records`, `ask` and `retrieve` commands wiring the packages together.
+- `Dockerfile`, `docker-compose.yml`, `scripts/app.sh`: the containers and the script that starts them.
 - `docs/adr`: one record per architectural decision.
 - `GLOSSARY.md`: the domain language.
