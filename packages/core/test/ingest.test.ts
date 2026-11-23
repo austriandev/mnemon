@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   type Embedder,
+  ingestTokens,
   type LanguageModel,
   type MeetingRepository,
   type NewMeeting,
@@ -178,5 +179,38 @@ describe("runIngest", () => {
     const plan = await planIngest("not a transcript", "x", deps.repository);
 
     await expect(runIngest(plan, deps)).rejects.toThrow(/plan is invalid/);
+  });
+});
+
+describe("ingestTokens", () => {
+  it("counts nothing for a plan that pays for nothing", async () => {
+    const stored = world({ id: "m-1", title: "Oct", recordsModel: "claude-sonnet-5-5" });
+    const unchanged = await planIngest(source, "Oct", stored.deps.repository);
+    const invalid = await planIngest("not a transcript", "x", world().deps.repository);
+
+    const none = { extractionInput: 0, extractionOutput: 0, embedding: 0 };
+    expect(ingestTokens(unchanged)).toEqual(none);
+    expect(ingestTokens(invalid)).toEqual(none);
+  });
+
+  it("estimates no less than the fixture's measured extraction call", async () => {
+    // ADR-0006: extracting this fixture took 3,401 input tokens; the eval's largest
+    // output, thinking included, was 3,206.
+    const plan = await planIngest(source, "Oct", world().deps.repository);
+
+    const tokens = ingestTokens(plan);
+
+    expect(tokens.extractionInput).toBeGreaterThanOrEqual(3_401);
+    expect(tokens.extractionInput).toBeLessThan(3_401 * 1.5);
+    expect(tokens.extractionOutput).toBeGreaterThanOrEqual(3_206);
+    expect(tokens.embedding).toBeGreaterThan(0);
+  });
+
+  it("counts no embedding for a meeting that is already embedded", async () => {
+    const stored = world({ id: "m-1", title: "Oct", recordsModel: null });
+    const backfill = await planIngest(source, "Oct", stored.deps.repository);
+    const fresh = await planIngest(source, "Oct", world().deps.repository);
+
+    expect(ingestTokens(backfill)).toEqual({ ...ingestTokens(fresh), embedding: 0 });
   });
 });

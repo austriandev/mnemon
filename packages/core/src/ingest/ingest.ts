@@ -1,6 +1,12 @@
 import { chunkTurns } from "../chunking/chunk.ts";
+import { approximateTokenCounter } from "../chunking/tokens.ts";
 import type { Chunk } from "../chunking/types.ts";
-import { extractRecords } from "../extraction/extract.ts";
+import {
+  buildPrompt,
+  EXTRACTION_SCHEMA,
+  EXTRACTION_SYSTEM_PROMPT,
+  extractRecords,
+} from "../extraction/extract.ts";
 import type { Extraction, LanguageModel, MeetingRecord } from "../extraction/types.ts";
 import type { Embedder } from "../retrieval/types.ts";
 import { parseTranscript } from "../transcript/parse.ts";
@@ -112,6 +118,37 @@ export async function planIngest(
     turns: parsed.turns,
     chunks: chunkTurns(parsed.turns),
   };
+}
+
+// The extraction prompt (turn labels, timestamps, schema) is denser than prose: the fixture's
+// 7,650 characters were 3,401 input tokens, ~2.25 per token (ADR-0006). Count 2 for headroom.
+const EXTRACTION_CHARS_PER_TOKEN = 2;
+// Room for adaptive thinking plus the JSON; the eval's largest was 3,206. An upper estimate.
+const EXPECTED_EXTRACTION_OUTPUT_TOKENS = 6_000;
+
+/** The tokens a plan will pay for, estimated before any call, so a caller can price it. */
+export interface IngestTokens {
+  readonly extractionInput: number;
+  /** An upper estimate: the model is not asked for more. */
+  readonly extractionOutput: number;
+  readonly embedding: number;
+}
+
+export function ingestTokens(plan: IngestPlan): IngestTokens {
+  if (plan.kind === "invalid" || plan.kind === "unchanged") {
+    return { extractionInput: 0, extractionOutput: 0, embedding: 0 };
+  }
+  const promptChars =
+    EXTRACTION_SYSTEM_PROMPT.length +
+    buildPrompt(plan.turns).length +
+    JSON.stringify(EXTRACTION_SCHEMA).length;
+  const extraction = {
+    extractionInput: Math.ceil(promptChars / EXTRACTION_CHARS_PER_TOKEN),
+    extractionOutput: EXPECTED_EXTRACTION_OUTPUT_TOKENS,
+  };
+  if (plan.kind === "extract-only") return { ...extraction, embedding: 0 };
+  const embedding = plan.chunks.reduce((n, c) => n + approximateTokenCounter.count(c.text), 0);
+  return { ...extraction, embedding };
 }
 
 /**

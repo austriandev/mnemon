@@ -66,7 +66,9 @@ pnpm web:build && pnpm web:start
 
 `apps/web` is a thin Next.js shell over the same core and adapters as the CLI. Sign in
 with the access code, ask a question, and every sentence of the answer links to the
-turn it cites on the meeting's page. The web server doesn't migrate the database: run
+turn it cites on the meeting's page. Add your own meeting at `/meetings/new`: paste a
+transcript or choose a `.txt` file, and Mnemon shows what it will cost before
+anything is paid for (ADR-0010). The web server doesn't migrate the database: run
 `pnpm db:migrate` first. Session cookies are `Secure` in production, so serve it over
 HTTPS. ADR-0009 has the design.
 
