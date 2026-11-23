@@ -1,0 +1,2177 @@
+{
+  "date": "2026-11-23T07:49:45.492Z",
+  "ids": {
+    "oct": "469e400d-01ed-415c-a05a-919c245053b4",
+    "nov": "f5da9d91-d971-4ef0-a735-4bc6465281ed",
+    "cmc": "1af47e3e-1193-4ccd-8ec3-1a49cfea765b",
+    "kr44": "490221e7-103c-4fe2-b7da-320b33610dc0"
+  },
+  "extraction": [
+    {
+      "config": {
+        "model": "claude-sonnet-5-5",
+        "effort": "high"
+      },
+      "meeting": "joined",
+      "ms": 83412,
+      "usage": [
+        {
+          "provider": "anthropic",
+          "model": "claude-sonnet-5-5",
+          "servedBy": "claude-sonnet-5-5",
+          "inputTokens": 15091,
+          "outputTokens": 14729,
+          "cacheReadTokens": 0,
+          "cacheWriteTokens": 0,
+          "costUsd": 0.177472
+        }
+      ],
+      "extraction": {
+        "records": [
+          {
+            "index": 0,
+            "kind": "topic",
+            "summary": "Enrollment stood at 142 of 220 patients across nine sites, about three weeks behind plan, with the shortfall mostly at Brackenford and Wrenmoor.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 2,
+                "quote": "142 of 220 patients"
+              },
+              {
+                "turnIndex": 4,
+                "quote": "Mostly two sites."
+              }
+            ]
+          },
+          {
+            "index": 1,
+            "kind": "topic",
+            "summary": "Safety review: the data monitoring committee asked for more detail on liver enzyme elevations in the 30 mg cohort.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 15,
+                "quote": "liver enzyme elevations in the 30 mg cohort"
+              }
+            ]
+          },
+          {
+            "index": 2,
+            "kind": "topic",
+            "summary": "Quellmark Fill Services had two documentation deviations in the last batch record review, the second quarter in a row.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 27,
+                "quote": "had two deviations in the last batch record review"
+              }
+            ]
+          },
+          {
+            "index": 3,
+            "kind": "topic",
+            "summary": "Budget: site payments were about 310 thousand under budget because of slow enrollment.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 35,
+                "quote": "We're under budget on site payments"
+              }
+            ]
+          },
+          {
+            "index": 4,
+            "kind": "topic",
+            "summary": "Interim analysis timeline: the planned second-quarter interim cannot be met because of the enrollment delay.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 40,
+                "quote": "Realistically it moves to the third quarter."
+              }
+            ]
+          },
+          {
+            "index": 5,
+            "kind": "decision",
+            "summary": "Add two backup sites and leave the eligibility criteria unchanged.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 9,
+                "quote": "I'd rather add sites than loosen the renal criterion"
+              },
+              {
+                "turnIndex": 10,
+                "quote": "we add two backup sites and the eligibility criteria stay as they are"
+              }
+            ]
+          },
+          {
+            "index": 6,
+            "kind": "decision",
+            "summary": "Dosing was held at 20 mg in October; in November the hold was lifted so escalation to 30 mg resumes with liver function tests every two weeks for the first eight weeks once the amendment is approved, and new patients stay at 20 mg until then.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 22,
+                "quote": "dosing stays at 20 mg for all new patients"
+              },
+              {
+                "turnIndex": 60,
+                "quote": "dose escalation to 30 mg resumes"
+              },
+              {
+                "turnIndex": 61,
+                "quote": "new patients stay at 20 mg"
+              }
+            ]
+          },
+          {
+            "index": 7,
+            "kind": "decision",
+            "summary": "Carry out a for-cause audit of the fill-finish vendor before the March batch order is released.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 31,
+                "quote": "A for-cause audit before we release the March batch order"
+              },
+              {
+                "turnIndex": 44,
+                "quote": "a for-cause audit of the fill-finish vendor"
+              }
+            ]
+          },
+          {
+            "index": 8,
+            "kind": "decision",
+            "summary": "Reallocate 150 thousand from site payments to quality and vendor oversight for this fiscal year.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 37,
+                "quote": "Move 150 thousand from site payments to quality and vendor oversight for this fiscal year"
+              },
+              {
+                "turnIndex": 38,
+                "quote": "The reallocation is approved."
+              }
+            ]
+          },
+          {
+            "index": 9,
+            "kind": "decision",
+            "summary": "The interim analysis moves to the third quarter, and it stayed in the third quarter at the November meeting.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 42,
+                "quote": "move the interim analysis to the third quarter"
+              },
+              {
+                "turnIndex": 76,
+                "quote": "Still the third quarter."
+              }
+            ]
+          },
+          {
+            "index": 10,
+            "kind": "action_item",
+            "summary": "Send both backup site agreements out for signature.",
+            "owner": "Sam Okafor",
+            "due": "by the twenty-fourth",
+            "citations": [
+              {
+                "turnIndex": 11,
+                "quote": "I'll have both agreements out for signature by the twenty-fourth"
+              }
+            ]
+          },
+          {
+            "index": 11,
+            "kind": "action_item",
+            "summary": "Prepare the patient listings and narrative for the three liver cases and send them to the committee.",
+            "owner": "Dr. Hana Sato",
+            "due": "by Friday",
+            "citations": [
+              {
+                "turnIndex": 23,
+                "quote": "send them to the committee by Friday"
+              }
+            ]
+          },
+          {
+            "index": 12,
+            "kind": "action_item",
+            "summary": "Take the vendor audit and provide an audit plan.",
+            "owner": "Priya Nair",
+            "due": "within two weeks",
+            "citations": [
+              {
+                "turnIndex": 31,
+                "quote": "I'll take the vendor audit and have a plan to you within two weeks"
+              }
+            ]
+          },
+          {
+            "index": 13,
+            "kind": "action_item",
+            "summary": "Send the audit notice letter to the vendor once Priya confirms the audit dates.",
+            "owner": "Sam Okafor",
+            "due": "once Priya confirms the audit dates",
+            "citations": [
+              {
+                "turnIndex": 33,
+                "quote": "I'll send the notice letter once Priya confirms the audit dates"
+              }
+            ]
+          },
+          {
+            "index": 14,
+            "kind": "action_item",
+            "summary": "Update the integrated timeline and the risk register for the interim move and circulate both.",
+            "owner": "Marcus Lindqvist",
+            "due": "before the next meeting",
+            "citations": [
+              {
+                "turnIndex": 43,
+                "quote": "I'll update the integrated timeline and the risk register"
+              },
+              {
+                "turnIndex": 43,
+                "quote": "circulate both before the next meeting"
+              }
+            ]
+          },
+          {
+            "index": 15,
+            "kind": "topic",
+            "summary": "November enrollment follow-up: 158 of 220 with Holloway Park activated, Castlebridge awaiting ethics approval, and Wrenmoor recovering with a new coordinator.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 50,
+                "quote": "we're at 158 of 220"
+              },
+              {
+                "turnIndex": 52,
+                "quote": "Wrenmoor hired a new study coordinator"
+              }
+            ]
+          },
+          {
+            "index": 16,
+            "kind": "topic",
+            "summary": "Safety review outcome: the data monitoring committee found no new safety signal in the three liver enzyme elevations and asked for more frequent liver function tests at 30 mg.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 56,
+                "quote": "no new safety signal"
+              },
+              {
+                "turnIndex": 57,
+                "quote": "liver function tests every two weeks for the first eight weeks at 30 mg"
+              }
+            ]
+          },
+          {
+            "index": 17,
+            "kind": "topic",
+            "summary": "Vendor audit status: audit booked on site for the week of the ninth of December, and Quellmark's remote audit request was declined.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 65,
+                "quote": "The audit is booked for the week of the ninth of December"
+              },
+              {
+                "turnIndex": 66,
+                "quote": "Quellmark asked whether we'd accept a remote audit instead."
+              }
+            ]
+          },
+          {
+            "index": 18,
+            "kind": "topic",
+            "summary": "Budget: the 150 thousand reallocation went through, with about 60 thousand committed to the audit.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 74,
+                "quote": "About 60 thousand of it is committed to the audit"
+              }
+            ]
+          },
+          {
+            "index": 19,
+            "kind": "action_item",
+            "summary": "Provide a revised enrollment forecast that includes both new sites.",
+            "owner": "Marcus Lindqvist",
+            "due": "by the end of next week",
+            "citations": [
+              {
+                "turnIndex": 54,
+                "quote": "I'll have the revised forecast to you by the end of next week"
+              }
+            ]
+          },
+          {
+            "index": 20,
+            "kind": "action_item",
+            "summary": "Circulate the draft substantial protocol amendment for the liver function test schedule.",
+            "owner": "Dr. Hana Sato",
+            "due": "by the end of the month",
+            "citations": [
+              {
+                "turnIndex": 59,
+                "quote": "a substantial amendment. I can draft it."
+              },
+              {
+                "turnIndex": 62,
+                "quote": "I'll circulate the draft amendment by the end of the month"
+              }
+            ]
+          },
+          {
+            "index": 21,
+            "kind": "action_item",
+            "summary": "Fold the new enrollment forecast into the integrated timeline.",
+            "owner": "Marcus Lindqvist",
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 77,
+                "quote": "I'll fold the new forecast into the timeline as well"
+              }
+            ]
+          },
+          {
+            "index": 22,
+            "kind": "decision",
+            "summary": "The vendor audit stays on site rather than remote.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 67,
+                "quote": "we need to see the floor"
+              },
+              {
+                "turnIndex": 68,
+                "quote": "the audit stays on site"
+              }
+            ]
+          },
+          {
+            "index": 23,
+            "kind": "decision",
+            "summary": "The March batch order stays on hold until the audit report is out.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 70,
+                "quote": "The March batch order stays on hold until the audit report is out"
+              },
+              {
+                "turnIndex": 78,
+                "quote": "the March batch stays on hold until the audit report"
+              }
+            ]
+          },
+          {
+            "index": 24,
+            "kind": "decision",
+            "summary": "No second fill-finish vendor is lined up for now; this is revisited in January if the audit finds a critical observation.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 71,
+                "quote": "Should we line up a second fill-finish vendor"
+              },
+              {
+                "turnIndex": 72,
+                "quote": "we revisit that in January"
+              }
+            ]
+          },
+          {
+            "index": 25,
+            "kind": "topic",
+            "summary": "BX-17 twelve-month stability: impurity B in batch two is at 0.18 percent against a 0.2 percent limit, so the thirty-six month shelf life is not supportable.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 82,
+                "quote": "Impurity B is trending up."
+              },
+              {
+                "turnIndex": 87,
+                "quote": "the thirty-six month shelf life we planned to claim isn't supportable"
+              }
+            ]
+          },
+          {
+            "index": 26,
+            "kind": "topic",
+            "summary": "Method transfer to Veltra Labs failed the dissolution part, with results eight percent lower than ours at thirty minutes.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 95,
+                "quote": "Veltra Labs failed the dissolution part of the method transfer"
+              }
+            ]
+          },
+          {
+            "index": 27,
+            "kind": "topic",
+            "summary": "Security notice: a suspicious email appearing to be from Veltra tried to get batch BX-17-0412 marked as released; it is treated as phishing and the batch remains in quarantine.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 107,
+                "quote": "It's being treated as a phishing attempt"
+              },
+              {
+                "turnIndex": 107,
+                "quote": "batch BX-17-0412 is still in quarantine"
+              }
+            ]
+          },
+          {
+            "index": 28,
+            "kind": "decision",
+            "summary": "The submission claims a twenty-four month shelf life for the BX-17 tablets, and the desiccant is treated as a separate project.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 90,
+                "quote": "I'd propose we claim twenty-four months in the submission"
+              },
+              {
+                "turnIndex": 91,
+                "quote": "the submission claims a twenty-four month shelf life for the BX-17 tablets"
+              },
+              {
+                "turnIndex": 91,
+                "quote": "We look at the desiccant as a separate project"
+              }
+            ]
+          },
+          {
+            "index": 29,
+            "kind": "decision",
+            "summary": "Repeat the Veltra method transfer with joint training first.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 100,
+                "quote": "we repeat the transfer with joint training first"
+              }
+            ]
+          },
+          {
+            "index": 30,
+            "kind": "decision",
+            "summary": "Release testing stays in house until Veltra passes the transfer.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 103,
+                "quote": "Release testing stays in house until Veltra passes the transfer"
+              }
+            ]
+          },
+          {
+            "index": 31,
+            "kind": "action_item",
+            "summary": "Write up the stability summary with the twenty-four month justification.",
+            "owner": "Tomas Berg",
+            "due": "by mid-January",
+            "citations": [
+              {
+                "turnIndex": 92,
+                "quote": "I'll write up the stability summary with the twenty-four month justification by mid-January"
+              }
+            ]
+          },
+          {
+            "index": 32,
+            "kind": "action_item",
+            "summary": "Scope the desiccant study with a cost estimate.",
+            "owner": "Aiko Tanaka",
+            "due": "for the next meeting",
+            "citations": [
+              {
+                "turnIndex": 93,
+                "quote": "I'll scope the desiccant study, with a cost estimate for the next meeting"
+              }
+            ]
+          },
+          {
+            "index": 33,
+            "kind": "action_item",
+            "summary": "Set up the joint training at Veltra for the first week of January and rerun the transfer straight after.",
+            "owner": "Aiko Tanaka",
+            "due": "first week of January",
+            "citations": [
+              {
+                "turnIndex": 100,
+                "quote": "Aiko, you own it."
+              },
+              {
+                "turnIndex": 101,
+                "quote": "I'll set up the training for the first week of January"
+              }
+            ]
+          },
+          {
+            "index": 34,
+            "kind": "topic",
+            "summary": "KR-44 enrollment: 96 of 160 randomised across eleven sites, eight patients behind plan, with Aldmoor and Kestrel Bay the two lagging sites.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 114,
+                "quote": "We're at 96 of 160 randomised across eleven sites"
+              },
+              {
+                "turnIndex": 116,
+                "quote": "Aldmoor and Kestrel Bay are the two sites behind"
+              }
+            ]
+          },
+          {
+            "index": 35,
+            "kind": "topic",
+            "summary": "Data management: 412 open queries, 138 of them older than thirty days, with a backlog driving risk to the database lock date.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 150,
+                "quote": "We have 412 open queries"
+              },
+              {
+                "turnIndex": 166,
+                "quote": "Still on track if the backlog clears."
+              }
+            ]
+          },
+          {
+            "index": 36,
+            "kind": "topic",
+            "summary": "SAE reconciliation: the clinical and safety databases disagree on four serious adverse events, one never entered in the EDC by Kestrel Bay.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 179,
+                "quote": "disagree on four serious adverse events"
+              },
+              {
+                "turnIndex": 181,
+                "quote": "never entered it in the EDC"
+              }
+            ]
+          },
+          {
+            "index": 37,
+            "kind": "topic",
+            "summary": "DMC liver finding: three patients with ALT above three times the upper limit in the first four weeks, all resolved, with earlier liver monitoring recommended.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 187,
+                "quote": "three patients with ALT above three times the upper limit"
+              },
+              {
+                "turnIndex": 188,
+                "quote": "They recommended we look at earlier liver monitoring."
+              }
+            ]
+          },
+          {
+            "index": 38,
+            "kind": "topic",
+            "summary": "Drug supply: twenty-two kits at the Aldmoor depot expire at the end of January.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 205,
+                "quote": "Twenty-two kits at the Aldmoor depot expire at the end of January"
+              }
+            ]
+          },
+          {
+            "index": 39,
+            "kind": "topic",
+            "summary": "Temperature excursion on a shipment to Kestrel Bay: nine degrees for about three hours, kits quarantined pending a quality disposition.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 217,
+                "quote": "showed nine degrees for about three hours on the logger"
+              },
+              {
+                "turnIndex": 219,
+                "quote": "I need the quality decision in writing before the site can use them."
+              }
+            ]
+          },
+          {
+            "index": 40,
+            "kind": "topic",
+            "summary": "Regulatory: DSUR due end of January with a thirtieth of November data cutoff, and the Portugal ethics resubmission on the patient information sheet.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 227,
+                "quote": "The DSUR is due at the end of January"
+              },
+              {
+                "turnIndex": 229,
+                "quote": "the ethics resubmission in Portugal"
+              }
+            ]
+          },
+          {
+            "index": 41,
+            "kind": "topic",
+            "summary": "Quality: the CAPA-118 effectiveness check on informed consent version control is still open.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 241,
+                "quote": "the effectiveness check is still open"
+              }
+            ]
+          },
+          {
+            "index": 42,
+            "kind": "topic",
+            "summary": "Budget: sixty-one percent of the annual budget spent with seventy-five percent of the year gone, with a travel underspend and a CRO change request over Tom's approval limit.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 254,
+                "quote": "sixty-one percent of the annual budget"
+              },
+              {
+                "turnIndex": 259,
+                "quote": "It's over my approval limit."
+              }
+            ]
+          },
+          {
+            "index": 43,
+            "kind": "decision",
+            "summary": "No third backup site for now; retrain Aldmoor (pre-screening) and Kestrel Bay (consent workflow) and look again in January if they have not recovered.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 126,
+                "quote": "I'd rather fix the two sites we have."
+              },
+              {
+                "turnIndex": 127,
+                "quote": "No third backup site for now"
+              }
+            ]
+          },
+          {
+            "index": 44,
+            "kind": "decision",
+            "summary": "Add a remote visit between on-site visits for sites that are on plan, with primary endpoint source data verification still on site.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 142,
+                "quote": "Then let's do it."
+              },
+              {
+                "turnIndex": 273,
+                "quote": "And the remote monitoring visits."
+              },
+              {
+                "turnIndex": 274,
+                "quote": "And the remote visits, yes."
+              }
+            ]
+          },
+          {
+            "index": 45,
+            "kind": "decision",
+            "summary": "No CRO quote is needed for the extra remote visits; Tom will work from the existing remote rate card.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 146,
+                "quote": "could you get me a quote from the CRO"
+              },
+              {
+                "turnIndex": 148,
+                "quote": "skip the quote then"
+              }
+            ]
+          },
+          {
+            "index": 46,
+            "kind": "decision",
+            "summary": "Database lock stays on the fifteenth of March, with the backlog treated as the risk to manage.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 167,
+                "quote": "another month of CRO data management fees"
+              },
+              {
+                "turnIndex": 168,
+                "quote": "we hold the fifteenth of March as the lock date"
+              }
+            ]
+          },
+          {
+            "index": 47,
+            "kind": "decision",
+            "summary": "Add a week two liver function check (ALT and AST) for newly randomised patients through a protocol amendment.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 191,
+                "quote": "add an ALT and AST check at week two"
+              },
+              {
+                "turnIndex": 196,
+                "quote": "we add the week two liver function check, through an amendment"
+              }
+            ]
+          },
+          {
+            "index": 48,
+            "kind": "decision",
+            "summary": "Relabel the Aldmoor kits with the extended expiry and do not ship replacements.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 213,
+                "quote": "we relabel the Aldmoor kits with the extended expiry"
+              }
+            ]
+          },
+          {
+            "index": 49,
+            "kind": "decision",
+            "summary": "Target a June end-of-phase meeting and confirm it in the regulatory plan.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 238,
+                "quote": "We target a June end-of-phase meeting"
+              }
+            ]
+          },
+          {
+            "index": 50,
+            "kind": "decision",
+            "summary": "The mock inspection of the trial master file takes place in January rather than December.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 247,
+                "quote": "January works better for the sites too"
+              },
+              {
+                "turnIndex": 248,
+                "quote": "January it is."
+              }
+            ]
+          },
+          {
+            "index": 51,
+            "kind": "decision",
+            "summary": "Move eighty thousand from travel to monitoring to cover the extra remote visits and retraining sessions.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 255,
+                "quote": "move eighty thousand from travel into monitoring"
+              },
+              {
+                "turnIndex": 257,
+                "quote": "eighty thousand moves from travel to monitoring"
+              }
+            ]
+          },
+          {
+            "index": 52,
+            "kind": "decision",
+            "summary": "The CRO's central lab switch change request goes to the portfolio board.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 260,
+                "quote": "Then it goes to the portfolio board."
+              }
+            ]
+          },
+          {
+            "index": 53,
+            "kind": "decision",
+            "summary": "No plan yet for a possible second amendment for a DMC dose adjustment.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 263,
+                "quote": "we might need a second amendment"
+              },
+              {
+                "turnIndex": 265,
+                "quote": "Let's not plan for it yet."
+              }
+            ]
+          },
+          {
+            "index": 54,
+            "kind": "action_item",
+            "summary": "Send the retraining plan with session dates to both sites, including CRAs bringing the screening log.",
+            "owner": "Rosa Delgado",
+            "due": "by Friday",
+            "citations": [
+              {
+                "turnIndex": 128,
+                "quote": "I'll send the retraining plan to both sites by Friday"
+              },
+              {
+                "turnIndex": 132,
+                "quote": "I'll put that in the plan"
+              }
+            ]
+          },
+          {
+            "index": 55,
+            "kind": "action_item",
+            "summary": "Add SAE entry to the Kestrel Bay retraining.",
+            "owner": "Rosa Delgado",
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 182,
+                "quote": "I'll add SAE entry to the retraining"
+              }
+            ]
+          },
+          {
+            "index": 56,
+            "kind": "action_item",
+            "summary": "Provide a revised monitoring plan adding the remote visit for Beatriz to review.",
+            "owner": "Rosa Delgado",
+            "due": "before the next meeting",
+            "citations": [
+              {
+                "turnIndex": 143,
+                "quote": "I'll have a revised monitoring plan for Beatriz to review before the next meeting"
+              }
+            ]
+          },
+          {
+            "index": 57,
+            "kind": "action_item",
+            "summary": "Send each CRA a list of their aged queries.",
+            "owner": "Kenji Watanabe",
+            "due": "tomorrow",
+            "citations": [
+              {
+                "turnIndex": 158,
+                "quote": "I'll send each CRA a list of their aged queries tomorrow"
+              }
+            ]
+          },
+          {
+            "index": 58,
+            "kind": "action_item",
+            "summary": "Send the liver panel edit check specification to Dr. Malik Osei for medical sign-off.",
+            "owner": "Kenji Watanabe",
+            "due": "by next Wednesday",
+            "citations": [
+              {
+                "turnIndex": 163,
+                "quote": "I'll send you the edit check specification by next Wednesday"
+              }
+            ]
+          },
+          {
+            "index": 59,
+            "kind": "action_item",
+            "summary": "Review the edit check specification and sign off the thresholds.",
+            "owner": "Dr. Malik Osei",
+            "due": "within a week of getting it",
+            "citations": [
+              {
+                "turnIndex": 164,
+                "quote": "I'll turn it around within a week of getting it"
+              }
+            ]
+          },
+          {
+            "index": 60,
+            "kind": "action_item",
+            "summary": "Set up a weekly query call with the CRO.",
+            "owner": "Kenji Watanabe",
+            "due": "starting next week",
+            "citations": [
+              {
+                "turnIndex": 176,
+                "quote": "I'll set up a weekly query call with the CRO, starting next week"
+              }
+            ]
+          },
+          {
+            "index": 61,
+            "kind": "action_item",
+            "summary": "Finish the reconciliation of all four SAE discrepancies.",
+            "owner": "Dr. Malik Osei",
+            "due": "before the thirtieth",
+            "citations": [
+              {
+                "turnIndex": 183,
+                "quote": "I'll finish the reconciliation of all four before the DSUR data cutoff"
+              },
+              {
+                "turnIndex": 185,
+                "quote": "Then before the thirtieth."
+              }
+            ]
+          },
+          {
+            "index": 62,
+            "kind": "action_item",
+            "summary": "Draft the amendment for the week two liver check.",
+            "owner": "Lea Fontaine",
+            "due": "ready for internal review in two weeks",
+            "citations": [
+              {
+                "turnIndex": 197,
+                "quote": "I'll draft the amendment"
+              },
+              {
+                "turnIndex": 197,
+                "quote": "ready for internal review in two weeks"
+              }
+            ]
+          },
+          {
+            "index": 63,
+            "kind": "action_item",
+            "summary": "Draft the investigator letter on the DMC recommendation and send it to Beatriz for quality review.",
+            "owner": "Dr. Malik Osei",
+            "due": "by Monday",
+            "citations": [
+              {
+                "turnIndex": 200,
+                "quote": "I'll draft the letter and send it to Beatriz for review by Monday"
+              }
+            ]
+          },
+          {
+            "index": 64,
+            "kind": "action_item",
+            "summary": "Start the relabelling request with the Aldmoor depot.",
+            "owner": "Omar Haddad",
+            "due": "this week",
+            "citations": [
+              {
+                "turnIndex": 214,
+                "quote": "I'll start the relabelling request with the depot this week"
+              }
+            ]
+          },
+          {
+            "index": 65,
+            "kind": "action_item",
+            "summary": "Send the relabelling notification to both agencies once Omar has a date from the depot.",
+            "owner": "Lea Fontaine",
+            "due": "once Omar has a date from the depot",
+            "citations": [
+              {
+                "turnIndex": 215,
+                "quote": "I'll send the notification to both agencies once Omar has a date from the depot"
+              }
+            ]
+          },
+          {
+            "index": 66,
+            "kind": "action_item",
+            "summary": "Send the logger file and deviation report for the Kestrel Bay excursion to Beatriz.",
+            "owner": "Omar Haddad",
+            "due": "by Wednesday",
+            "citations": [
+              {
+                "turnIndex": 220,
+                "quote": "Send me the logger file and the deviation report"
+              },
+              {
+                "turnIndex": 221,
+                "quote": "I'll send both by Wednesday"
+              }
+            ]
+          },
+          {
+            "index": 67,
+            "kind": "action_item",
+            "summary": "Give Omar the quality disposition on the excursion kits once the logger file and deviation report arrive.",
+            "owner": "Beatriz Lima",
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 220,
+                "quote": "I'll give you the disposition"
+              }
+            ]
+          },
+          {
+            "index": 68,
+            "kind": "action_item",
+            "summary": "Circulate the draft DSUR.",
+            "owner": "Lea Fontaine",
+            "due": "by the tenth of January",
+            "citations": [
+              {
+                "turnIndex": 227,
+                "quote": "I'll circulate the draft DSUR by the tenth of January"
+              }
+            ]
+          },
+          {
+            "index": 69,
+            "kind": "action_item",
+            "summary": "Own the Portugal ethics resubmission and submit the response using Lea's draft.",
+            "owner": "Rosa Delgado",
+            "due": "by the twelfth",
+            "citations": [
+              {
+                "turnIndex": 232,
+                "quote": "can you own the resubmission"
+              },
+              {
+                "turnIndex": 233,
+                "quote": "I'll submit the response by the twelfth"
+              }
+            ]
+          },
+          {
+            "index": 70,
+            "kind": "action_item",
+            "summary": "Send the draft ethics response to Rosa before leaving.",
+            "owner": "Lea Fontaine",
+            "due": "by the third",
+            "citations": [
+              {
+                "turnIndex": 234,
+                "quote": "I'll send it to you by the third"
+              }
+            ]
+          },
+          {
+            "index": 71,
+            "kind": "action_item",
+            "summary": "Update the regulatory plan for the June end-of-phase meeting.",
+            "owner": "Lea Fontaine",
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 239,
+                "quote": "I'll update the regulatory plan"
+              }
+            ]
+          },
+          {
+            "index": 72,
+            "kind": "action_item",
+            "summary": "Sample consent forms at three sites and close the CAPA-118 effectiveness check.",
+            "owner": "Beatriz Lima",
+            "due": "by the thirty-first",
+            "citations": [
+              {
+                "turnIndex": 244,
+                "quote": "close the CAPA-118 effectiveness check by the thirty-first"
+              }
+            ]
+          },
+          {
+            "index": 73,
+            "kind": "action_item",
+            "summary": "Book the mock inspection of the trial master file with the external auditors.",
+            "owner": "Beatriz Lima",
+            "due": "second half of January",
+            "citations": [
+              {
+                "turnIndex": 249,
+                "quote": "I'll book the mock inspection with the external auditors for the second half of January"
+              }
+            ]
+          },
+          {
+            "index": 74,
+            "kind": "action_item",
+            "summary": "Do a test run of the EDC audit trail reports before the mock inspection.",
+            "owner": "Kenji Watanabe",
+            "due": "before the inspection",
+            "citations": [
+              {
+                "turnIndex": 252,
+                "quote": "I'll do a test run of the audit trail reports before the inspection"
+              }
+            ]
+          },
+          {
+            "index": 75,
+            "kind": "action_item",
+            "summary": "Send the updated forecast to finance.",
+            "owner": "Tom Reilly",
+            "due": "by the tenth",
+            "citations": [
+              {
+                "turnIndex": 258,
+                "quote": "I'll send the updated forecast to finance by the tenth"
+              }
+            ]
+          },
+          {
+            "index": 76,
+            "kind": "action_item",
+            "summary": "Take the CRO's central lab switch change request to the portfolio board.",
+            "owner": "Ingrid Halvorsen",
+            "due": "on the second",
+            "citations": [
+              {
+                "turnIndex": 260,
+                "quote": "I'll take the change request to the board on the second"
+              }
+            ]
+          },
+          {
+            "index": 77,
+            "kind": "action_item",
+            "summary": "Send Ingrid the numbers for the change request.",
+            "owner": "Tom Reilly",
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 261,
+                "quote": "I'll send you the numbers"
+              }
+            ]
+          },
+          {
+            "index": 78,
+            "kind": "action_item",
+            "summary": "Send two or three venue options near Aldmoor for the February investigator meeting.",
+            "owner": "Omar Haddad",
+            "due": "by the end of next week",
+            "citations": [
+              {
+                "turnIndex": 268,
+                "quote": "could you look at venues near Aldmoor"
+              },
+              {
+                "turnIndex": 269,
+                "quote": "I'll send two or three venue options by the end of next week"
+              }
+            ]
+          },
+          {
+            "index": 79,
+            "kind": "action_item",
+            "summary": "Update the study contact list.",
+            "owner": "Ingrid Halvorsen",
+            "due": "today",
+            "citations": [
+              {
+                "turnIndex": 271,
+                "quote": "I'll update the contact list today"
+              }
+            ]
+          }
+        ],
+        "rejected": [],
+        "model": "claude-sonnet-5-5"
+      },
+      "score": {
+        "hits": 48,
+        "misses": [
+          {
+            "kind": "decision",
+            "label": "March batch on hold until audit report",
+            "turns": [70, 78]
+          }
+        ],
+        "extras": [],
+        "ownersCorrect": 31,
+        "ownersChecked": 31
+      }
+    },
+    {
+      "config": {
+        "model": "claude-sonnet-5-5",
+        "effort": "medium"
+      },
+      "meeting": "joined",
+      "ms": 30734,
+      "usage": [
+        {
+          "provider": "anthropic",
+          "model": "claude-sonnet-5-5",
+          "servedBy": "claude-sonnet-5-5",
+          "inputTokens": 15091,
+          "outputTokens": 5997,
+          "cacheReadTokens": 0,
+          "cacheWriteTokens": 0,
+          "costUsd": 0.090152
+        }
+      ],
+      "extraction": {
+        "records": [
+          {
+            "index": 0,
+            "kind": "topic",
+            "summary": "AMT-208 October: enrollment at 142 of 220 patients across nine sites, about three weeks behind plan, mostly at Brackenford and Wrenmoor.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 2,
+                "quote": "We're at 142 of 220 patients across nine sites"
+              },
+              {
+                "turnIndex": 4,
+                "quote": "Brackenford and the Wrenmoor clinic"
+              }
+            ]
+          },
+          {
+            "index": 1,
+            "kind": "decision",
+            "summary": "AMT-208: add two backup sites and keep the eligibility criteria as they are.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 9,
+                "quote": "I'd rather add sites than loosen the renal criterion"
+              },
+              {
+                "turnIndex": 10,
+                "quote": "we add two backup sites and the eligibility criteria stay as they are"
+              }
+            ]
+          },
+          {
+            "index": 2,
+            "kind": "action_item",
+            "summary": "Send both backup site agreements out for signature.",
+            "owner": "Sam Okafor",
+            "due": "by the twenty-fourth",
+            "citations": [
+              {
+                "turnIndex": 11,
+                "quote": "I'll have both agreements out for signature by the twenty-fourth"
+              }
+            ]
+          },
+          {
+            "index": 3,
+            "kind": "topic",
+            "summary": "AMT-208 safety review: DMC asked for more detail on liver enzyme elevations in the 30 mg cohort (three patients, all transient and resolved).",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 15,
+                "quote": "liver enzyme elevations in the 30 mg cohort"
+              }
+            ]
+          },
+          {
+            "index": 4,
+            "kind": "decision",
+            "summary": "Dosing stays at 20 mg for all new patients until the data monitoring committee completes its review of the liver data.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 22,
+                "quote": "dosing stays at 20 mg for all new patients"
+              }
+            ]
+          },
+          {
+            "index": 5,
+            "kind": "action_item",
+            "summary": "Prepare patient listings and narrative for the three liver cases and send them to the committee.",
+            "owner": "Dr. Hana Sato",
+            "due": "by Friday",
+            "citations": [
+              {
+                "turnIndex": 23,
+                "quote": "send them to the committee by Friday"
+              }
+            ]
+          },
+          {
+            "index": 6,
+            "kind": "topic",
+            "summary": "Fill-finish vendor Quellmark Fill Services had two documentation deviations, second quarter in a row, with risk to the March batch.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 27,
+                "quote": "Quellmark Fill Services, had two deviations"
+              },
+              {
+                "turnIndex": 29,
+                "quote": "The risk is the batch planned for March"
+              }
+            ]
+          },
+          {
+            "index": 7,
+            "kind": "decision",
+            "summary": "A for-cause audit of the fill-finish vendor will be conducted before release of the March batch order.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 31,
+                "quote": "A for-cause audit before we release the March batch order"
+              },
+              {
+                "turnIndex": 32,
+                "quote": "Good."
+              },
+              {
+                "turnIndex": 44,
+                "quote": "a for-cause audit of the fill-finish vendor"
+              }
+            ]
+          },
+          {
+            "index": 8,
+            "kind": "action_item",
+            "summary": "Take the vendor audit and provide an audit plan.",
+            "owner": "Priya Nair",
+            "due": "within two weeks",
+            "citations": [
+              {
+                "turnIndex": 31,
+                "quote": "I'll take the vendor audit and have a plan to you within two weeks"
+              }
+            ]
+          },
+          {
+            "index": 9,
+            "kind": "action_item",
+            "summary": "Send the audit notice letter to the vendor once Priya confirms the audit dates.",
+            "owner": "Sam Okafor",
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 33,
+                "quote": "I'll send the notice letter once Priya confirms the audit dates"
+              }
+            ]
+          },
+          {
+            "index": 10,
+            "kind": "decision",
+            "summary": "Reallocate 150 thousand from site payments to quality and vendor oversight for this fiscal year.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 37,
+                "quote": "Move 150 thousand from site payments to quality and vendor oversight"
+              },
+              {
+                "turnIndex": 38,
+                "quote": "The reallocation is approved."
+              }
+            ]
+          },
+          {
+            "index": 11,
+            "kind": "decision",
+            "summary": "Move the interim analysis to the third quarter and revisit at the next meeting if the hold continues.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 42,
+                "quote": "move the interim analysis to the third quarter"
+              }
+            ]
+          },
+          {
+            "index": 12,
+            "kind": "action_item",
+            "summary": "Update the integrated timeline and risk register and circulate both.",
+            "owner": "Marcus Lindqvist",
+            "due": "before the next meeting",
+            "citations": [
+              {
+                "turnIndex": 43,
+                "quote": "circulate both before the next meeting"
+              }
+            ]
+          },
+          {
+            "index": 13,
+            "kind": "action_item",
+            "summary": "Provide a revised enrollment forecast including both new sites.",
+            "owner": "Marcus Lindqvist",
+            "due": "by the end of next week",
+            "citations": [
+              {
+                "turnIndex": 53,
+                "quote": "a revised enrollment forecast with both new sites in it"
+              },
+              {
+                "turnIndex": 54,
+                "quote": "by the end of next week"
+              }
+            ]
+          },
+          {
+            "index": 14,
+            "kind": "topic",
+            "summary": "AMT-208 November enrollment: 158 of 220 with Holloway Park activated, Castlebridge awaiting ethics approval, Wrenmoor has a new coordinator.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 49,
+                "quote": "Holloway Park is activated and screening"
+              },
+              {
+                "turnIndex": 50,
+                "quote": "we're at 158 of 220"
+              }
+            ]
+          },
+          {
+            "index": 15,
+            "kind": "decision",
+            "summary": "Lift the hold: dose escalation to 30 mg resumes with liver function tests every two weeks for the first eight weeks at 30 mg once the amendment is approved; new patients stay at 20 mg until then.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 60,
+                "quote": "We lift the hold"
+              },
+              {
+                "turnIndex": 61,
+                "quote": "Until the amendment is approved, new patients stay at 20 mg."
+              }
+            ]
+          },
+          {
+            "index": 16,
+            "kind": "action_item",
+            "summary": "Circulate the draft substantial protocol amendment.",
+            "owner": "Dr. Hana Sato",
+            "due": "by the end of the month",
+            "citations": [
+              {
+                "turnIndex": 62,
+                "quote": "I'll circulate the draft amendment by the end of the month"
+              }
+            ]
+          },
+          {
+            "index": 17,
+            "kind": "decision",
+            "summary": "The Quellmark audit stays on site rather than remote.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 67,
+                "quote": "we need to see the floor"
+              },
+              {
+                "turnIndex": 68,
+                "quote": "the audit stays on site"
+              }
+            ]
+          },
+          {
+            "index": 18,
+            "kind": "decision",
+            "summary": "No second fill-finish vendor for now; revisit in January if the audit finds a critical observation.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 72,
+                "quote": "Not yet."
+              }
+            ]
+          },
+          {
+            "index": 19,
+            "kind": "topic",
+            "summary": "March batch order stays on hold until the audit report, expected before Christmas.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 70,
+                "quote": "stays on hold until the audit report is out"
+              }
+            ]
+          },
+          {
+            "index": 20,
+            "kind": "topic",
+            "summary": "Interim analysis stays in the third quarter after the hold is lifted.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 76,
+                "quote": "Still the third quarter."
+              }
+            ]
+          },
+          {
+            "index": 21,
+            "kind": "topic",
+            "summary": "BX-17 twelve-month stability: Impurity B in batch two at 0.18 percent against a 0.2 percent limit, projected to cross at about twenty-eight months.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 84,
+                "quote": "Batch two is at 0.18 percent"
+              },
+              {
+                "turnIndex": 86,
+                "quote": "crosses 0.2 percent at about twenty-eight months"
+              }
+            ]
+          },
+          {
+            "index": 22,
+            "kind": "decision",
+            "summary": "The submission claims a twenty-four month shelf life for the BX-17 tablets, with desiccant as a separate project.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 91,
+                "quote": "the submission claims a twenty-four month shelf life"
+              }
+            ]
+          },
+          {
+            "index": 23,
+            "kind": "action_item",
+            "summary": "Write the stability summary with the twenty-four month justification.",
+            "owner": "Tomas Berg",
+            "due": "by mid-January",
+            "citations": [
+              {
+                "turnIndex": 92,
+                "quote": "by mid-January"
+              }
+            ]
+          },
+          {
+            "index": 24,
+            "kind": "action_item",
+            "summary": "Scope the desiccant study with a cost estimate.",
+            "owner": "Aiko Tanaka",
+            "due": "for the next meeting",
+            "citations": [
+              {
+                "turnIndex": 93,
+                "quote": "I'll scope the desiccant study"
+              }
+            ]
+          },
+          {
+            "index": 25,
+            "kind": "topic",
+            "summary": "Veltra Labs failed the dissolution part of the method transfer, results eight percent lower at thirty minutes.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 95,
+                "quote": "Veltra Labs failed the dissolution part"
+              }
+            ]
+          },
+          {
+            "index": 26,
+            "kind": "decision",
+            "summary": "Repeat the method transfer with joint training first, owned by Aiko.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 100,
+                "quote": "we repeat the transfer with joint training first"
+              }
+            ]
+          },
+          {
+            "index": 27,
+            "kind": "action_item",
+            "summary": "Set up the training and rerun the transfer straight after.",
+            "owner": "Aiko Tanaka",
+            "due": "first week of January",
+            "citations": [
+              {
+                "turnIndex": 101,
+                "quote": "the first week of January"
+              }
+            ]
+          },
+          {
+            "index": 28,
+            "kind": "decision",
+            "summary": "Release testing stays in house until Veltra passes the transfer.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 103,
+                "quote": "Release testing stays in house"
+              }
+            ]
+          },
+          {
+            "index": 29,
+            "kind": "topic",
+            "summary": "A phishing email falsely asked to mark batch BX-17-0412 as released; batch remains in quarantine and disposition only goes through the quality system.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 105,
+                "quote": "mark batch BX-17-0412 as released"
+              },
+              {
+                "turnIndex": 108,
+                "quote": "never by email"
+              }
+            ]
+          },
+          {
+            "index": 30,
+            "kind": "topic",
+            "summary": "KR-44 enrollment: 96 of 160 randomised across eleven sites, behind at Aldmoor and Kestrel Bay.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 114,
+                "quote": "96 of 160 randomised across eleven sites"
+              },
+              {
+                "turnIndex": 116,
+                "quote": "Aldmoor and Kestrel Bay"
+              }
+            ]
+          },
+          {
+            "index": 31,
+            "kind": "decision",
+            "summary": "No third backup site for now; retrain Aldmoor and Kestrel Bay and revisit in January.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 127,
+                "quote": "No third backup site for now"
+              }
+            ]
+          },
+          {
+            "index": 32,
+            "kind": "action_item",
+            "summary": "Send the retraining plan to both sites with session dates.",
+            "owner": "Rosa Delgado",
+            "due": "by Friday",
+            "citations": [
+              {
+                "turnIndex": 128,
+                "quote": "by Friday, with dates for the sessions"
+              }
+            ]
+          },
+          {
+            "index": 33,
+            "kind": "decision",
+            "summary": "Add a remote monitoring visit between on-site visits for sites on plan, with primary endpoint SDV still on site.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 142,
+                "quote": "let's do it"
+              },
+              {
+                "turnIndex": 273,
+                "quote": "the remote monitoring visits"
+              }
+            ]
+          },
+          {
+            "index": 34,
+            "kind": "action_item",
+            "summary": "Revise the monitoring plan to add the remote visit for Beatriz to review.",
+            "owner": "Rosa Delgado",
+            "due": "before the next meeting",
+            "citations": [
+              {
+                "turnIndex": 143,
+                "quote": "before the next meeting"
+              }
+            ]
+          },
+          {
+            "index": 35,
+            "kind": "topic",
+            "summary": "Data management: 412 open queries, 138 older than thirty days.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 150,
+                "quote": "412 open queries"
+              }
+            ]
+          },
+          {
+            "index": 36,
+            "kind": "action_item",
+            "summary": "Send each CRA a list of their aged queries.",
+            "owner": "Kenji Watanabe",
+            "due": "tomorrow",
+            "citations": [
+              {
+                "turnIndex": 158,
+                "quote": "I'll send each CRA a list of their aged queries tomorrow"
+              }
+            ]
+          },
+          {
+            "index": 37,
+            "kind": "action_item",
+            "summary": "Send the liver panel edit check specification to Malik.",
+            "owner": "Kenji Watanabe",
+            "due": "by next Wednesday",
+            "citations": [
+              {
+                "turnIndex": 163,
+                "quote": "by next Wednesday"
+              }
+            ]
+          },
+          {
+            "index": 38,
+            "kind": "decision",
+            "summary": "Hold the fifteenth of March as the database lock date and manage the backlog as the risk.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 168,
+                "quote": "hold the fifteenth of March as the lock date"
+              }
+            ]
+          },
+          {
+            "index": 39,
+            "kind": "action_item",
+            "summary": "Set up a weekly query call with the CRO.",
+            "owner": "Kenji Watanabe",
+            "due": "starting next week",
+            "citations": [
+              {
+                "turnIndex": 176,
+                "quote": "weekly query call with the CRO, starting next week"
+              }
+            ]
+          },
+          {
+            "index": 40,
+            "kind": "action_item",
+            "summary": "Reconcile all four SAE discrepancies.",
+            "owner": "Dr. Malik Osei",
+            "due": "before the thirtieth",
+            "citations": [
+              {
+                "turnIndex": 183,
+                "quote": "reconciliation of all four"
+              },
+              {
+                "turnIndex": 185,
+                "quote": "Then before the thirtieth."
+              }
+            ]
+          },
+          {
+            "index": 41,
+            "kind": "action_item",
+            "summary": "Add SAE entry to the retraining.",
+            "owner": "Rosa Delgado",
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 182,
+                "quote": "I'll add SAE entry to the retraining"
+              }
+            ]
+          },
+          {
+            "index": 42,
+            "kind": "decision",
+            "summary": "Add a week two liver function check (ALT and AST) for newly randomised patients through an amendment.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 196,
+                "quote": "we add the week two liver function check, through an amendment"
+              }
+            ]
+          },
+          {
+            "index": 43,
+            "kind": "action_item",
+            "summary": "Draft the amendment for internal review.",
+            "owner": "Lea Fontaine",
+            "due": "in two weeks",
+            "citations": [
+              {
+                "turnIndex": 197,
+                "quote": "ready for internal review in two weeks"
+              }
+            ]
+          },
+          {
+            "index": 44,
+            "kind": "action_item",
+            "summary": "Draft the investigator letter and send to Beatriz for review.",
+            "owner": "Dr. Malik Osei",
+            "due": "by Monday",
+            "citations": [
+              {
+                "turnIndex": 200,
+                "quote": "send it to Beatriz for review by Monday"
+              }
+            ]
+          },
+          {
+            "index": 45,
+            "kind": "decision",
+            "summary": "Relabel the Aldmoor kits with extended expiry and do not ship replacements.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 213,
+                "quote": "we relabel the Aldmoor kits with the extended expiry"
+              }
+            ]
+          },
+          {
+            "index": 46,
+            "kind": "action_item",
+            "summary": "Start the relabelling request with the depot.",
+            "owner": "Omar Haddad",
+            "due": "this week",
+            "citations": [
+              {
+                "turnIndex": 214,
+                "quote": "I'll start the relabelling request with the depot this week"
+              }
+            ]
+          },
+          {
+            "index": 47,
+            "kind": "action_item",
+            "summary": "Send the notification to both agencies once Omar has a date from the depot.",
+            "owner": "Lea Fontaine",
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 215,
+                "quote": "I'll send the notification to both agencies"
+              }
+            ]
+          },
+          {
+            "index": 48,
+            "kind": "action_item",
+            "summary": "Send the logger file and deviation report to Beatriz.",
+            "owner": "Omar Haddad",
+            "due": "by Wednesday",
+            "citations": [
+              {
+                "turnIndex": 221,
+                "quote": "I'll send both by Wednesday"
+              }
+            ]
+          },
+          {
+            "index": 49,
+            "kind": "action_item",
+            "summary": "Circulate the draft DSUR.",
+            "owner": "Lea Fontaine",
+            "due": "by the tenth of January",
+            "citations": [
+              {
+                "turnIndex": 227,
+                "quote": "by the tenth of January"
+              }
+            ]
+          },
+          {
+            "index": 50,
+            "kind": "action_item",
+            "summary": "Own the Portugal ethics resubmission and submit the response.",
+            "owner": "Rosa Delgado",
+            "due": "by the twelfth",
+            "citations": [
+              {
+                "turnIndex": 233,
+                "quote": "I'll submit the response by the twelfth"
+              }
+            ]
+          },
+          {
+            "index": 51,
+            "kind": "action_item",
+            "summary": "Send the draft response to Rosa.",
+            "owner": "Lea Fontaine",
+            "due": "by the third",
+            "citations": [
+              {
+                "turnIndex": 234,
+                "quote": "I'll send it to you by the third"
+              }
+            ]
+          },
+          {
+            "index": 52,
+            "kind": "decision",
+            "summary": "Target a June end-of-phase meeting.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 238,
+                "quote": "We target a June end-of-phase meeting."
+              }
+            ]
+          },
+          {
+            "index": 53,
+            "kind": "action_item",
+            "summary": "Update the regulatory plan.",
+            "owner": "Lea Fontaine",
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 239,
+                "quote": "I'll update the regulatory plan"
+              }
+            ]
+          },
+          {
+            "index": 54,
+            "kind": "action_item",
+            "summary": "Sample consent forms and close the CAPA-118 effectiveness check.",
+            "owner": "Beatriz Lima",
+            "due": "by the thirty-first",
+            "citations": [
+              {
+                "turnIndex": 244,
+                "quote": "close the CAPA-118 effectiveness check by the thirty-first"
+              }
+            ]
+          },
+          {
+            "index": 55,
+            "kind": "decision",
+            "summary": "Hold the mock inspection of the trial master file in January.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 248,
+                "quote": "January it is."
+              }
+            ]
+          },
+          {
+            "index": 56,
+            "kind": "action_item",
+            "summary": "Book the mock inspection with external auditors.",
+            "owner": "Beatriz Lima",
+            "due": "second half of January",
+            "citations": [
+              {
+                "turnIndex": 249,
+                "quote": "for the second half of January"
+              }
+            ]
+          },
+          {
+            "index": 57,
+            "kind": "action_item",
+            "summary": "Test run the audit trail reports before the inspection.",
+            "owner": "Kenji Watanabe",
+            "due": "before the inspection",
+            "citations": [
+              {
+                "turnIndex": 252,
+                "quote": "I'll do a test run of the audit trail reports"
+              }
+            ]
+          },
+          {
+            "index": 58,
+            "kind": "decision",
+            "summary": "Move eighty thousand from travel to monitoring.",
+            "owner": null,
+            "due": null,
+            "citations": [
+              {
+                "turnIndex": 257,
+                "quote": "eighty thousand moves from travel to monitoring"
+              }
+            ]
+          },
+          {
+            "index": 59,
+            "kind": "action_item",
+            "summary": "Send the updated forecast to finance.",
+            "owner": "Tom Reilly",
+            "due": "by the tenth",
+            "citations": [
+              {
+                "turnIndex": 258,
+                "quote": "by the tenth"
+              }
+            ]
+          },
+          {
+            "index": 60,
+            "kind": "action_item",
+            "summary": "Take the CRO central lab change request to the portfolio board.",
+            "owner": "Ingrid Halvorsen",
+            "due": "on the second",
+            "citations": [
+              {
+                "turnIndex": 260,
+                "quote": "I'll take the change request to the board on the second"
+              }
+            ]
+          },
+          {
+            "index": 61,
+            "kind": "action_item",
+            "summary": "Send venue options for the February investigator meeting.",
+            "owner": "Omar Haddad",
+            "due": "by the end of next week",
+            "citations": [
+              {
+                "turnIndex": 269,
+                "quote": "by the end of next week"
+              }
+            ]
+          },
+          {
+            "index": 62,
+            "kind": "action_item",
+            "summary": "Update the study contact list.",
+            "owner": "Ingrid Halvorsen",
+            "due": "today",
+            "citations": [
+              {
+                "turnIndex": 271,
+                "quote": "I'll update the contact list today"
+              }
+            ]
+          }
+        ],
+        "rejected": [],
+        "model": "claude-sonnet-5-5"
+      },
+      "score": {
+        "hits": 48,
+        "misses": [
+          {
+            "kind": "decision",
+            "label": "March batch on hold until audit report",
+            "turns": [70, 78]
+          }
+        ],
+        "extras": [],
+        "ownersCorrect": 31,
+        "ownersChecked": 31
+      }
+    }
+  ],
+  "spentUsd": 0.267624
+}

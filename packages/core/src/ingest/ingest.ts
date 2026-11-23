@@ -158,8 +158,22 @@ function isCalendarDate(text: string): boolean {
 // The extraction prompt (turn labels, timestamps, schema) is denser than prose: the fixture's
 // 7,650 characters were 3,401 input tokens, ~2.25 per token (ADR-0006). Count 2 for headroom.
 const EXTRACTION_CHARS_PER_TOKEN = 2;
-// Room for adaptive thinking plus the JSON; the eval's largest was 3,206. An upper estimate.
-const EXPECTED_EXTRACTION_OUTPUT_TOKENS = 6_000;
+// Room for adaptive thinking plus the JSON, which grow with the meeting. An upper estimate:
+// the eval's largest were 3,206 on a 47-turn meeting and 8,177 on 165 turns (ADR-0013),
+// so 6,000 or 50 a turn, whichever is more, up to the model call's 32,000 ceiling.
+const extractionOutputTokens = (turns: number) => Math.min(32_000, Math.max(6_000, 50 * turns));
+
+/** Upper estimates of one extraction call's tokens over these turns, before it is made. */
+export function extractionTokens(turns: readonly Turn[]): { input: number; output: number } {
+  const promptChars =
+    EXTRACTION_SYSTEM_PROMPT.length +
+    buildPrompt(turns).length +
+    JSON.stringify(EXTRACTION_SCHEMA).length;
+  return {
+    input: Math.ceil(promptChars / EXTRACTION_CHARS_PER_TOKEN),
+    output: extractionOutputTokens(turns.length),
+  };
+}
 
 /** The tokens a plan will pay for, estimated before any call, so a caller can price it. */
 export interface IngestTokens {
@@ -173,14 +187,8 @@ export function ingestTokens(plan: IngestPlan): IngestTokens {
   if (plan.kind === "invalid" || plan.kind === "unchanged") {
     return { extractionInput: 0, extractionOutput: 0, embedding: 0 };
   }
-  const promptChars =
-    EXTRACTION_SYSTEM_PROMPT.length +
-    buildPrompt(plan.turns).length +
-    JSON.stringify(EXTRACTION_SCHEMA).length;
-  const extraction = {
-    extractionInput: Math.ceil(promptChars / EXTRACTION_CHARS_PER_TOKEN),
-    extractionOutput: EXPECTED_EXTRACTION_OUTPUT_TOKENS,
-  };
+  const estimate = extractionTokens(plan.turns);
+  const extraction = { extractionInput: estimate.input, extractionOutput: estimate.output };
   if (plan.kind === "extract-only") return { ...extraction, embedding: 0 };
   const embedding = plan.chunks.reduce((n, c) => n + approximateTokenCounter.count(c.text), 0);
   return { ...extraction, embedding };

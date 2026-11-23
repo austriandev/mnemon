@@ -1,9 +1,9 @@
-// The labelled eval set: three synthetic meetings, their gold records, and questions
+// The labelled eval set: four synthetic meetings, their gold records, and questions
 // with the facts a correct answer states and the turns that hold the evidence.
 // Labelled by hand from the transcripts in packages/core/fixtures. Turn numbers are
 // 0-based turn indices, as the parser assigns them.
 
-export type MeetingKey = "oct" | "nov" | "cmc";
+export type MeetingKey = "oct" | "nov" | "cmc" | "kr44";
 
 export interface EvalMeeting {
   readonly key: MeetingKey;
@@ -32,6 +32,14 @@ export const MEETINGS: readonly EvalMeeting[] = [
     title: "BX-17 CMC working group",
     file: "cmc-working-group.txt",
     heldOn: "2026-11-19",
+  },
+  // The long one: 165 turns and 21 action items, some given in passing, one handed to a
+  // different owner, one withdrawn. It measures extraction recall on a long meeting.
+  {
+    key: "kr44",
+    title: "KR-44 clinical operations review",
+    file: "kr44-clinical-operations.txt",
+    heldOn: "2026-11-18",
   },
 ];
 
@@ -122,6 +130,179 @@ export const GOLD_RECORDS: Readonly<Record<MeetingKey, readonly GoldRecord[]>> =
       label: "report phishing to IT",
       owner: "Everyone",
       turns: [28],
+      optional: true,
+    },
+  ],
+  kr44: [
+    { kind: "decision", label: "no third backup site; retrain two sites", turns: [17] },
+    { kind: "decision", label: "remote visit between on-site visits", turns: [29, 32] },
+    { kind: "decision", label: "database lock stays 15 March", turns: [58] },
+    { kind: "decision", label: "week two liver check, by amendment", turns: [81, 86] },
+    { kind: "decision", label: "relabel the Aldmoor kits", turns: [103] },
+    { kind: "decision", label: "mock inspection in January", turns: [137, 138] },
+    { kind: "decision", label: "80 thousand from travel to monitoring", turns: [145, 147] },
+    { kind: "decision", label: "no CRO quote; use the rate card", turns: [38], optional: true },
+    { kind: "decision", label: "weekly query call with the CRO", turns: [64, 65], optional: true },
+    { kind: "decision", label: "June end-of-phase meeting", turns: [128], optional: true },
+    {
+      kind: "decision",
+      label: "no plan yet for a second amendment",
+      turns: [153, 155],
+      optional: true,
+    },
+    {
+      kind: "decision",
+      label: "change request to the portfolio board",
+      turns: [150],
+      optional: true,
+    },
+    {
+      kind: "action_item",
+      label: "retraining plan to both sites",
+      owner: "Rosa Delgado",
+      turns: [18],
+    },
+    {
+      kind: "action_item",
+      label: "revised monitoring plan",
+      owner: "Rosa Delgado",
+      turns: [32, 33],
+    },
+    // One commitment over two turns: the target (46) and how Kenji will meet it (48).
+    // Labelled [46] alone at first; four of five models cited only 48 (ADR-0013).
+    {
+      kind: "action_item",
+      label: "queries over 30 days closed by month end",
+      owner: "Kenji Watanabe",
+      turns: [46, 48],
+    },
+    {
+      kind: "action_item",
+      label: "edit check specification",
+      owner: "Kenji Watanabe",
+      turns: [53],
+    },
+    {
+      kind: "action_item",
+      label: "weekly CRO query call",
+      owner: "Kenji Watanabe",
+      turns: [65, 66],
+    },
+    { kind: "action_item", label: "SAE reconciliation", owner: "Dr. Malik Osei", turns: [73, 75] },
+    { kind: "action_item", label: "draft the amendment", owner: "Lea Fontaine", turns: [87] },
+    { kind: "action_item", label: "investigator letter", owner: "Dr. Malik Osei", turns: [88, 90] },
+    { kind: "action_item", label: "relabelling request", owner: "Omar Haddad", turns: [104] },
+    { kind: "action_item", label: "notify both agencies", owner: "Lea Fontaine", turns: [105] },
+    {
+      kind: "action_item",
+      label: "logger file and deviation report",
+      owner: "Omar Haddad",
+      turns: [111],
+    },
+    { kind: "action_item", label: "DSUR draft", owner: "Lea Fontaine", turns: [117] },
+    {
+      kind: "action_item",
+      label: "Portugal resubmission",
+      owner: "Rosa Delgado",
+      turns: [122, 123],
+    },
+    {
+      kind: "action_item",
+      label: "resubmission draft to Rosa",
+      owner: "Lea Fontaine",
+      turns: [124],
+    },
+    {
+      kind: "action_item",
+      label: "CAPA-118 effectiveness check",
+      owner: "Beatriz Lima",
+      turns: [134],
+    },
+    { kind: "action_item", label: "book the mock inspection", owner: "Beatriz Lima", turns: [139] },
+    { kind: "action_item", label: "audit trail test run", owner: "Kenji Watanabe", turns: [142] },
+    { kind: "action_item", label: "forecast to finance", owner: "Tom Reilly", turns: [148] },
+    {
+      kind: "action_item",
+      label: "change request to the board",
+      owner: "Ingrid Halvorsen",
+      turns: [150],
+    },
+    { kind: "action_item", label: "venue options", owner: "Omar Haddad", turns: [158, 159] },
+    {
+      kind: "action_item",
+      label: "update the contact list",
+      owner: "Ingrid Halvorsen",
+      turns: [161],
+    },
+    // Small or folded into another action item: arguable as records of their own.
+    {
+      kind: "action_item",
+      label: "join the Aldmoor session",
+      owner: "Rosa Delgado",
+      turns: [20],
+      optional: true,
+    },
+    {
+      kind: "action_item",
+      label: "screening log in the plan",
+      owner: "Rosa Delgado",
+      turns: [22],
+      optional: true,
+    },
+    {
+      kind: "action_item",
+      label: "CRAs prioritise queries",
+      owner: "Rosa Delgado",
+      turns: [49],
+      optional: true,
+    },
+    {
+      kind: "action_item",
+      label: "review the spec",
+      owner: "Dr. Malik Osei",
+      turns: [54],
+      optional: true,
+    },
+    {
+      kind: "action_item",
+      label: "SAE entry in retraining",
+      owner: "Rosa Delgado",
+      turns: [72],
+      optional: true,
+    },
+    {
+      kind: "action_item",
+      label: "excursion disposition",
+      owner: "Beatriz Lima",
+      turns: [110],
+      optional: true,
+    },
+    {
+      kind: "action_item",
+      label: "watch Kestrel Bay stock",
+      owner: "Omar Haddad",
+      turns: [114, 115],
+      optional: true,
+    },
+    {
+      kind: "action_item",
+      label: "clean safety sections",
+      owner: "Dr. Malik Osei",
+      turns: [118],
+      optional: true,
+    },
+    {
+      kind: "action_item",
+      label: "update regulatory plan",
+      owner: "Lea Fontaine",
+      turns: [129],
+      optional: true,
+    },
+    {
+      kind: "action_item",
+      label: "numbers to Ingrid",
+      owner: "Tom Reilly",
+      turns: [151],
       optional: true,
     },
   ],
@@ -316,6 +497,55 @@ export const QUESTIONS: readonly GoldQuestion[] = [
     "List every action item from the BX-17 CMC working group, with its owner and deadline.",
     [["stability summary"], ["desiccant"], ["training"]],
     [{ meeting: "cmc", turns: [12, 13, 21] }],
+  ),
+  // The long meeting: every action item, one handed to a new owner, one withdrawn.
+  q(
+    "list-kr44",
+    "List every action item from the KR-44 clinical operations review, with its owner and deadline.",
+    [
+      ["retraining plan"],
+      ["monitoring plan"],
+      ["thirty days", "30 days", "aged queries"],
+      ["edit check"],
+      ["weekly"],
+      ["reconcil"],
+      ["draft the amendment", "amendment"],
+      ["investigator letter", "letter"],
+      ["relabelling request", "relabel"],
+      ["notification", "notify"],
+      ["deviation report", "logger"],
+      ["DSUR"],
+      ["resubmission", "Portugal"],
+      ["by the third", "3 December"],
+      ["CAPA-118"],
+      ["mock inspection"],
+      ["audit trail"],
+      ["finance"],
+      ["portfolio board"],
+      ["venue"],
+      ["contact list"],
+    ],
+    [
+      {
+        meeting: "kr44",
+        turns: [
+          18, 32, 33, 46, 53, 66, 73, 87, 90, 104, 105, 110, 111, 117, 122, 123, 124, 134, 139, 142,
+          148, 150, 159, 160, 161,
+        ],
+      },
+    ],
+  ),
+  q(
+    "kr44-resubmission",
+    "Who owns the Portugal ethics resubmission for KR-44, and when is it due?",
+    [["Rosa"], ["twelfth", "12 December"]],
+    [{ meeting: "kr44", turns: [122, 123] }],
+  ),
+  q(
+    "kr44-quote",
+    "Is anyone getting a quote from the CRO for the extra KR-44 remote monitoring visits?",
+    [["rate card"]],
+    [{ meeting: "kr44", turns: [36, 37, 38] }],
   ),
   // Placing deadlines in time from the meeting's date (ADR-0012).
   q(

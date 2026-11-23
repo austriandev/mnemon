@@ -72,6 +72,29 @@ describe("scoreExtraction", () => {
 
     expect(score).toMatchObject({ hits: 2, ownersCorrect: 1, ownersChecked: 2 });
   });
+
+  it("matches a record citing two action items' turns to the one whose owner it names", () => {
+    const handover: GoldRecord[] = [
+      { kind: "action_item", label: "resubmission", owner: "Rosa Delgado", turns: [122, 123] },
+      { kind: "action_item", label: "draft to Rosa", owner: "Lea Fontaine", turns: [124] },
+    ];
+    const score = scoreExtraction(
+      [record("action_item", [123, 124], "Lea Fontaine"), record("action_item", [123], "Rosa")],
+      handover,
+    );
+
+    expect(score).toMatchObject({ hits: 2, extras: [], ownersCorrect: 2, ownersChecked: 2 });
+  });
+
+  it("matches a record to the gold record sharing the most of its cited turns", () => {
+    const shared: GoldRecord[] = [
+      { kind: "decision", label: "escalation resumes", turns: [13, 31] },
+      { kind: "decision", label: "batch on hold", turns: [23, 31] },
+    ];
+    const score = scoreExtraction([record("decision", [23, 31]), record("decision", [13])], shared);
+
+    expect(score).toMatchObject({ hits: 2, extras: [] });
+  });
 });
 
 const hit = (meetingId: string, first: number, last: number): SearchHit => ({
@@ -87,7 +110,7 @@ const hit = (meetingId: string, first: number, last: number): SearchHit => ({
     oversize: false,
   },
 });
-const ids = { oct: "id-oct", nov: "id-nov", cmc: "id-cmc" } as const;
+const ids = { oct: "id-oct", nov: "id-nov", cmc: "id-cmc", kr44: "id-kr44" } as const;
 
 describe("scoreRetrieval", () => {
   it("measures the share of evidence turns the top k chunks cover, and the first chunk that covers any", () => {
