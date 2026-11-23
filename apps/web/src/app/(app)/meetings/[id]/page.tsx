@@ -31,21 +31,16 @@ export default async function MeetingPage({ params }: Params) {
 
   return (
     <main className="main" style={{ paddingTop: 40 }}>
-      <div className="aurora-light" style={{ height: 260 }} />
-      <div className="wrap" style={{ position: "relative" }}>
+      <div className="wrap">
         <Link href="/#meetings" className="back">
-          <ArrowLeft size={16} strokeWidth={2.25} /> All meetings
+          <ArrowLeft size={16} strokeWidth={1.75} /> All meetings
         </Link>
-        <h1 className="page-title" style={{ marginTop: 18, maxWidth: "24ch", fontSize: 40 }}>
-          {meeting.title}
-        </h1>
-        <div className="meta" style={{ marginTop: 12, fontSize: 14 }}>
+        <h1 className="meeting-title">{meeting.title}</h1>
+        <div className="meta meeting-meta tabular">
           <span>{meeting.turns.length} turns</span>
-          {last ? <span className="tabular">{formatTimestamp(last.startSeconds)} long</span> : null}
+          {last ? <span>{formatTimestamp(last.startSeconds)} long</span> : null}
           <span>{new Set(meeting.turns.map((t) => t.speaker)).size} speakers</span>
-          {meeting.recordsModel ? (
-            <span className="pill quiet">Records by {meeting.recordsModel}</span>
-          ) : null}
+          {meeting.recordsModel ? <span>Records by {meeting.recordsModel}</span> : null}
         </div>
 
         <div className="meeting-layout">
@@ -61,11 +56,9 @@ export default async function MeetingPage({ params }: Params) {
                 return (
                   <section key={kind} className="record-group">
                     <h2>
-                      <Icon size={16} strokeWidth={2.25} />
+                      <Icon size={16} strokeWidth={1.75} />
                       {title}
-                      <span className="pill quiet" style={{ marginLeft: "auto" }}>
-                        {ofKind.length}
-                      </span>
+                      <span className="quiet">{ofKind.length}</span>
                     </h2>
                     {ofKind.map((r) => (
                       <RecordItem key={r.index} record={r} turns={turns} />

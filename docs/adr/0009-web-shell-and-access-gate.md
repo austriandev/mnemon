@@ -47,11 +47,14 @@ a session cookie; a question asked through the page's form returns a cited answe
 
 ## Design
 
-White ground, Manrope at weight 500 with tight tracking, a deep forest green for
-weight (primary buttons, the sign-in panel's sky) and mint for light (the aurora,
-focus, citation chips). The sign-in screen is a split layout: a calm CSS aurora panel
-with the two-tone headline on the left, the form on white on the right. The aurora is
-still under `prefers-reduced-motion`.
+White ground, Manrope at weight 400 for text and 500 for headings, a deep forest green
+for weight (primary buttons, the sign-in panel's sky) and mint for light (the aurora,
+focus, citations). The chrome stays grey: counts and meta are quiet text, not badges,
+and the logo is the name alone. Green is kept for the citation, the numbered marker
+and the timestamp chip that link an answer to the transcript, so the eye goes to the
+evidence. The sign-in screen is a split layout: a calm CSS aurora panel with the
+two-tone headline on the left, the form on white on the right. The aurora is still
+under `prefers-reduced-motion`.
 
 ## Considered options
 

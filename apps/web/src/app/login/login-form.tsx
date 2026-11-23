@@ -11,12 +11,12 @@ export function LoginForm({ closed }: { closed: boolean }) {
   return (
     <form action={action} className="card login-card">
       <h1>Sign in</h1>
-      <p className="lede">Enter the access code for this workspace.</p>
-      <div style={{ display: "grid", gap: 18 }}>
+      <p className="lede">Enter the access code for this workspace</p>
+      <div style={{ display: "grid", gap: 20 }}>
         <label className="field">
           <span>Access code</span>
           <div className="underline">
-            <KeyRound size={17} strokeWidth={2.25} />
+            <KeyRound size={16} strokeWidth={1.75} />
             <input
               name="code"
               type={shown ? "text" : "password"}
@@ -34,9 +34,9 @@ export function LoginForm({ closed }: { closed: boolean }) {
               aria-label={shown ? "Hide the code" : "Show the code"}
             >
               {shown ? (
-                <EyeOff size={17} strokeWidth={2.25} />
+                <EyeOff size={16} strokeWidth={1.75} />
               ) : (
-                <Eye size={17} strokeWidth={2.25} />
+                <Eye size={16} strokeWidth={1.75} />
               )}
             </button>
           </div>
@@ -55,10 +55,10 @@ export function LoginForm({ closed }: { closed: boolean }) {
           type="submit"
           className="btn btn-primary btn-lg"
           disabled={pending || closed}
-          style={{ marginTop: 6 }}
+          style={{ marginTop: 4 }}
         >
           {pending ? "Checking…" : "Continue"}
-          {pending ? null : <ArrowRight size={17} strokeWidth={2.25} />}
+          {pending ? null : <ArrowRight size={16} strokeWidth={1.75} />}
         </button>
       </div>
     </form>
