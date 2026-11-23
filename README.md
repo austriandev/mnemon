@@ -128,6 +128,8 @@ pnpm retrieve "Who is doing the vendor audit?"          # the chunks retrieval f
 `ingest` prints the expected cost before any paid call; every model call logs its
 tokens and cost as a JSON line on stderr. Ingesting a transcript that is already
 stored does nothing, except extract records for a meeting stored before extraction.
+To remove a meeting, delete its row (`delete from meetings where id = '<meeting-id>'`):
+its turns, chunks, records and citations go with it.
 
 ## Web app
 
