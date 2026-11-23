@@ -172,6 +172,28 @@ describe("meeting store", () => {
     expect(meeting?.records).toEqual(records);
   });
 
+  it("lets an operator delete a meeting whole: its turns, chunks, records and citations go with it", async () => {
+    const { id } = await store.save({
+      title: "To delete",
+      source: `${source}\n[00:07:20] Dana Wu: To delete.`,
+      turns,
+      chunks,
+      embeddings,
+      records: { model: "fake-llm-1", items: records },
+    });
+
+    // There is no delete in the app; an operator removes a meeting with one statement.
+    await sql`delete from meetings where id = ${id}`;
+
+    const left = await sql`
+      select (select count(*) from turns where meeting_id = ${id})::int
+           + (select count(*) from chunks where meeting_id = ${id})::int
+           + (select count(*) from records where meeting_id = ${id})::int
+           + (select count(*) from record_citations where meeting_id = ${id})::int as rows`;
+    expect(left[0]?.rows).toBe(0);
+    expect(await store.get(id)).toBeUndefined();
+  });
+
   it("reads back just a meeting's records, in order; none for an unknown or malformed id", async () => {
     const { id } = await store.save({
       title: "Records only",
