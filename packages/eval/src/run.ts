@@ -122,7 +122,12 @@ const pick = (configs: readonly ModelConfig[]) =>
   configs.filter((c) => !values.configs || label(c).includes(values.configs));
 const extractionConfigs = parts.has("extraction") ? pick(EXTRACTION_CONFIGS) : [];
 const answerConfigs = parts.has("answers") ? pick(ANSWER_CONFIGS) : [];
-const questions = QUESTIONS.slice(0, values.questions ? Number(values.questions) : undefined);
+const questionCount = values.questions === undefined ? undefined : Number(values.questions);
+if (questionCount !== undefined && (!Number.isInteger(questionCount) || questionCount < 1)) {
+  console.error("--questions takes a positive whole number.");
+  process.exit(2);
+}
+const questions = QUESTIONS.slice(0, questionCount);
 
 const meetings = MEETINGS.map((m) => {
   const source = readFileSync(new URL(`../../core/fixtures/${m.file}`, import.meta.url), "utf8");
@@ -198,7 +203,10 @@ if (!values.yes) {
 
 const evalUrl = new URL(process.env.MNEMON_EVAL_DATABASE_URL ?? databaseUrl());
 if (!process.env.MNEMON_EVAL_DATABASE_URL) evalUrl.pathname = "/mnemon_eval";
-const admin = postgres(databaseUrl(), { max: 1, onnotice: () => {} });
+// The database is created on the server the eval will use, through its maintenance db.
+const adminUrl = new URL(evalUrl);
+adminUrl.pathname = "/postgres";
+const admin = postgres(adminUrl.toString(), { max: 1, onnotice: () => {} });
 const name = evalUrl.pathname.slice(1);
 const [exists] = await admin`select 1 from pg_database where datname = ${name}`;
 if (!exists) await admin.unsafe(`create database "${name.replaceAll('"', '""')}"`);

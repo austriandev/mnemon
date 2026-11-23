@@ -10,7 +10,7 @@
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run --passWithNoTests",
-    "migrate": "node src/migrate-cli.ts"
+    "migrate": "node --env-file-if-exists=../../.env src/migrate-cli.ts"
   },
   "dependencies": {
     "@mnemon/core": "workspace:*",

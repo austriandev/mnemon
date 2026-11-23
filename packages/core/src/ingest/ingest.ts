@@ -41,8 +41,13 @@ export interface MeetingRepository {
  * What ingesting a transcript will do, worked out before anything is paid for, so a
  * caller can state the cost first.
  */
+/** Why a transcript cannot be ingested: a parse error, or a blank title. */
+export type IngestError =
+  | ParseError
+  | { readonly code: "empty-title"; readonly line: null; readonly message: string };
+
 export type IngestPlan =
-  | { readonly kind: "invalid"; readonly errors: readonly ParseError[] }
+  | { readonly kind: "invalid"; readonly errors: readonly IngestError[] }
   /** Already stored with its records: nothing to do, nothing to pay. */
   | {
       readonly kind: "unchanged";
@@ -87,7 +92,12 @@ export async function planIngest(
   repository: MeetingRepository,
 ): Promise<IngestPlan> {
   const parsed = parseTranscript(source);
-  if (!parsed.ok) return { kind: "invalid", errors: parsed.errors };
+  const name = title.trim();
+  const errors: IngestError[] = parsed.ok ? [] : [...parsed.errors];
+  if (name === "") {
+    errors.push({ code: "empty-title", line: null, message: "The meeting needs a title." });
+  }
+  if (!parsed.ok || errors.length > 0) return { kind: "invalid", errors };
   const existing = await repository.findBySource(source);
   if (existing) {
     const meeting = { id: existing.id, title: existing.title };
@@ -95,7 +105,13 @@ export async function planIngest(
       ? { kind: "unchanged", meeting }
       : { kind: "extract-only", meeting, turns: parsed.turns };
   }
-  return { kind: "new", title, source, turns: parsed.turns, chunks: chunkTurns(parsed.turns) };
+  return {
+    kind: "new",
+    title: name,
+    source,
+    turns: parsed.turns,
+    chunks: chunkTurns(parsed.turns),
+  };
 }
 
 /**
@@ -105,7 +121,7 @@ export async function planIngest(
 export async function runIngest(plan: IngestPlan, deps: IngestDeps): Promise<IngestResult> {
   switch (plan.kind) {
     case "invalid":
-      throw new Error("Cannot ingest: not a valid transcript. Fix the errors the plan lists.");
+      throw new Error("Cannot ingest: the plan is invalid. Fix the errors it lists.");
     case "unchanged":
       return { kind: "unchanged", id: plan.meeting.id, title: plan.meeting.title };
     case "extract-only": {

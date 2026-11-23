@@ -31,6 +31,9 @@ export async function askQuestion(_: AskState, form: FormData): Promise<AskState
       transcripts: app.store,
       model: app.languageModel("answering"),
     });
+    if (result.answer.status === "rejected") {
+      console.warn(JSON.stringify({ event: "answer_withheld", reason: result.answer.reason }));
+    }
     return { kind: "answer", question, view: presentAnswer(result) };
   } catch (error) {
     // The detail goes to the server log; the browser gets a plain sentence.

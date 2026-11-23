@@ -9,7 +9,8 @@ const { values, positionals } = parseArgs({
   options: { meeting: { type: "string" }, limit: { type: "string", default: "5" } },
 });
 const question = positionals.join(" ");
-if (!question.trim()) {
+const limit = Number(values.limit);
+if (!question.trim() || !Number.isInteger(limit) || limit < 1) {
   console.error('Usage: pnpm retrieve "<question>" [--meeting <id>] [--limit 5]');
   process.exit(2);
 }
@@ -19,7 +20,7 @@ try {
   const { chunks } = await retrieve(question, {
     embedder,
     search,
-    limit: Number(values.limit),
+    limit,
     ...(values.meeting ? { meetingId: values.meeting } : {}),
   });
   if (chunks.length === 0) console.log("No matching chunks.");

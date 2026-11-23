@@ -94,9 +94,25 @@ describe("presentAnswer", () => {
     });
     expect(withheld).toMatchObject({
       status: "rejected",
-      reason: "sentence 2 has no citation",
+      reason: "a sentence had no citation",
       sentences: [],
     });
     expect(JSON.stringify(withheld)).not.toContain("secret");
+  });
+
+  it("never sends the browser a quote that failed the citation check", () => {
+    const withheld = presentAnswer({
+      ...base,
+      answer: {
+        status: "rejected",
+        reason:
+          'sentence 1: quote "Dana approved 30 mg for all patients" not found in turn 14 of meeting 1',
+        output: {},
+        model: "m",
+      },
+    });
+
+    expect(withheld.reason).toBe("a quote didn't match the transcript");
+    expect(JSON.stringify(withheld)).not.toContain("30 mg");
   });
 });

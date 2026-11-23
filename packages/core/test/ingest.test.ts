@@ -91,6 +91,26 @@ describe("planIngest", () => {
     expect(plan).toMatchObject({ kind: "extract-only", meeting: { id: "m-1", title: "Oct" } });
   });
 
+  it.each([
+    ["an empty", ""],
+    ["a blank", "   "],
+  ])("rejects %s title before anything is paid for", async (_, title) => {
+    const { deps, calls } = world();
+
+    const plan = await planIngest(source, title, deps.repository);
+
+    expect(plan).toMatchObject({ kind: "invalid", errors: [{ code: "empty-title" }] });
+    expect(calls).toEqual([]);
+  });
+
+  it("trims the title", async () => {
+    const { deps } = world();
+
+    const plan = await planIngest(source, "  AMT-208 (Oct) ", deps.repository);
+
+    expect(plan).toMatchObject({ kind: "new", title: "AMT-208 (Oct)" });
+  });
+
   it("rejects a malformed transcript without touching the repository", async () => {
     const { deps, calls } = world();
 
@@ -157,6 +177,6 @@ describe("runIngest", () => {
     const { deps } = world();
     const plan = await planIngest("not a transcript", "x", deps.repository);
 
-    await expect(runIngest(plan, deps)).rejects.toThrow(/not a valid transcript/);
+    await expect(runIngest(plan, deps)).rejects.toThrow(/plan is invalid/);
   });
 });

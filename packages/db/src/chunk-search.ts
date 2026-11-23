@@ -1,6 +1,6 @@
 import type { ChunkSearch, SearchHit } from "@mnemon/core";
 import type { Sql } from "postgres";
-import { CHUNK_COLUMNS, type ChunkRow, toChunk, toVectorLiteral } from "./rows.ts";
+import { CHUNK_COLUMNS, type ChunkRow, toChunk, toVectorLiteral, UUID } from "./rows.ts";
 
 type HitRow = Omit<ChunkRow, "meeting_id"> & { meeting_id: string };
 
@@ -21,6 +21,7 @@ export function createChunkSearch(sql: Sql): ChunkSearch {
 
   return {
     async keyword(query, { limit, meetingId }) {
+      if (meetingId !== undefined && !UUID.test(meetingId)) return [];
       // Stem the question with the same configuration as the index, then OR the
       // resulting lexemes into a tsquery. Each lexeme is quoted, so punctuation in
       // the question can't change the query's structure.
@@ -38,6 +39,7 @@ export function createChunkSearch(sql: Sql): ChunkSearch {
     },
 
     async vector(embedding, { limit, meetingId, model }) {
+      if (meetingId !== undefined && !UUID.test(meetingId)) return [];
       const rows = await sql<HitRow[]>`
         select c.meeting_id, ${sql(CHUNK_COLUMNS.map((col) => `c.${col}`))}
         from chunks c

@@ -4,10 +4,10 @@
 // without --yes. Meetings already stored are skipped, so it is safe to run again.
 import { readFileSync } from "node:fs";
 import { parseArgs } from "node:util";
-import type { AnthropicModelId } from "@mnemon/anthropic";
+import { CHOSEN_MODELS } from "@mnemon/anthropic";
 import { type IngestPlan, planIngest, runIngest } from "@mnemon/core";
 import { describeResult, expectedCost } from "./ingest-report.ts";
-import { connect } from "./wiring.ts";
+import { connect, paidOnUse } from "./wiring.ts";
 
 const FIXTURES = new URL("../../../packages/core/fixtures/", import.meta.url);
 
@@ -17,10 +17,10 @@ const demo = JSON.parse(readFileSync(new URL("demo-meetings.json", FIXTURES), "u
   title: string;
 }[];
 
-const { sql, store, embedder, languageModel } = await connect();
+const app = await connect();
+const { sql, store } = app;
 try {
-  const model = languageModel("extraction");
-  const modelId = model.model as AnthropicModelId;
+  const modelId = CHOSEN_MODELS.extraction.model;
   const plans: { title: string; plan: IngestPlan }[] = [];
   for (const { file, title } of demo) {
     const source = readFileSync(new URL(file, FIXTURES), "utf8");
@@ -48,7 +48,7 @@ try {
     // One at a time: Voyage's free tier allows 3 requests a minute.
     for (const { title, plan } of todo) {
       console.log(`\n${title}`);
-      const result = await runIngest(plan, { repository: store, embedder, model });
+      const result = await runIngest(plan, paidOnUse(app));
       for (const line of describeResult(result)) console.log(`  ${line}`);
     }
   }

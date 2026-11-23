@@ -1,5 +1,4 @@
 import { LogOut } from "lucide-react";
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { Wordmark } from "@/components/brand.tsx";
 import { gate, requireSession } from "@/server/auth.ts";
@@ -13,12 +12,12 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
       <header className="topbar">
         <div className="inner">
           <Wordmark />
-          <nav aria-label="Main">
-            <Link href="/">Ask</Link>
-            <Link href="/#meetings">Meetings</Link>
-          </nav>
           <div className="end">
-            {open ? <span className="quiet">Open: no access code set</span> : null}
+            {open ? (
+              <span className="quiet" title="Set MNEMON_ACCESS_CODE in .env to require a code">
+                Sign-in off in development
+              </span>
+            ) : null}
             {open ? null : (
               <form action={signOut}>
                 <button className="btn btn-ghost" type="submit">

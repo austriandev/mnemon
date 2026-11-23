@@ -4,10 +4,10 @@
 import { readFileSync } from "node:fs";
 import { basename } from "node:path";
 import { parseArgs } from "node:util";
-import type { AnthropicModelId } from "@mnemon/anthropic";
+import { CHOSEN_MODELS } from "@mnemon/anthropic";
 import { planIngest, runIngest } from "@mnemon/core";
 import { describeResult, expectedCost } from "./ingest-report.ts";
-import { connect } from "./wiring.ts";
+import { connect, paidOnUse } from "./wiring.ts";
 
 const { values, positionals } = parseArgs({
   allowPositionals: true,
@@ -20,19 +20,21 @@ if (!path) {
 }
 
 const source = readFileSync(path, "utf8");
-const { sql, store, embedder, languageModel } = await connect();
+// `||`, not `??`: an empty --title falls back too, rather than failing the plan.
+const title = values.title?.trim() || basename(path);
+const app = await connect();
+const { sql, store } = app;
 try {
-  const plan = await planIngest(source, values.title ?? basename(path), store);
+  const plan = await planIngest(source, title, store);
   if (plan.kind === "invalid") {
     console.error(`${path} was not ingested: ${plan.errors.length} problem(s).`);
     for (const error of plan.errors) console.error(`  ${error.code}: ${error.message}`);
     process.exitCode = 1;
   } else {
-    const model = languageModel("extraction");
     if (plan.kind !== "unchanged") {
-      console.log(`Expected cost: ${expectedCost(plan, model.model as AnthropicModelId).line}.`);
+      console.log(`Expected cost: ${expectedCost(plan, CHOSEN_MODELS.extraction.model).line}.`);
     }
-    const result = await runIngest(plan, { repository: store, embedder, model });
+    const result = await runIngest(plan, paidOnUse(app));
     for (const line of describeResult(result)) console.log(line);
   }
 } finally {
