@@ -36,7 +36,7 @@ const fingerprint = (title: string, source: string) =>
  * the ones that were checked: otherwise it shows the new plan instead.
  */
 export async function addMeeting(_: AddState, form: FormData): Promise<AddState> {
-  await requireSession();
+  const session = await requireSession();
   const submission = await readSubmission(form);
   const typedTitle = String(form.get("title") ?? "");
   if (!submission.ok) {
@@ -70,17 +70,18 @@ export async function addMeeting(_: AddState, form: FormData): Promise<AddState>
     return { ...shown, notice: "The transcript or title changed. Here is the new cost." };
   }
   let id: string;
+  const paid = app.paid(session);
   try {
-    const budget = await app.budget(planCostUsd(plan));
+    const budget = await paid.budget(planCostUsd(plan));
     if (!budget.ok) return { ...shown, notice: overLimitMessage(budget) };
     // API clients are created only when runIngest reaches a paid step.
     const deps: IngestDeps = {
       repository: app.store,
       get embedder() {
-        return app.embedder;
+        return paid.embedder;
       },
       get model() {
-        return app.languageModel("extraction");
+        return paid.languageModel("extraction");
       },
     };
     const result = await runIngest(plan, deps);
@@ -93,6 +94,8 @@ export async function addMeeting(_: AddState, form: FormData): Promise<AddState>
       source,
       message: "The meeting couldn't be added. Nothing was stored; try again in a moment.",
     };
+  } finally {
+    await paid.recorded();
   }
   redirect(`/meetings/${id}`);
 }

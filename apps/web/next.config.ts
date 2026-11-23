@@ -2,7 +2,8 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import type { NextConfig } from "next";
 
-// The workspace keeps one .env at its root. Load it for dev, build and start alike;
+// The workspace keeps one .env at its root. Load it for dev and build (the standalone
+// server behind `pnpm web:start` loads it with --env-file, as it skips this file);
 // variables already set in the environment win.
 for (const dir of [process.cwd(), resolve(process.cwd(), "../..")]) {
   const file = resolve(dir, ".env");

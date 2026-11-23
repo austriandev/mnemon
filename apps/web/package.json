@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev --port 3000",
     "build": "next build",
-    "start": "cp -R .next/static .next/standalone/apps/web/.next/ && HOSTNAME=127.0.0.1 PORT=${PORT:-3000} node .next/standalone/apps/web/server.js",
+    "start": "cp -R .next/static .next/standalone/apps/web/.next/ && HOSTNAME=127.0.0.1 PORT=${PORT:-3000} node --env-file-if-exists=../../.env .next/standalone/apps/web/server.js",
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run --passWithNoTests"
   },

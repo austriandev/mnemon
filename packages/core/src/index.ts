@@ -67,6 +67,7 @@ export type {
 } from "./retrieval/types.ts";
 export {
   type BudgetCheck,
+  type BudgetOptions,
   checkBudget,
   type Spend,
   type SpendLedger,

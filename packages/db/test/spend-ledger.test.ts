@@ -35,6 +35,19 @@ describe("spend ledger", () => {
     expect(await ledger.spentOn("2026-11-21")).toBe(0);
   });
 
+  it("sums one access code's spend apart from the day's, which counts every code", async () => {
+    const ledger = createSpendLedger(sql);
+    await ledger.record({ ...call("2026-11-19", 0.5), accessCode: "reviewer-a" });
+    await ledger.record({ ...call("2026-11-19", 0.25), accessCode: "reviewer-a" });
+    await ledger.record({ ...call("2026-11-19", 1), accessCode: "reviewer-b" });
+    await ledger.record(call("2026-11-19", 2));
+
+    expect(await ledger.spentOn("2026-11-19", "reviewer-a")).toBe(0.75);
+    expect(await ledger.spentOn("2026-11-19", "reviewer-b")).toBe(1);
+    expect(await ledger.spentOn("2026-11-19", "nobody")).toBe(0);
+    expect(await ledger.spentOn("2026-11-19")).toBe(3.75);
+  });
+
   it("keeps each call's tokens and model, so spend can be read back by model", async () => {
     const ledger = createSpendLedger(sql);
     await ledger.record({

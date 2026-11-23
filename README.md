@@ -16,6 +16,13 @@ don't check out is not shown.
 Screenshots from the production build, signed in, over the seeded demo meetings.
 The sign-in page is in [docs/screenshots/login.png](docs/screenshots/login.png).
 
+## Try it live
+
+**https://mnemon-topaz.vercel.app**: sign in with the access code you were given. It
+runs on our API keys over the synthetic demo meetings; each code has $2 a day to spend,
+and the whole demo $10 a day (ADR-0016). Everyone with a code shares one workspace, so
+add only synthetic transcripts. To run your own copy instead, see the Quickstart.
+
 ## Quickstart
 
 Needs Docker (with Compose 2.24 or later) and two API keys: Voyage AI
@@ -122,7 +129,8 @@ Where to read each part:
 | Record extraction (prompt, schema) | `packages/core/src/extraction` | ADR-0006, ADR-0013 |
 | Answers and citation checks (prompt, schema) | `packages/core/src/answering` | ADR-0007, ADR-0011, ADR-0012 |
 | Model choice, settled by the eval | `packages/anthropic/src`, `packages/eval` | ADR-0008 |
-| Web shell, sign-in gate | `apps/web` | ADR-0009, ADR-0010 |
+| Web shell, sign-in gate, access codes | `apps/web` | ADR-0009, ADR-0010, ADR-0016 |
+| Hosted demo (Vercel, Neon) | `.vercelignore`, project settings | ADR-0016 |
 | Spending limit | `packages/core/src/spending`, `apps/web/src/server` | ADR-0014 |
 | Containers, the start script | `Dockerfile`, `docker-compose.yml`, `scripts/app.sh` | ADR-0015 |
 
@@ -152,8 +160,10 @@ pnpm db:down     # stop Postgres (data is kept in the mnemon-db volume)
 - `MNEMON_VOYAGE_API_KEY` (from https://dashboard.voyageai.com) to embed and search;
 - `MNEMON_ANTHROPIC_API_KEY` (from https://platform.claude.com/settings/keys) to
   extract records at ingest and to answer questions;
-- `MNEMON_ACCESS_CODE` for the web app: the code people enter to sign in. Without
-  it the app is open in development and refuses everyone in production.
+- `MNEMON_ACCESS_CODES` for the web app: `name:code[:dollars]` entries, one per person,
+  each held to its own daily limit (`MNEMON_CODE_DAILY_LIMIT_USD`, default 2) as well as
+  the day's. `MNEMON_ACCESS_CODE` sets one shared code instead. Without either the app
+  is open in development and refuses everyone in production (ADR-0016).
 - `MNEMON_DAILY_LIMIT_USD` (optional, default 5): the most the web app spends on paid
   calls in one day. `0` turns paid calls off.
 

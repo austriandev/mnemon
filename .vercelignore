@@ -1,0 +1,14 @@
+# Never uploaded by `vercel deploy`: secrets come from the project's environment
+# variables, and local material stays local. Production deploys build from Git, which
+# has none of these either.
+.env
+.env.*
+!.env.example
+.mnemon/
+.local/
+brief/
+CLAUDE.local.md
+node_modules
+**/.next
+packages/eval/results/
+docs/screenshots/

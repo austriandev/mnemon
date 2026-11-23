@@ -14,7 +14,7 @@ export type AskState =
 const MAX_QUESTION = 500;
 
 export async function askQuestion(_: AskState, form: FormData): Promise<AskState> {
-  await requireSession();
+  const session = await requireSession();
   const question = String(form.get("question") ?? "").trim();
   if (!question) return { kind: "idle" };
   if (question.length > MAX_QUESTION) {
@@ -24,15 +24,16 @@ export async function askQuestion(_: AskState, form: FormData): Promise<AskState
       message: `Keep the question under ${MAX_QUESTION} characters.`,
     };
   }
+  const app = await mnemon();
+  const paid = app.paid(session);
   try {
-    const app = await mnemon();
-    const budget = await app.budget(ASK_ESTIMATE_USD);
+    const budget = await paid.budget(ASK_ESTIMATE_USD);
     if (!budget.ok) return { kind: "error", question, message: overLimitMessage(budget) };
     const result = await ask(question, {
-      embedder: app.embedder,
+      embedder: paid.embedder,
       search: app.search,
       transcripts: app.store,
-      model: app.languageModel("answering"),
+      model: paid.languageModel("answering"),
       today: today(),
     });
     if (result.answer.status === "rejected") {
@@ -47,5 +48,7 @@ export async function askQuestion(_: AskState, form: FormData): Promise<AskState
       question,
       message: "Something went wrong while answering. Try again in a moment.",
     };
+  } finally {
+    await paid.recorded();
   }
 }
