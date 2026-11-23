@@ -30,6 +30,8 @@ export async function askQuestion(_: AskState, form: FormData): Promise<AskState
       search: app.search,
       transcripts: app.store,
       model: app.languageModel("answering"),
+      // The server's calendar day: this app runs where its users are (local, per ADR-0009).
+      today: new Date().toLocaleDateString("en-CA"),
     });
     if (result.answer.status === "rejected") {
       console.warn(JSON.stringify({ event: "answer_withheld", reason: result.answer.reason }));

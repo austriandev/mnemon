@@ -50,7 +50,11 @@ export default async function HomePage() {
                   <h3>{m.title}</h3>
                   <div className="meta">
                     <span className="tabular">{m.turnCount} turns</span>
-                    <span className="tabular">Added {dateFormat.format(m.createdAt)}</span>
+                    <span className="tabular">
+                      {m.heldOn
+                        ? `Held ${dateFormat.format(new Date(`${m.heldOn}T12:00:00`))}`
+                        : `Added ${dateFormat.format(m.createdAt)}`}
+                    </span>
                     <ArrowUpRight className="go" size={16} strokeWidth={1.75} aria-hidden="true" />
                   </div>
                 </Link>

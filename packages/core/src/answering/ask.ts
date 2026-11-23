@@ -13,6 +13,8 @@ export interface AskOptions extends RetrieveOptions {
    * meeting (ADR-0011).
    */
   readonly records?: boolean;
+  /** Today's date, YYYY-MM-DD, so the model can tell which deadlines have passed. */
+  readonly today?: string;
 }
 
 /**
@@ -22,7 +24,7 @@ export interface AskOptions extends RetrieveOptions {
  * be traced back to why each excerpt was in front of the model.
  */
 export async function ask(question: string, options: AskOptions): Promise<AskResult> {
-  const { transcripts, model, records: withRecords = true, ...retrieveOptions } = options;
+  const { transcripts, model, records: withRecords = true, today, ...retrieveOptions } = options;
   const { chunks, embeddingTokens } = await retrieve(question, retrieveOptions);
 
   const excerpts: Excerpt[] = [];
@@ -41,7 +43,7 @@ export async function ask(question: string, options: AskOptions): Promise<AskRes
     if (excerpt) excerpts.push(records.length > 0 ? { ...excerpt, records } : excerpt);
   }
   return {
-    answer: await answer(question, excerpts, model),
+    answer: await answer(question, excerpts, model, today ? { today } : {}),
     retrieved: chunks,
     excerpts,
     embeddingTokens,

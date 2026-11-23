@@ -12,6 +12,7 @@ export type AddState =
   | {
       readonly kind: "checked";
       readonly title: string;
+      readonly heldOn: string;
       readonly source: string;
       readonly plan: PlanView;
       /** Ties "Add" to exactly what was checked, so the cost shown is the cost paid. */
@@ -45,13 +46,23 @@ export async function addMeeting(_: AddState, form: FormData): Promise<AddState>
       message: submission.message,
     };
   }
-  const { title, source } = submission;
+  const { title, source, heldOn } = submission;
   const app = await mnemon();
-  const plan = await planIngest(source, title, app.store);
-  const checked = fingerprint(title, source);
-  const shown: AddState = { kind: "checked", title, source, plan: presentPlan(plan), checked };
+  const plan = await planIngest(source, title, app.store, heldOn ? { heldOn } : {});
+  const checked = fingerprint(`${title}\n${heldOn ?? ""}`, source);
+  const shown: AddState = {
+    kind: "checked",
+    title,
+    heldOn: heldOn ?? "",
+    source,
+    plan: presentPlan(plan),
+    checked,
+  };
 
-  if (form.get("intent") !== "add" || plan.kind === "invalid" || plan.kind === "unchanged") {
+  if (form.get("intent") !== "add" || plan.kind === "invalid") return shown;
+  if (plan.kind === "unchanged") {
+    // Nothing to pay for; a date given for an undated meeting is still recorded.
+    if (plan.dateToAdd) await app.store.setHeldOn(plan.meeting.id, plan.dateToAdd);
     return shown;
   }
   if (form.get("checked") !== checked) {

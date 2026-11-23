@@ -22,7 +22,12 @@ const doseHold = {
 };
 
 /** An in-memory repository, embedder and model that record every call. */
-function world(stored?: { id: string; title: string; recordsModel: string | null }) {
+function world(stored?: {
+  id: string;
+  title: string;
+  recordsModel: string | null;
+  heldOn?: string | null;
+}) {
   const calls: string[] = [];
   const saved: NewMeeting[] = [];
   const added: [string, NewRecords][] = [];
@@ -39,6 +44,9 @@ function world(stored?: { id: string; title: string; recordsModel: string | null
     async addRecords(id, records) {
       calls.push("addRecords");
       added.push([id, records]);
+    },
+    async setHeldOn(id, heldOn) {
+      calls.push(`setHeldOn:${id}:${heldOn}`);
     },
   };
   const embedder: Embedder = {
@@ -212,5 +220,56 @@ describe("ingestTokens", () => {
     const fresh = await planIngest(source, "Oct", world().deps.repository);
 
     expect(ingestTokens(backfill)).toEqual({ ...ingestTokens(fresh), embedding: 0 });
+  });
+});
+
+describe("meeting dates", () => {
+  it("keeps the date the meeting was held, and saves it with the meeting", async () => {
+    const { deps, saved } = world();
+
+    const plan = await planIngest(source, "Oct", deps.repository, { heldOn: "2026-10-15" });
+    await runIngest(plan, deps);
+
+    expect(plan).toMatchObject({ kind: "new", heldOn: "2026-10-15" });
+    expect(saved[0]?.heldOn).toBe("2026-10-15");
+  });
+
+  it("stores no date when none is given", async () => {
+    const { deps, saved } = world();
+
+    await runIngest(await planIngest(source, "Oct", deps.repository), deps);
+
+    expect(saved[0]?.heldOn).toBeNull();
+  });
+
+  it.each([["2026-02-30"], ["15/10/2026"], ["2026-10-15T09:00"]])(
+    "rejects %s, which is not a real YYYY-MM-DD date",
+    async (heldOn) => {
+      const { deps, calls } = world();
+
+      const plan = await planIngest(source, "Oct", deps.repository, { heldOn });
+
+      expect(plan).toMatchObject({ kind: "invalid", errors: [{ code: "invalid-date" }] });
+      expect(calls).toEqual([]);
+    },
+  );
+
+  it("adds a date to a stored meeting that has none, and pays for nothing", async () => {
+    const { deps, calls } = world({ id: "m-1", title: "Oct", recordsModel: "m", heldOn: null });
+
+    const plan = await planIngest(source, "Oct", deps.repository, { heldOn: "2026-10-15" });
+    const result = await runIngest(plan, deps);
+
+    expect(plan).toMatchObject({ kind: "unchanged", dateToAdd: "2026-10-15" });
+    expect(result).toMatchObject({ kind: "unchanged", id: "m-1" });
+    expect(calls).toEqual(["findBySource", "setHeldOn:m-1:2026-10-15"]);
+  });
+
+  it("never changes the date of a meeting that already has one", async () => {
+    const { deps } = world({ id: "m-1", title: "Oct", recordsModel: "m", heldOn: "2026-10-14" });
+
+    const plan = await planIngest(source, "Oct", deps.repository, { heldOn: "2026-10-15" });
+
+    expect(plan).toEqual({ kind: "unchanged", meeting: { id: "m-1", title: "Oct" } });
   });
 });

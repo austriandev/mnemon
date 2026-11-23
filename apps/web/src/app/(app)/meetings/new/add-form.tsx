@@ -23,7 +23,12 @@ export function AddForm() {
     }
   };
 
-  const values = state.kind === "idle" ? { title: "", source: "" } : state;
+  const values =
+    state.kind === "checked"
+      ? state
+      : state.kind === "error"
+        ? { ...state, heldOn: "" }
+        : { title: "", heldOn: "", source: "" };
   const ready = state.kind === "checked" && state.plan.kind === "ready" ? state.plan : null;
 
   return (
@@ -40,6 +45,18 @@ export function AddForm() {
             placeholder="AMT-208 steering committee (Dec)"
             maxLength={200}
             autoComplete="off"
+          />
+        </label>
+        <label className="field" style={{ marginTop: 20 }}>
+          <span>
+            Held on <span className="quiet">(optional, so deadlines can be dated)</span>
+          </span>
+          <input
+            className="text-input"
+            type="date"
+            name="heldOn"
+            defaultValue={values.heldOn}
+            style={{ maxWidth: 220 }}
           />
         </label>
         <label className="field" style={{ marginTop: 20 }}>

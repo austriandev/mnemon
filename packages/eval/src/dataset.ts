@@ -10,13 +10,33 @@ export interface EvalMeeting {
   readonly title: string;
   /** File name in packages/core/fixtures. */
   readonly file: string;
+  /** The day it was held, consistent with what the transcript says. */
+  readonly heldOn: string;
 }
 
 export const MEETINGS: readonly EvalMeeting[] = [
-  { key: "oct", title: "AMT-208 steering committee (Oct)", file: "steering-committee.txt" },
-  { key: "nov", title: "AMT-208 steering committee (Nov)", file: "steering-committee-nov.txt" },
-  { key: "cmc", title: "BX-17 CMC working group", file: "cmc-working-group.txt" },
+  {
+    key: "oct",
+    title: "AMT-208 steering committee (Oct)",
+    file: "steering-committee.txt",
+    heldOn: "2026-10-15",
+  },
+  {
+    key: "nov",
+    title: "AMT-208 steering committee (Nov)",
+    file: "steering-committee-nov.txt",
+    heldOn: "2026-11-14",
+  },
+  {
+    key: "cmc",
+    title: "BX-17 CMC working group",
+    file: "cmc-working-group.txt",
+    heldOn: "2026-11-19",
+  },
 ];
+
+/** The eval's "today", fixed so dated answers are reproducible. */
+export const EVAL_TODAY = "2026-11-23";
 
 export interface GoldRecord {
   readonly kind: "decision" | "action_item";
@@ -121,6 +141,11 @@ export interface GoldQuestion {
   readonly acceptNotFound?: boolean;
   /** Each fact is a list of accepted phrasings; the answer must contain one of each. */
   readonly facts: readonly (readonly string[])[];
+  /**
+   * Facts worked out from the evidence and the meeting's date, such as "30 November"
+   * for "by the end of the month": scored like facts, but not quoted in any turn.
+   */
+  readonly derived?: readonly (readonly string[])[];
   /** Turns that hold the answer. Retrieval should show them; the answer should cite one. */
   readonly evidence: readonly Evidence[];
 }
@@ -291,6 +316,45 @@ export const QUESTIONS: readonly GoldQuestion[] = [
     "List every action item from the BX-17 CMC working group, with its owner and deadline.",
     [["stability summary"], ["desiccant"], ["training"]],
     [{ meeting: "cmc", turns: [12, 13, 21] }],
+  ),
+  // Placing deadlines in time from the meeting's date (ADR-0012).
+  q(
+    "date-amendment",
+    "By what date is the draft protocol amendment from the November AMT-208 steering committee due?",
+    [["end of the month"]],
+    [{ meeting: "nov", turns: [15] }],
+    { derived: [["30 November"]] },
+  ),
+  q(
+    "date-stability",
+    "As of today, is the BX-17 stability summary overdue?",
+    [["January"]],
+    [{ meeting: "cmc", turns: [12] }],
+    {
+      derived: [
+        [
+          "not overdue",
+          "not yet due",
+          "isn't overdue",
+          "is not overdue",
+          "not yet overdue",
+          "not due",
+        ],
+      ],
+    },
+  ),
+  q(
+    "date-oct-followups",
+    "Which action items from the October AMT-208 steering committee had passed their deadline by the November meeting, and which does the November meeting confirm as done?",
+    [
+      ["24 October", "twenty-fourth"],
+      ["twenty-second", "22 October", "22nd"],
+      ["tenth", "10 November", "10th"],
+    ],
+    [
+      { meeting: "oct", turns: [11, 43] },
+      { meeting: "nov", turns: [2, 30] },
+    ],
   ),
   none("none-japan", "What is the AMT-208 enrollment target for Japan?"),
   none("none-cro", "Which CRO runs the BX-17 phase 3 trial?"),

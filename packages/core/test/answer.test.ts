@@ -124,6 +124,24 @@ describe("answer", () => {
     expect(requests[0]?.system).toMatch(/cite the turns/i);
   });
 
+  it("dates each meeting and gives today's date, so a deadline can be placed in time", async () => {
+    const { model, requests } = fakeModel({ status: "not_found", sentences: [], gaps: null });
+
+    await answer(QUESTION, [{ ...steering, heldOn: "2026-10-15" }, budget], model, {
+      today: "2026-11-23",
+    });
+
+    const prompt = requests[0]?.prompt ?? "";
+    expect(prompt).toContain(
+      '<meeting number="1" title="AMT-208 steering committee (Oct)" held="2026-10-15">',
+    );
+    expect(prompt).toContain('<meeting number="2" title="Budget review">');
+    expect(prompt).toContain("Today is 2026-11-23.");
+    // A passed deadline is not evidence that the work is done, or that it isn't.
+    expect(requests[0]?.system).toMatch(/deadline passed, completion not confirmed/);
+    expect(requests[0]?.system).not.toMatch(/Never convert a deadline/);
+  });
+
   it("marks the turns left out between two excerpted turns", async () => {
     const { model, requests } = fakeModel({ status: "not_found", sentences: [], gaps: null });
 

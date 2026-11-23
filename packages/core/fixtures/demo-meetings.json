@@ -1,5 +1,17 @@
 [
-  { "file": "steering-committee.txt", "title": "AMT-208 steering committee (Oct)" },
-  { "file": "steering-committee-nov.txt", "title": "AMT-208 steering committee (Nov)" },
-  { "file": "cmc-working-group.txt", "title": "BX-17 CMC working group" }
+  {
+    "file": "steering-committee.txt",
+    "title": "AMT-208 steering committee (Oct)",
+    "heldOn": "2026-10-15"
+  },
+  {
+    "file": "steering-committee-nov.txt",
+    "title": "AMT-208 steering committee (Nov)",
+    "heldOn": "2026-11-14"
+  },
+  {
+    "file": "cmc-working-group.txt",
+    "title": "BX-17 CMC working group",
+    "heldOn": "2026-11-19"
+  }
 ]

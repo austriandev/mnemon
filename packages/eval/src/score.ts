@@ -117,14 +117,15 @@ export function scoreAnswer(
   question: GoldQuestion,
   ids: Readonly<Record<MeetingKey, string>>,
 ): AnswerScore {
-  const factsTotal = question.facts.length;
+  const facts = [...question.facts, ...(question.derived ?? [])];
+  const factsTotal = facts.length;
   if (answer.status !== "answered") {
     const correct =
       answer.status === "not_found" && (!question.answerable || question.acceptNotFound === true);
     return { outcome: answer.status, correct, factsFound: 0, factsTotal, citesEvidence: null };
   }
   const text = normalise([...answer.sentences.map((s) => s.text), answer.gaps ?? ""].join(" "));
-  const factsFound = question.facts.filter((alternatives) =>
+  const factsFound = facts.filter((alternatives) =>
     alternatives.some((a) => text.includes(normalise(a))),
   ).length;
   const evidence = new Set(

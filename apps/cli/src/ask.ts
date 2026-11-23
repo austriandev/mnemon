@@ -23,6 +23,8 @@ try {
     transcripts: store,
     model: languageModel("answering"),
     ...(values.meeting ? { meetingId: values.meeting } : {}),
+    // The local calendar day, so "is it overdue?" is asked of today.
+    today: new Date().toLocaleDateString("en-CA"),
   });
   const shown = `${retrieved.length} chunks in ${excerpts.length} meeting(s)`;
 

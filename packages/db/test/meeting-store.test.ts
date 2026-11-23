@@ -150,6 +150,7 @@ describe("meeting store", () => {
       id,
       title: "One line",
       recordsModel: null,
+      heldOn: null,
     });
     // One changed byte is a different transcript.
     expect(await store.findBySource(`${source2} `)).toBeUndefined();
@@ -200,6 +201,7 @@ describe("meeting store", () => {
       id,
       title: "No extraction",
       recordsModel: null,
+      heldOn: null,
     });
   });
 
@@ -239,15 +241,51 @@ describe("meeting store", () => {
     expect(await store.excerpt(id, [0, 7])).toEqual({
       meetingId: id,
       title: "Excerpted",
+      heldOn: null,
       turns: [turns[0]],
     });
     expect(await store.excerpt(full.id, [23, 22])).toEqual({
       meetingId: full.id,
       title: "Full",
+      heldOn: null,
       turns: [turns[22], turns[23]],
     });
     expect(await store.excerpt("00000000-0000-4000-8000-000000000000", [0])).toBeUndefined();
     expect(await store.excerpt("not-a-uuid", [0])).toBeUndefined();
+  });
+
+  it("keeps the day a meeting was held, everywhere it is read back", async () => {
+    const dated = `${source}\n[00:07:30] Dana Wu: Dated.`;
+    const { id } = await store.save({
+      title: "Dated",
+      source: dated,
+      turns,
+      chunks,
+      embeddings,
+      heldOn: "2026-10-15",
+    });
+
+    expect((await store.get(id))?.heldOn).toBe("2026-10-15");
+    expect((await store.findBySource(dated))?.heldOn).toBe("2026-10-15");
+    expect((await store.excerpt(id, [0]))?.heldOn).toBe("2026-10-15");
+    expect((await store.list()).find((m) => m.id === id)?.heldOn).toBe("2026-10-15");
+  });
+
+  it("dates a meeting stored without a date, once, and never changes a date", async () => {
+    const undated = `${source}\n[00:07:40] Dana Wu: Undated.`;
+    const { id } = await store.save({
+      title: "Undated",
+      source: undated,
+      turns,
+      chunks,
+      embeddings,
+    });
+    expect((await store.get(id))?.heldOn).toBeNull();
+
+    await store.setHeldOn(id, "2026-11-14");
+    await store.setHeldOn(id, "2026-12-01");
+
+    expect((await store.get(id))?.heldOn).toBe("2026-11-14");
   });
 
   it("refuses embeddings that don't match the chunks one to one", async () => {

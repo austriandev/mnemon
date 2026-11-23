@@ -154,6 +154,20 @@ describe("scoreAnswer", () => {
     });
   });
 
+  it("also requires the derived facts, worked out from the meeting's date", () => {
+    const dated: GoldQuestion = { ...question, derived: [["30 November"]] };
+    const said = ["Dr. Hana Sato is drafting it.", "It is due by the end of the month."];
+
+    expect(scoreAnswer(answered(said), dated, ids)).toMatchObject({
+      correct: false,
+      factsFound: 2,
+      factsTotal: 3,
+    });
+    expect(scoreAnswer(answered([...said, "That is 30 November 2026."]), dated, ids)).toMatchObject(
+      { correct: true, factsFound: 3, factsTotal: 3 },
+    );
+  });
+
   it("is correct for a question the meetings don't answer only when it says not found", () => {
     const unanswerable: GoldQuestion = { ...question, answerable: false, facts: [], evidence: [] };
 
