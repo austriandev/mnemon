@@ -17,14 +17,15 @@ const GROUPS: { kind: RecordKind; title: string; icon: typeof Gavel }[] = [
 ];
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  await requireSession();
-  const meeting = await (await mnemon()).store.get((await params).id);
+  const session = await requireSession();
+  const meeting = await (await mnemon()).forSession(session).store.get((await params).id);
   return { title: meeting?.title ?? "Meeting" };
 }
 
 export default async function MeetingPage({ params }: Params) {
-  await requireSession();
-  const meeting = await (await mnemon()).store.get((await params).id);
+  const session = await requireSession();
+  // Another code's meeting is not found, exactly as one that doesn't exist.
+  const meeting = await (await mnemon()).forSession(session).store.get((await params).id);
   if (!meeting) notFound();
 
   const turns = new Map(meeting.turns.map((t) => [t.index, t]));

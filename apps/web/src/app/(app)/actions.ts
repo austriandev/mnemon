@@ -24,16 +24,15 @@ export async function askQuestion(_: AskState, form: FormData): Promise<AskState
       message: `Keep the question under ${MAX_QUESTION} characters.`,
     };
   }
-  const app = await mnemon();
-  const paid = app.paid(session);
+  const app = (await mnemon()).forSession(session);
   try {
-    const budget = await paid.budget(ASK_ESTIMATE_USD);
+    const budget = await app.budget(ASK_ESTIMATE_USD);
     if (!budget.ok) return { kind: "error", question, message: overLimitMessage(budget) };
     const result = await ask(question, {
-      embedder: paid.embedder,
+      embedder: app.embedder,
       search: app.search,
       transcripts: app.store,
-      model: paid.languageModel("answering"),
+      model: app.languageModel("answering"),
       today: today(),
     });
     if (result.answer.status === "rejected") {
@@ -49,6 +48,6 @@ export async function askQuestion(_: AskState, form: FormData): Promise<AskState
       message: "Something went wrong while answering. Try again in a moment.",
     };
   } finally {
-    await paid.recorded();
+    await app.recorded();
   }
 }

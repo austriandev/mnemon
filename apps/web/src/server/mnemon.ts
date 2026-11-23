@@ -7,7 +7,13 @@ import {
   type ModelUse,
 } from "@mnemon/anthropic";
 import { type BudgetCheck, checkBudget, type Embedder, type Spend } from "@mnemon/core";
-import { createChunkSearch, createMeetingStore, createSpendLedger, databaseUrl } from "@mnemon/db";
+import {
+  createChunkSearch,
+  createMeetingStore,
+  createSpendLedger,
+  databaseUrl,
+  type Visibility,
+} from "@mnemon/db";
 import { createVoyageEmbedder } from "@mnemon/voyage";
 import postgres from "postgres";
 import { dailyLimitUsd, today } from "./budget.ts";
@@ -20,13 +26,16 @@ function create() {
   const ledger = createSpendLedger(sql);
 
   /**
-   * The paid clients for one request, charged to its session's access code. Every paid
-   * call is logged, then recorded against today's limits; `recorded()` waits for those
-   * writes, so a serverless function isn't frozen with one still in flight. A failed
-   * write is logged, never thrown: the call it records has already been paid for.
+   * Everything one request may use, scoped to its session's access code. Meetings: the
+   * common ones plus the code's own, for reading, searching and saving (ADR-0017). Paid
+   * calls: charged to the code, logged, then recorded against today's limits;
+   * `recorded()` waits for those writes, so a serverless function isn't frozen with one
+   * still in flight. A failed write is logged, never thrown: the call it records has
+   * already been paid for.
    */
-  function paid(session: Session) {
+  function forSession(session: Session) {
     const code = session.accessCode;
+    const visibility: Visibility = { kind: "viewer", owner: code?.name ?? null };
     const pending: Promise<void>[] = [];
     const spent = (spend: Omit<Spend, "day" | "accessCode">, log: object) => {
       console.error(JSON.stringify({ event: "model_call", accessCode: code?.name, ...log }));
@@ -40,6 +49,8 @@ function create() {
     };
     let embedder: Embedder | undefined;
     return {
+      store: createMeetingStore(sql, visibility),
+      search: createChunkSearch(sql, visibility),
       /** Whether a call estimated at `estimateUsd` fits in what is left of today's limits. */
       budget: (estimateUsd: number): Promise<BudgetCheck> =>
         checkBudget(ledger, {
@@ -95,11 +106,12 @@ function create() {
     };
   }
 
-  return { sql, store: createMeetingStore(sql), search: createChunkSearch(sql), paid };
+  // No unscoped store or search here: the web app reads meetings only through a session.
+  return { sql, forSession };
 }
 
 type Mnemon = ReturnType<typeof create>;
-export type PaidClients = ReturnType<Mnemon["paid"]>;
+export type SessionClients = ReturnType<Mnemon["forSession"]>;
 // Kept on globalThis so development reloads reuse one connection pool.
 const holder = globalThis as typeof globalThis & { __mnemon?: Mnemon };
 
