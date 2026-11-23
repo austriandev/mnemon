@@ -78,10 +78,13 @@ HTTPS. ADR-0009 has the design.
 pnpm eval                     # prints the plan and the expected cost; spends nothing
 pnpm eval --yes               # runs it: retrieval, record extraction, answers
 pnpm eval --only answers --configs sonnet --questions 5 --yes   # a slice
+pnpm eval --only answers --ids list-oct,list-cmc --limit 3 --records off --yes
 ```
 
 Three synthetic meetings (`packages/core/fixtures`) with hand-labelled gold records and
-22 questions, 3 of them unanswerable (`packages/eval/src/dataset.ts`). Each model
+25 questions, 3 of them unanswerable and 3 asking for every action item of a meeting
+(`packages/eval/src/dataset.ts`). `--limit` sets how many chunks an answer retrieves,
+and `--records off` answers without the meetings' records (ADR-0011). Each model
 configuration runs over the same data through the same code the app uses, in its own
 database (`mnemon_eval`). Results go to `packages/eval/results/`, and the numbers that
 settled a choice go in its ADR.

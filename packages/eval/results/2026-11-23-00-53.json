@@ -1,0 +1,212 @@
+{
+  "date": "2026-11-23T00:53:01.465Z",
+  "ids": {
+    "oct": "469e400d-01ed-415c-a05a-919c245053b4",
+    "nov": "f5da9d91-d971-4ef0-a735-4bc6465281ed",
+    "cmc": "1af47e3e-1193-4ccd-8ec3-1a49cfea765b"
+  },
+  "answerSetup": {
+    "limit": 8,
+    "records": false
+  },
+  "answers": [
+    {
+      "config": {
+        "model": "claude-sonnet-5-5",
+        "effort": "medium"
+      },
+      "question": "list-oct",
+      "ms": 3355,
+      "usage": [
+        {
+          "provider": "anthropic",
+          "model": "claude-sonnet-5-5",
+          "servedBy": "claude-sonnet-5-5",
+          "inputTokens": 5256,
+          "outputTokens": 329,
+          "cacheReadTokens": 0,
+          "cacheWriteTokens": 0,
+          "costUsd": 0.013802
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "sentences": [
+          {
+            "text": "Sam Okafor committed to have both backup site agreements out for signature by the twenty-fourth.",
+            "citations": [
+              {
+                "meetingId": "469e400d-01ed-415c-a05a-919c245053b4",
+                "turnIndex": 11,
+                "quote": "I'll have both agreements out for signature by the twenty-fourth."
+              }
+            ]
+          },
+          {
+            "text": "Dr. Hana Sato committed to prepare the patient listings and narrative for the three liver cases and send them to the committee by Friday.",
+            "citations": [
+              {
+                "meetingId": "469e400d-01ed-415c-a05a-919c245053b4",
+                "turnIndex": 23,
+                "quote": "send them to the committee by Friday"
+              }
+            ]
+          },
+          {
+            "text": "Marcus Lindqvist committed to update the integrated timeline and risk register and circulate both before the next meeting.",
+            "citations": [
+              {
+                "meetingId": "469e400d-01ed-415c-a05a-919c245053b4",
+                "turnIndex": 43,
+                "quote": "circulate both before the next meeting"
+              }
+            ]
+          }
+        ],
+        "gaps": "Turns 29-38 (the vendor and budget discussion) were not shown, so any action items from the vendor audit or the 150 thousand reallocation are not covered.",
+        "model": "claude-sonnet-5-5"
+      },
+      "score": {
+        "outcome": "answered",
+        "correct": false,
+        "factsFound": 2,
+        "factsTotal": 5,
+        "citesEvidence": true
+      }
+    },
+    {
+      "config": {
+        "model": "claude-sonnet-5-5",
+        "effort": "medium"
+      },
+      "question": "list-nov",
+      "ms": 3351,
+      "usage": [
+        {
+          "provider": "anthropic",
+          "model": "claude-sonnet-5-5",
+          "servedBy": "claude-sonnet-5-5",
+          "inputTokens": 5256,
+          "outputTokens": 306,
+          "cacheReadTokens": 0,
+          "cacheWriteTokens": 0,
+          "costUsd": 0.013572
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "sentences": [
+          {
+            "text": "Marcus Lindqvist committed to deliver the revised enrollment forecast, including both new sites, by the end of next week.",
+            "citations": [
+              {
+                "meetingId": "f5da9d91-d971-4ef0-a735-4bc6465281ed",
+                "turnIndex": 7,
+                "quote": "I'll have the revised forecast to you by the end of next week."
+              }
+            ]
+          },
+          {
+            "text": "Dr. Hana Sato will draft the substantial protocol amendment and circulate it by the end of the month.",
+            "citations": [
+              {
+                "meetingId": "f5da9d91-d971-4ef0-a735-4bc6465281ed",
+                "turnIndex": 12,
+                "quote": "Yes, a substantial amendment. I can draft it."
+              },
+              {
+                "meetingId": "f5da9d91-d971-4ef0-a735-4bc6465281ed",
+                "turnIndex": 15,
+                "quote": "I'll circulate the draft amendment by the end of the month."
+              }
+            ]
+          }
+        ],
+        "gaps": "The excerpt of the November meeting ends at the vendor audit discussion (turn 17), so any action items from later in the meeting are not shown; the audit notice items there were already done and no new owner or deadline was stated.",
+        "model": "claude-sonnet-5-5"
+      },
+      "score": {
+        "outcome": "answered",
+        "correct": true,
+        "factsFound": 2,
+        "factsTotal": 2,
+        "citesEvidence": true
+      }
+    },
+    {
+      "config": {
+        "model": "claude-sonnet-5-5",
+        "effort": "medium"
+      },
+      "question": "list-cmc",
+      "ms": 3904,
+      "usage": [
+        {
+          "provider": "anthropic",
+          "model": "claude-sonnet-5-5",
+          "servedBy": "claude-sonnet-5-5",
+          "inputTokens": 5256,
+          "outputTokens": 432,
+          "cacheReadTokens": 0,
+          "cacheWriteTokens": 0,
+          "costUsd": 0.014832
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "sentences": [
+          {
+            "text": "Tomas Berg committed to write the stability summary with the twenty-four month justification by mid-January.",
+            "citations": [
+              {
+                "meetingId": "1af47e3e-1193-4ccd-8ec3-1a49cfea765b",
+                "turnIndex": 12,
+                "quote": "I'll write up the stability summary with the twenty-four month justification by mid-January."
+              }
+            ]
+          },
+          {
+            "text": "Aiko Tanaka committed to scope the desiccant study with a cost estimate for the next meeting.",
+            "citations": [
+              {
+                "meetingId": "1af47e3e-1193-4ccd-8ec3-1a49cfea765b",
+                "turnIndex": 13,
+                "quote": "I'll scope the desiccant study, with a cost estimate for the next meeting."
+              }
+            ]
+          },
+          {
+            "text": "Aiko Tanaka owns repeating the Veltra Labs method transfer with joint training first.",
+            "citations": [
+              {
+                "meetingId": "1af47e3e-1193-4ccd-8ec3-1a49cfea765b",
+                "turnIndex": 20,
+                "quote": "we repeat the transfer with joint training first. Aiko, you own it."
+              }
+            ]
+          },
+          {
+            "text": "Aiko Tanaka will set up the training for the first week of January and rerun the transfer straight after.",
+            "citations": [
+              {
+                "meetingId": "1af47e3e-1193-4ccd-8ec3-1a49cfea765b",
+                "turnIndex": 21,
+                "quote": "I'll set up the training for the first week of January and rerun the transfer straight after."
+              }
+            ]
+          }
+        ],
+        "gaps": "Rui Almeida's reminder that everyone report suspicious emails to IT security was general direction with no named owner or deadline, so it is not listed as an action item.",
+        "model": "claude-sonnet-5-5"
+      },
+      "score": {
+        "outcome": "answered",
+        "correct": true,
+        "factsFound": 3,
+        "factsTotal": 3,
+        "citesEvidence": true
+      }
+    }
+  ],
+  "spentUsd": 0.042206
+}

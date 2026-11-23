@@ -1,4 +1,4 @@
-import type { Citation } from "../extraction/types.ts";
+import type { Citation, MeetingRecord } from "../extraction/types.ts";
 import type { RetrievedChunk } from "../retrieval/types.ts";
 import type { Turn } from "../transcript/types.ts";
 
@@ -7,12 +7,16 @@ export interface Excerpt {
   readonly meetingId: string;
   readonly title: string;
   readonly turns: readonly Turn[];
+  /** The meeting's extracted records, when shown with it. The turns they cite are in turns. */
+  readonly records?: readonly MeetingRecord[];
 }
 
-/** Reads turns back from stored meetings. Implementations sit over a store. */
+/** Reads turns and records back from stored meetings. Implementations sit over a store. */
 export interface TranscriptSource {
   /** The meeting's title and the turns with these indices, in turn order; undefined if no such meeting. */
   excerpt(meetingId: string, turnIndices: readonly number[]): Promise<Excerpt | undefined>;
+  /** The meeting's extracted records, in order; empty if it has none or does not exist. */
+  records(meetingId: string): Promise<readonly MeetingRecord[]>;
 }
 
 /** A citation in an answer: a turn of a particular meeting, and the words in it relied on. */

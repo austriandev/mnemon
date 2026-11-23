@@ -87,6 +87,16 @@ function sha256Of(source: string): string {
 }
 
 export function createMeetingStore(sql: Sql): MeetingStore {
+  const readRecords = async (meetingId: string) => {
+    if (!UUID.test(meetingId)) return [];
+    const recordRows = await sql<RecordRow[]>`
+      select * from records where meeting_id = ${meetingId} order by record_index`;
+    const citationRows = await sql<CitationRow[]>`
+      select * from record_citations where meeting_id = ${meetingId}
+      order by record_index, citation_index`;
+    return toRecords(recordRows, citationRows);
+  };
+
   return {
     async save({ title, source, turns, chunks, embeddings, records }) {
       if (embeddings.vectors.length !== chunks.length) {
@@ -154,11 +164,6 @@ export function createMeetingStore(sql: Sql): MeetingStore {
         select * from turns where meeting_id = ${id} order by turn_index`;
       const chunkRows = await sql<ChunkRow[]>`
         select ${sql(CHUNK_COLUMNS)} from chunks where meeting_id = ${id} order by chunk_index`;
-      const recordRowsFound = await sql<RecordRow[]>`
-        select * from records where meeting_id = ${id} order by record_index`;
-      const citationRows = await sql<CitationRow[]>`
-        select * from record_citations where meeting_id = ${id}
-        order by record_index, citation_index`;
       return {
         id: meeting.id,
         title: meeting.title,
@@ -169,9 +174,11 @@ export function createMeetingStore(sql: Sql): MeetingStore {
         createdAt: meeting.created_at,
         turns: turnRows.map(toTurn),
         chunks: chunkRows.map(toChunk),
-        records: toRecords(recordRowsFound, citationRows),
+        records: await readRecords(id),
       };
     },
+
+    records: readRecords,
 
     async excerpt(meetingId, turnIndices) {
       if (!UUID.test(meetingId)) return undefined;

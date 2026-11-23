@@ -10,12 +10,13 @@ import type { Answer, AnswerCitation, AnswerSentence, Excerpt } from "./types.ts
  */
 export const ANSWER_SYSTEM_PROMPT = `You answer questions about meetings for teams in regulated life-sciences settings, where every statement must trace back to who said it and when.
 
-You are given excerpts from meeting transcripts, retrieved for the question, and then the question.
+You are given excerpts from meeting transcripts, retrieved for the question, and then the question. A meeting may also list its records: the decisions, action items and topics extracted from the whole meeting before the question was asked, each with the turns it rests on.
 
 Rules:
 - Answer only from the excerpts, never from general knowledge. If they do not answer the question, set status to "not_found" and give no sentences.
 - Write the answer as a list of short sentences. Every sentence cites the turns that support it: the meeting number, the turn number, and a short quote copied character for character from that turn's text: a phrase, not the whole turn.
 - Cite only turns shown in the excerpts.
+- Use the records to answer completely when the question asks for every item of a kind, such as every action item or decision, or when the retrieved turns don't reach far enough. Records are a summary, not evidence: check each against its turns, and cite the turns, never the record.
 - Say who said or committed to something when it matters to the question.
 - Refer to a meeting by its title, never by its number: the numbers are only for citations.
 - Keep numbers, doses, product codes, names and deadlines exactly as said. Never convert a deadline to a date.
@@ -90,6 +91,7 @@ export function buildPrompt(question: string, excerpts: readonly Excerpt[]): str
   const meetings = excerpts.map((e, i) =>
     [
       `<meeting number="${i + 1}" title=${JSON.stringify(e.title)}>`,
+      ...recordLines(e),
       ...withGaps(e.turns),
       "</meeting>",
     ].join("\n"),
@@ -104,6 +106,26 @@ export function buildPrompt(question: string, excerpts: readonly Excerpt[]): str
     question.trim(),
     "</question>",
   ].join("\n");
+}
+
+const KIND_LABEL = { decision: "decision", action_item: "action item", topic: "topic" } as const;
+
+/** The meeting's records, one line each, with the turns each rests on. */
+function recordLines({ records }: Excerpt): string[] {
+  if (!records || records.length === 0) return [];
+  const lines = records.map((r) => {
+    const turns = [...new Set(r.citations.map((c) => c.turnIndex))];
+    const parts = [`- ${KIND_LABEL[r.kind]}: ${r.summary}`];
+    if (r.owner) parts.push(`Owner: ${r.owner}.`);
+    if (r.due) parts.push(`Due: ${r.due}.`);
+    parts.push(turns.length === 1 ? `[turn ${turns[0]}]` : `[turns ${turns.join(", ")}]`);
+    return parts.join(" ");
+  });
+  return [
+    '<records note="extracted from the whole meeting before this question">',
+    ...lines,
+    "</records>",
+  ];
 }
 
 /** Turn lines, with a marker wherever turns were left out, so the model never reads two turns as adjacent. */

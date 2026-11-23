@@ -6,6 +6,7 @@ import {
   type Embedder,
   type Excerpt,
   type LanguageModel,
+  type MeetingRecord,
   type SearchHit,
   type StructuredRequest,
   type TranscriptSource,
@@ -34,8 +35,17 @@ function hit(meetingId: string, index: number, first: number, last: number): Sea
   return { meetingId, chunk };
 }
 
+const shipLetter: MeetingRecord = {
+  index: 0,
+  kind: "action_item",
+  summary: "Send the notice letter.",
+  owner: "Priya Nair",
+  due: "by Friday",
+  citations: [{ turnIndex: 5, quote: "A says 5" }],
+};
+
 /** Two stored meetings, a search that returns canned hits, and a model with a fixed answer. */
-function world(hits: SearchHit[], output: unknown) {
+function world(hits: SearchHit[], output: unknown, records: Record<string, MeetingRecord[]> = {}) {
   const meetings: Record<string, { title: string; turns: Turn[] }> = {
     "m-a": { title: "Meeting A", turns: [0, 1, 2, 3, 4, 5].map((i) => turn(i, `A says ${i}`)) },
     "m-b": { title: "Meeting B", turns: [0, 1, 2].map((i) => turn(i, `B says ${i}`)) },
@@ -48,6 +58,9 @@ function world(hits: SearchHit[], output: unknown) {
       return (
         m && { meetingId, title: m.title, turns: m.turns.filter((t) => indices.includes(t.index)) }
       );
+    },
+    async records(meetingId) {
+      return records[meetingId] ?? [];
     },
   };
   const embedder: Embedder = {
@@ -124,5 +137,34 @@ describe("ask", () => {
     expect(result.answer).toEqual({ status: "not_found", model: null });
     expect(excerptCalls).toEqual([]);
     expect(requests).toEqual([]);
+  });
+
+  it("shows each meeting's extracted records, and the turns they cite, beside the retrieved turns", async () => {
+    // Retrieval finds turns 1-2 of A; A's records cite turn 5, which retrieval missed.
+    const { deps, excerptCalls, requests } = world(
+      [hit("m-a", 0, 1, 2)],
+      { status: "not_found", sentences: [], gaps: null },
+      { "m-a": [shipLetter] },
+    );
+
+    const result = await ask("List every action item.", deps);
+
+    expect(excerptCalls).toEqual([["m-a", [1, 2, 5]]]);
+    expect(result.excerpts[0]?.records).toEqual([shipLetter]);
+    expect(requests[0]?.prompt).toContain("Send the notice letter.");
+  });
+
+  it("answers from the retrieved turns alone when records are turned off", async () => {
+    const { deps, excerptCalls, requests } = world(
+      [hit("m-a", 0, 1, 2)],
+      { status: "not_found", sentences: [], gaps: null },
+      { "m-a": [shipLetter] },
+    );
+
+    const result = await ask("List every action item.", { ...deps, records: false });
+
+    expect(excerptCalls).toEqual([["m-a", [1, 2]]]);
+    expect(result.excerpts[0]?.records).toBeUndefined();
+    expect(requests[0]?.prompt).not.toContain("<records");
   });
 });

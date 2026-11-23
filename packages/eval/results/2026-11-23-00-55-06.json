@@ -1,0 +1,237 @@
+{
+  "date": "2026-11-23T00:55:03.201Z",
+  "ids": {
+    "oct": "469e400d-01ed-415c-a05a-919c245053b4",
+    "nov": "f5da9d91-d971-4ef0-a735-4bc6465281ed",
+    "cmc": "1af47e3e-1193-4ccd-8ec3-1a49cfea765b"
+  },
+  "answerSetup": {
+    "limit": 3,
+    "records": true
+  },
+  "answers": [
+    {
+      "config": {
+        "model": "claude-sonnet-5-5",
+        "effort": "medium"
+      },
+      "question": "list-oct",
+      "ms": 3524,
+      "usage": [
+        {
+          "provider": "anthropic",
+          "model": "claude-sonnet-5-5",
+          "servedBy": "claude-sonnet-5-5",
+          "inputTokens": 6097,
+          "outputTokens": 451,
+          "cacheReadTokens": 0,
+          "cacheWriteTokens": 0,
+          "costUsd": 0.016704
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "sentences": [
+          {
+            "text": "Sam Okafor will send both backup site agreements out for signature by the twenty-fourth.",
+            "citations": [
+              {
+                "meetingId": "469e400d-01ed-415c-a05a-919c245053b4",
+                "turnIndex": 11,
+                "quote": "I'll have both agreements out for signature by the twenty-fourth."
+              }
+            ]
+          },
+          {
+            "text": "Dr. Hana Sato will prepare the patient listings and the narrative for the three cases and send them to the committee by Friday.",
+            "citations": [
+              {
+                "meetingId": "469e400d-01ed-415c-a05a-919c245053b4",
+                "turnIndex": 23,
+                "quote": "send them to the committee by Friday"
+              }
+            ]
+          },
+          {
+            "text": "Priya Nair will take the vendor audit and provide an audit plan within two weeks.",
+            "citations": [
+              {
+                "meetingId": "469e400d-01ed-415c-a05a-919c245053b4",
+                "turnIndex": 31,
+                "quote": "I'll take the vendor audit and have a plan to you within two weeks."
+              }
+            ]
+          },
+          {
+            "text": "Sam Okafor will send the audit notice letter to the vendor once Priya confirms the audit dates; no fixed deadline was given.",
+            "citations": [
+              {
+                "meetingId": "469e400d-01ed-415c-a05a-919c245053b4",
+                "turnIndex": 33,
+                "quote": "I'll send the notice letter once Priya confirms the audit dates."
+              }
+            ]
+          },
+          {
+            "text": "Marcus Lindqvist will update the integrated timeline and the risk register and circulate both before the next meeting.",
+            "citations": [
+              {
+                "meetingId": "469e400d-01ed-415c-a05a-919c245053b4",
+                "turnIndex": 43,
+                "quote": "circulate both before the next meeting"
+              }
+            ]
+          }
+        ],
+        "gaps": null,
+        "model": "claude-sonnet-5-5"
+      },
+      "score": {
+        "outcome": "answered",
+        "correct": true,
+        "factsFound": 5,
+        "factsTotal": 5,
+        "citesEvidence": true
+      }
+    },
+    {
+      "config": {
+        "model": "claude-sonnet-5-5",
+        "effort": "medium"
+      },
+      "question": "list-nov",
+      "ms": 2850,
+      "usage": [
+        {
+          "provider": "anthropic",
+          "model": "claude-sonnet-5-5",
+          "servedBy": "claude-sonnet-5-5",
+          "inputTokens": 6005,
+          "outputTokens": 334,
+          "cacheReadTokens": 0,
+          "cacheWriteTokens": 0,
+          "costUsd": 0.01535
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "sentences": [
+          {
+            "text": "Marcus Lindqvist will provide a revised enrollment forecast including both new sites, due by the end of next week.",
+            "citations": [
+              {
+                "meetingId": "f5da9d91-d971-4ef0-a735-4bc6465281ed",
+                "turnIndex": 7,
+                "quote": "I'll have the revised forecast to you by the end of next week."
+              }
+            ]
+          },
+          {
+            "text": "Dr. Hana Sato will draft and circulate the substantial protocol amendment, due by the end of the month.",
+            "citations": [
+              {
+                "meetingId": "f5da9d91-d971-4ef0-a735-4bc6465281ed",
+                "turnIndex": 12,
+                "quote": "a substantial amendment. I can draft it."
+              },
+              {
+                "meetingId": "f5da9d91-d971-4ef0-a735-4bc6465281ed",
+                "turnIndex": 15,
+                "quote": "I'll circulate the draft amendment by the end of the month."
+              }
+            ]
+          },
+          {
+            "text": "Marcus Lindqvist will fold the new forecast into the timeline; no deadline was stated.",
+            "citations": [
+              {
+                "meetingId": "f5da9d91-d971-4ef0-a735-4bc6465281ed",
+                "turnIndex": 30,
+                "quote": "I'll fold the new forecast into the timeline as well."
+              }
+            ]
+          }
+        ],
+        "gaps": "No deadline was given for folding the new forecast into the timeline.",
+        "model": "claude-sonnet-5-5"
+      },
+      "score": {
+        "outcome": "answered",
+        "correct": true,
+        "factsFound": 2,
+        "factsTotal": 2,
+        "citesEvidence": true
+      }
+    },
+    {
+      "config": {
+        "model": "claude-sonnet-5-5",
+        "effort": "medium"
+      },
+      "question": "list-cmc",
+      "ms": 3257,
+      "usage": [
+        {
+          "provider": "anthropic",
+          "model": "claude-sonnet-5-5",
+          "servedBy": "claude-sonnet-5-5",
+          "inputTokens": 3263,
+          "outputTokens": 334,
+          "cacheReadTokens": 0,
+          "cacheWriteTokens": 0,
+          "costUsd": 0.009866
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "sentences": [
+          {
+            "text": "Tomas Berg will write up the stability summary with the twenty-four month justification, due by mid-January.",
+            "citations": [
+              {
+                "meetingId": "1af47e3e-1193-4ccd-8ec3-1a49cfea765b",
+                "turnIndex": 12,
+                "quote": "I'll write up the stability summary with the twenty-four month justification by mid-January."
+              }
+            ]
+          },
+          {
+            "text": "Aiko Tanaka will scope the desiccant study with a cost estimate, due for the next meeting.",
+            "citations": [
+              {
+                "meetingId": "1af47e3e-1193-4ccd-8ec3-1a49cfea765b",
+                "turnIndex": 13,
+                "quote": "I'll scope the desiccant study, with a cost estimate for the next meeting."
+              }
+            ]
+          },
+          {
+            "text": "Aiko Tanaka will set up the joint training at Veltra's site for the first week of January and rerun the method transfer straight after.",
+            "citations": [
+              {
+                "meetingId": "1af47e3e-1193-4ccd-8ec3-1a49cfea765b",
+                "turnIndex": 21,
+                "quote": "I'll set up the training for the first week of January and rerun the transfer straight after."
+              },
+              {
+                "meetingId": "1af47e3e-1193-4ccd-8ec3-1a49cfea765b",
+                "turnIndex": 20,
+                "quote": "Aiko, you own it."
+              }
+            ]
+          }
+        ],
+        "gaps": null,
+        "model": "claude-sonnet-5-5"
+      },
+      "score": {
+        "outcome": "answered",
+        "correct": true,
+        "factsFound": 3,
+        "factsTotal": 3,
+        "citesEvidence": true
+      }
+    }
+  ],
+  "spentUsd": 0.04192
+}
