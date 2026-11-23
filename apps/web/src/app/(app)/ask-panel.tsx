@@ -34,7 +34,7 @@ export function AskPanel() {
   return (
     <>
       <form ref={form} action={action} className="card ask" aria-label="Ask a question">
-        <Search size={19} strokeWidth={2.25} />
+        <Search size={18} strokeWidth={1.75} />
         <input
           ref={input}
           name="question"
@@ -46,7 +46,7 @@ export function AskPanel() {
         />
         <button type="submit" className="btn btn-primary" disabled={pending}>
           <span>{pending ? "Asking" : "Ask"}</span>
-          <ArrowRight size={17} strokeWidth={2.25} />
+          <ArrowRight size={16} strokeWidth={1.75} />
         </button>
       </form>
       <div className="suggestions">
@@ -78,7 +78,7 @@ export function AskPanel() {
         ) : state.kind === "error" ? (
           <div className="card answer notice withheld">
             <span className="badge">
-              <Info size={19} strokeWidth={2.25} />
+              <Info size={18} strokeWidth={1.75} />
             </span>
             <div>
               <h2>No answer this time</h2>
@@ -101,10 +101,10 @@ function AnswerCard({ question, view }: { question: string; view: AnswerView }) 
     return (
       <div className="card answer notice">
         <span className="badge">
-          <SearchX size={19} strokeWidth={2.25} />
+          <SearchX size={18} strokeWidth={1.75} />
         </span>
         <div>
-          <h2>The meetings don't say.</h2>
+          <h2>The meetings don't say</h2>
           <p>
             Searched {searched(view)}. Nothing in them answers “{question}”, so Mnemon won't guess.
           </p>
@@ -116,10 +116,10 @@ function AnswerCard({ question, view }: { question: string; view: AnswerView }) 
     return (
       <div className="card answer notice withheld">
         <span className="badge">
-          <ShieldExclamationPoint size={19} strokeWidth={2.25} />
+          <ShieldExclamationPoint size={18} strokeWidth={1.75} />
         </span>
         <div>
-          <h2>No answer shown.</h2>
+          <h2>No answer shown</h2>
           <p>
             The answer failed a citation check ({view.reason}). Mnemon withholds answers it can't
             trace to the transcript.
@@ -133,8 +133,10 @@ function AnswerCard({ question, view }: { question: string; view: AnswerView }) 
     <article className="card answer">
       <div className="answer-head">
         <h2 className="answer-question">{question}</h2>
-        <span className="pill">Cited from {searched(view)}</span>
-        {view.model ? <span className="pill quiet">{view.model}</span> : null}
+        <div className="quiet">
+          <span>Cited from {searched(view)}</span>
+          {view.model ? <span>{view.model}</span> : null}
+        </div>
       </div>
       <div className="sentences">
         {view.sentences.map((s) => (
@@ -150,9 +152,9 @@ function AnswerCard({ question, view }: { question: string; view: AnswerView }) 
       </div>
       {view.gaps ? (
         <div className="gaps">
-          <Info size={16} strokeWidth={2.25} />
+          <Info size={16} strokeWidth={1.75} />
           <span>
-            <strong>Not covered.</strong> {view.gaps}
+            <strong>Not covered:</strong> {view.gaps}
           </span>
         </div>
       ) : null}
@@ -171,7 +173,7 @@ function AnswerCard({ question, view }: { question: string; view: AnswerView }) 
                   turn {src.turnIndex}, {src.lines}
                 </span>
                 <a className="text-link" href={src.href}>
-                  Open in transcript <ArrowUpRight size={14} strokeWidth={2.25} />
+                  Open in transcript <ArrowUpRight size={14} strokeWidth={1.75} />
                 </a>
               </div>
             </div>
