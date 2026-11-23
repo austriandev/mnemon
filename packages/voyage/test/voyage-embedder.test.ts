@@ -186,6 +186,23 @@ describe("createVoyageEmbedder", () => {
     expect(waits).toEqual([1000, 2000]);
   });
 
+  it("by default keeps retrying a rate limit for over a minute, the window limits are counted in", async () => {
+    // A key without a payment method gets 3 requests a minute: a question asked right
+    // after three others must wait out the minute, not fail after 15 s.
+    const waits: number[] = [];
+    const embedder = createVoyageEmbedder({
+      apiKey: "k",
+      fetch: async () => new Response("{}", { status: 429 }),
+      onUsage: () => {},
+      sleep: async (ms) => {
+        waits.push(ms);
+      },
+    });
+
+    await expect(embedder.embed(["x"], "query")).rejects.toThrow(/429/);
+    expect(waits.reduce((a, b) => a + b, 0)).toBeGreaterThan(60_000);
+  });
+
   it("does not retry a client error such as a bad key", async () => {
     let calls = 0;
     const embedder = createVoyageEmbedder({

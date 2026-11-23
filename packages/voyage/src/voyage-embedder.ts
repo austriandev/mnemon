@@ -31,7 +31,10 @@ export interface VoyageEmbedderOptions {
   /** Called once per API request; defaults to a JSON line on stderr. */
   readonly onUsage?: (usage: EmbeddingUsage) => void;
   readonly fetch?: typeof globalThis.fetch;
-  /** Retries for 429 and 5xx responses. Backoff doubles from 1 s unless Retry-After says otherwise. */
+  /**
+   * Retries for 429 and 5xx responses. Backoff doubles from 1 s unless Retry-After says
+   * otherwise; the default 6 wait 63 s in all, past the minute rate limits are counted in.
+   */
   readonly maxRetries?: number;
   readonly sleep?: (ms: number) => Promise<void>;
 }
@@ -50,7 +53,7 @@ export function createVoyageEmbedder({
   batchSize = 128,
   onUsage = logUsage,
   fetch = globalThis.fetch,
-  maxRetries = 4,
+  maxRetries = 6,
   sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
 }: VoyageEmbedderOptions): Embedder {
   if (!apiKey) {
