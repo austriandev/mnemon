@@ -27,6 +27,10 @@ export function today(): string {
 }
 
 export function overLimitMessage(check: BudgetCheck): string {
+  const used = `$${check.spentUsd.toFixed(2)} of $${check.limitUsd.toFixed(2)} used`;
+  if (check.scope === "access-code") {
+    return `This access code's limit for today is reached: ${used}. It resets at midnight.`;
+  }
   return (
     `Today's spending limit is reached: $${check.spentUsd.toFixed(2)} of ` +
     `$${check.limitUsd.toFixed(2)} used. It resets at midnight; MNEMON_DAILY_LIMIT_USD sets it.`

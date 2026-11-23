@@ -20,8 +20,14 @@ describe("dailyLimitUsd", () => {
 
 describe("overLimitMessage", () => {
   it("says what was spent, the limit, and when it resets", () => {
-    expect(overLimitMessage({ ok: false, spentUsd: 4.981, limitUsd: 5 })).toBe(
+    expect(overLimitMessage({ ok: false, scope: "day", spentUsd: 4.981, limitUsd: 5 })).toBe(
       "Today's spending limit is reached: $4.98 of $5.00 used. It resets at midnight; MNEMON_DAILY_LIMIT_USD sets it.",
+    );
+  });
+
+  it("says when it is the access code's own limit, which leaves other codes free", () => {
+    expect(overLimitMessage({ ok: false, scope: "access-code", spentUsd: 1.96, limitUsd: 2 })).toBe(
+      "This access code's limit for today is reached: $1.96 of $2.00 used. It resets at midnight.",
     );
   });
 });

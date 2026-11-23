@@ -23,6 +23,7 @@ describe("migrate", () => {
       "0005_held_on",
       "0006_spend",
       "0007_citations_cascade",
+      "0008_spend_access_code",
     ]);
     expect(await migrate(sql)).toEqual([]);
   });
