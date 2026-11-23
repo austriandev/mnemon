@@ -3,7 +3,9 @@
 Ask questions about your meetings — decisions, action items, who said what —
 and get answers that cite the exact moment in the transcript.
 
-Work in progress. Setup, architecture and design notes land here as they are built.
+Built for teams in regulated settings, where an answer has to trace back to who said
+it and when: every sentence of an answer cites a turn, and an answer whose citations
+don't check out is not shown.
 
 ## Quickstart
 
@@ -22,6 +24,69 @@ pnpm web                        # http://localhost:3000
 Try "What is the current dosing decision for new patients?" (it spans two meetings,
 the second reversing the first), then open a source to land on the turn it cites.
 Without `--yes`, `pnpm seed` only prints what it would load and cost.
+
+## Architecture
+
+All behaviour lives in `@mnemon/core`, which imports no framework, database or API
+client. It defines small interfaces (`MeetingRepository`, `ChunkSearch`, `Embedder`,
+`LanguageModel`, `SpendLedger`) and the adapters implement them. The web app, the CLI
+and the eval are composition roots that wire the same core to the same adapters, so
+the eval measures the code the app runs.
+
+```mermaid
+flowchart LR
+  web["apps/web<br/>Next.js shell"] --> core
+  cli["apps/cli<br/>ingest, ask, seed"] --> core
+  eval["packages/eval<br/>labelled set, scoring"] --> core
+  web & cli & eval -. wire .-> db & voyage & anthropic
+  db["@mnemon/db<br/>Postgres + pgvector"] -->|implements| core
+  voyage["@mnemon/voyage<br/>embeddings"] -->|implements| core
+  anthropic["@mnemon/anthropic<br/>Claude via the SDK"] -->|implements| core
+  core["@mnemon/core<br/>parse, chunk, extract,<br/>retrieve, answer, budget"]
+```
+
+**Adding a meeting.** Nothing is paid for until the plan has been priced and accepted.
+
+```mermaid
+flowchart LR
+  T[transcript] --> P["parseTranscript<br/>speaker-labelled turns"]
+  P --> C["chunkTurns<br/>runs of whole turns"]
+  C --> Plan["planIngest<br/>new / unchanged / extract-only,<br/>with its cost"]
+  Plan -->|accepted| X["extractRecords<br/>Claude: decisions, actions, topics,<br/>each citing its turns"]
+  X --> E["embed chunks<br/>Voyage"]
+  E --> S[("save whole or nothing<br/>Postgres")]
+```
+
+**Asking a question.**
+
+```mermaid
+flowchart LR
+  Q[question] --> K["keyword search<br/>Postgres full text"]
+  Q --> V["vector search<br/>pgvector, Voyage query embedding"]
+  K & V --> F["reciprocal rank fusion<br/>top 8 chunks"]
+  F --> X["excerpts: the chunks' turns,<br/>plus each meeting's records<br/>and the turns they cite"]
+  X --> A["answer<br/>Claude, structured output"]
+  A --> CK{"every citation<br/>points at a shown turn?"}
+  CK -->|yes| OK[answer with citations]
+  CK -->|no| R[rejected, not shown]
+```
+
+Where to read each part:
+
+| Part | Code | Decision |
+| --- | --- | --- |
+| Transcript format and parsing | `packages/core/src/transcript` | ADR-0002 |
+| Chunking | `packages/core/src/chunking` | ADR-0003 |
+| Storage and search SQL | `packages/db/src`, `packages/db/migrations` | ADR-0004 |
+| Hybrid retrieval | `packages/core/src/retrieval` | ADR-0005 |
+| Record extraction (prompt, schema) | `packages/core/src/extraction` | ADR-0006, ADR-0013 |
+| Answers and citation checks (prompt, schema) | `packages/core/src/answering` | ADR-0007, ADR-0011, ADR-0012 |
+| Model choice, settled by the eval | `packages/anthropic/src`, `packages/eval` | ADR-0008 |
+| Web shell, sign-in gate | `apps/web` | ADR-0009, ADR-0010 |
+| Spending limit | `packages/core/src/spending`, `apps/web/src/server` | ADR-0014 |
+
+Every model call logs its tokens and cost; the web app also records them in the
+`spend` table.
 
 ## Setup
 
