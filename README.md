@@ -45,6 +45,8 @@ pnpm db:down     # stop Postgres (data is kept in the mnemon-db volume)
   extract records at ingest and to answer questions;
 - `MNEMON_ACCESS_CODE` for the web app: the code people enter to sign in. Without
   it the app is open in development and refuses everyone in production.
+- `MNEMON_DAILY_LIMIT_USD` (optional, default 5): the most the web app spends on paid
+  calls in one day. `0` turns paid calls off.
 
 ```sh
 pnpm ingest packages/core/fixtures/steering-committee.txt --title "AMT-208 steering committee" --date 2026-10-15
@@ -69,7 +71,9 @@ with the access code, ask a question, and every sentence of the answer links to 
 turn it cites on the meeting's page. Add your own meeting at `/meetings/new`: paste a
 transcript or choose a `.txt` file, and Mnemon shows what it will cost before
 anything is paid for (ADR-0010). Give the day it was held, and answers can tell what
-is due or overdue (ADR-0012). The web server doesn't migrate the database: run
+is due or overdue (ADR-0012). Every paid call is recorded in the `spend` table, and
+once a day's spend would pass `MNEMON_DAILY_LIMIT_USD`, questions and new meetings are
+refused until midnight (ADR-0014). The web server doesn't migrate the database: run
 `pnpm db:migrate` first. Session cookies are `Secure` in production, so serve it over
 HTTPS. ADR-0009 has the design.
 

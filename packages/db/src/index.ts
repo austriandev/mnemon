@@ -9,5 +9,6 @@ export {
   type NewMeeting,
   type StoredMeeting,
 } from "./meeting-store.ts";
+export { createSpendLedger } from "./spend-ledger.ts";
 // migrate is imported from "@mnemon/db/migrate": it reads SQL files from disk, so the web
 // server, which does not own the schema, never bundles it.

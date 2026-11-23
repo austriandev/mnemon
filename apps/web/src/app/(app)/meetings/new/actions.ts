@@ -3,8 +3,9 @@
 import { createHash } from "node:crypto";
 import { type IngestDeps, planIngest, runIngest } from "@mnemon/core";
 import { redirect } from "next/navigation";
-import { type PlanView, presentPlan, readSubmission } from "@/server/add-meeting.ts";
+import { type PlanView, planCostUsd, presentPlan, readSubmission } from "@/server/add-meeting.ts";
 import { requireSession } from "@/server/auth.ts";
+import { overLimitMessage } from "@/server/budget.ts";
 import { mnemon } from "@/server/mnemon.ts";
 
 export type AddState =
@@ -68,9 +69,10 @@ export async function addMeeting(_: AddState, form: FormData): Promise<AddState>
   if (form.get("checked") !== checked) {
     return { ...shown, notice: "The transcript or title changed. Here is the new cost." };
   }
-
   let id: string;
   try {
+    const budget = await app.budget(planCostUsd(plan));
+    if (!budget.ok) return { ...shown, notice: overLimitMessage(budget) };
     // API clients are created only when runIngest reaches a paid step.
     const deps: IngestDeps = {
       repository: app.store,

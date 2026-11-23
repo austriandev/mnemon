@@ -2,6 +2,7 @@
 
 import { ask } from "@mnemon/core";
 import { requireSession } from "@/server/auth.ts";
+import { ASK_ESTIMATE_USD, overLimitMessage, today } from "@/server/budget.ts";
 import { mnemon } from "@/server/mnemon.ts";
 import { type AnswerView, presentAnswer } from "@/server/present.ts";
 
@@ -25,13 +26,14 @@ export async function askQuestion(_: AskState, form: FormData): Promise<AskState
   }
   try {
     const app = await mnemon();
+    const budget = await app.budget(ASK_ESTIMATE_USD);
+    if (!budget.ok) return { kind: "error", question, message: overLimitMessage(budget) };
     const result = await ask(question, {
       embedder: app.embedder,
       search: app.search,
       transcripts: app.store,
       model: app.languageModel("answering"),
-      // The server's calendar day: this app runs where its users are (local, per ADR-0009).
-      today: new Date().toLocaleDateString("en-CA"),
+      today: today(),
     });
     if (result.answer.status === "rejected") {
       console.warn(JSON.stringify({ event: "answer_withheld", reason: result.answer.reason }));

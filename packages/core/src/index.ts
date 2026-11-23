@@ -65,6 +65,12 @@ export type {
   SearchHit,
   SearchOptions,
 } from "./retrieval/types.ts";
+export {
+  type BudgetCheck,
+  checkBudget,
+  type Spend,
+  type SpendLedger,
+} from "./spending/budget.ts";
 export { parseTranscript } from "./transcript/parse.ts";
 export { formatTimestamp } from "./transcript/timestamp.ts";
 export type { ParseError, ParseErrorCode, ParseResult, Turn } from "./transcript/types.ts";

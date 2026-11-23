@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { type MeetingRepository, planIngest } from "@mnemon/core";
 import { describe, expect, it } from "vitest";
-import { presentPlan, readSubmission } from "../src/server/add-meeting.ts";
+import { planCostUsd, presentPlan, readSubmission } from "../src/server/add-meeting.ts";
 
 const source = readFileSync(
   new URL("../../../packages/core/fixtures/steering-committee.txt", import.meta.url),
@@ -15,6 +15,21 @@ const repository = (
   save: async () => ({ id: "m-new", created: true }),
   addRecords: async () => {},
   setHeldOn: async () => {},
+});
+
+describe("planCostUsd", () => {
+  it("prices what the plan will pay for, as the budget check needs it", async () => {
+    const fresh = await planIngest(source, "Oct", repository());
+    const stored = await planIngest(
+      source,
+      "Oct",
+      repository({ id: "m-1", title: "Oct", recordsModel: "claude-sonnet-5-5" }),
+    );
+
+    expect(planCostUsd(fresh)).toBeGreaterThan(0.065);
+    expect(planCostUsd(fresh)).toBeLessThan(0.075);
+    expect(planCostUsd(stored)).toBe(0);
+  });
 });
 
 describe("presentPlan", () => {
