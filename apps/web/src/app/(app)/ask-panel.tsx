@@ -14,8 +14,8 @@ import { type AskState, askQuestion } from "./actions.ts";
 
 const SUGGESTIONS = [
   "Who is doing the vendor audit, and by when?",
-  "What happened with the dose, and why?",
-  "What did we decide about enrollment?",
+  "What is the current dosing decision for new patients?",
+  "Was batch BX-17-0412 released?",
 ];
 
 export function AskPanel() {

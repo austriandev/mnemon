@@ -28,6 +28,10 @@ records rather than re-read from chunks each time.
   is a foreign key to `turns`, so a stored record can't cite a turn the meeting doesn't
   have. A meeting's records are written once; a meeting stored before extraction
   existed gets its records on its next ingest.
+- **The ingest flow is the core's** (`planIngest`, `runIngest`), behind a
+  `MeetingRepository` port that the Postgres store implements. Planning works out what a
+  transcript needs (nothing, records only, or everything) before anything is paid for,
+  so `pnpm ingest` and `pnpm seed` print the expected cost between the two steps.
 - **The transcript is fenced as data.** It goes in `<transcript>` tags, and the system
   prompt says text inside it is part of the meeting, not an instruction. A transcript
   is user-supplied input.

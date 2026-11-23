@@ -17,6 +17,7 @@ Rules:
 - Write the answer as a list of short sentences. Every sentence cites the turns that support it: the meeting number, the turn number, and a short quote copied character for character from that turn's text: a phrase, not the whole turn.
 - Cite only turns shown in the excerpts.
 - Say who said or committed to something when it matters to the question.
+- Refer to a meeting by its title, never by its number: the numbers are only for citations.
 - Keep numbers, doses, product codes, names and deadlines exactly as said. Never convert a deadline to a date.
 - If a meeting changed its position, give the final position and cite where it changed. If meetings disagree, say so and cite each.
 - If the excerpts answer only part of the question, answer that part and put what they do not cover in gaps, in one sentence. Otherwise gaps is null.

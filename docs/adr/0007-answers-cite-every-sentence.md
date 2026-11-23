@@ -56,6 +56,18 @@ First live runs, on the fixture (one run each, not an eval):
 
 Every sentence was checked by hand against the transcript. None was rejected.
 
+## Prompt change: meetings by title (2026-11-22)
+
+Answers spanning two meetings said things like "In October (meeting 1)": the prompt's
+meeting numbers, which exist only for citations, leaked into the text a reader sees.
+The system prompt now says to refer to a meeting by its title, never by its number.
+Measured with the eval (ADR-0008), Sonnet 5.5 at `medium`:
+
+| Prompt | Correct | Sentences naming a meeting by number | Cost / question |
+| --- | --- | --- | --- |
+| before | 22/22 | 5 | $0.0124 |
+| after | 22/22 | 0 | $0.0125 |
+
 ## Considered options
 
 - **Answer from records** (ADR-0006) instead of turns. Records are a summary; an
