@@ -60,6 +60,19 @@ export type PlanView =
       readonly cost: string;
     };
 
+/** What running the plan will cost, an upper estimate at list price; 0 if nothing is paid. */
+export function planCostUsd(plan: IngestPlan): number {
+  const tokens = ingestTokens(plan);
+  return (
+    estimateCostUsd(
+      CHOSEN_MODELS.extraction.model,
+      tokens.extractionInput,
+      tokens.extractionOutput,
+    ) +
+    (tokens.embedding * VOYAGE_PRICE_PER_MILLION_TOKENS["voyage-4-lite"]) / 1e6
+  );
+}
+
 export function presentPlan(plan: IngestPlan): PlanView {
   switch (plan.kind) {
     case "invalid":
@@ -73,14 +86,7 @@ export function presentPlan(plan: IngestPlan): PlanView {
     case "unchanged":
       return { kind: "unchanged", id: plan.meeting.id, title: plan.meeting.title };
     default: {
-      const tokens = ingestTokens(plan);
-      const usd =
-        estimateCostUsd(
-          CHOSEN_MODELS.extraction.model,
-          tokens.extractionInput,
-          tokens.extractionOutput,
-        ) +
-        (tokens.embedding * VOYAGE_PRICE_PER_MILLION_TOKENS["voyage-4-lite"]) / 1e6;
+      const usd = planCostUsd(plan);
       return {
         kind: "ready",
         title: plan.kind === "new" ? plan.title : plan.meeting.title,

@@ -21,6 +21,7 @@ describe("migrate", () => {
       "0003_unique_source",
       "0004_records",
       "0005_held_on",
+      "0006_spend",
     ]);
     expect(await migrate(sql)).toEqual([]);
   });
