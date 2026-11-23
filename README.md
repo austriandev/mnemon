@@ -17,13 +17,18 @@ API keys: Voyage AI (https://dashboard.voyageai.com) and Anthropic
 pnpm install
 pnpm db:up && pnpm db:migrate   # Postgres + pgvector in Docker, schema applied
 cp .env.example .env            # then add MNEMON_VOYAGE_API_KEY and MNEMON_ANTHROPIC_API_KEY
-pnpm seed --yes                 # three synthetic meetings; prints the cost first (~$0.05)
+pnpm seed --yes                 # three synthetic meetings; prints the cost first (up to ~$0.20, ~$0.07 in practice)
 pnpm web                        # http://localhost:3000
 ```
 
 Try "What is the current dosing decision for new patients?" (it spans two meetings,
 the second reversing the first), then open a source to land on the turn it cites.
 Without `--yes`, `pnpm seed` only prints what it would load and cost.
+
+A Voyage account with no payment method is limited to 3 requests a minute, and each
+question and each seeded meeting is one request. Mnemon waits out the limit rather
+than fail, so a question asked right after seeding can take up to a minute. Adding a
+payment method lifts the limit; the first 200M tokens stay free.
 
 ## Architecture
 
