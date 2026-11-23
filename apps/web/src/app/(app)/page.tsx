@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Plus } from "lucide-react";
 import Link from "next/link";
 import { requireSession } from "@/server/auth.ts";
 import { mnemon } from "@/server/mnemon.ts";
@@ -30,12 +30,18 @@ export default async function HomePage() {
 
         <section className="section" id="meetings" aria-labelledby="meetings-title">
           <div className="section-head">
-            <h2 id="meetings-title">Meetings</h2>
-            <span className="quiet">{meetings.length} stored</span>
+            <h2 id="meetings-title">
+              Meetings <span className="quiet">{meetings.length}</span>
+            </h2>
+            <Link href="/meetings/new" className="btn btn-quiet btn-sm">
+              <Plus size={16} strokeWidth={1.75} />
+              Add a meeting
+            </Link>
           </div>
           {meetings.length === 0 ? (
             <div className="card empty">
-              No meetings yet. Load the demo meetings with <code>pnpm seed --yes</code>.
+              No meetings yet. <Link href="/meetings/new">Add one</Link>, or load the demo meetings
+              with <code>pnpm seed --yes</code>.
             </div>
           ) : (
             <div className="meetings">

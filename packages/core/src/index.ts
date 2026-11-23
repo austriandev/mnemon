@@ -40,6 +40,8 @@ export {
   type IngestError,
   type IngestPlan,
   type IngestResult,
+  type IngestTokens,
+  ingestTokens,
   type MeetingRepository,
   type NewMeeting,
   type NewRecords,
