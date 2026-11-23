@@ -25,7 +25,7 @@ export interface PlanCost {
 }
 
 export function expectedCost(plan: IngestPlan, model: AnthropicModelId): PlanCost {
-  if (plan.kind === "invalid") return { usd: 0, line: "not a valid transcript" };
+  if (plan.kind === "invalid") return { usd: 0, line: "cannot be ingested" };
   if (plan.kind === "unchanged") {
     return { usd: 0, line: `already stored as "${plan.meeting.title}" with its records; $0` };
   }

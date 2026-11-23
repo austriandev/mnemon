@@ -70,4 +70,14 @@ describe("parseTranscript", () => {
 
     expect(result.ok && result.turns[0]?.text).toBe("One more line.");
   });
+  it("reads a line starting with a bracketed number, like a footnote, as text", () => {
+    const source = "[00:01:10] Dana Wu: The criteria are in the protocol.\n[2] See appendix B.";
+
+    const result = parseTranscript(source);
+
+    expect(result).toMatchObject({
+      ok: true,
+      turns: [{ text: "The criteria are in the protocol. [2] See appendix B." }],
+    });
+  });
 });

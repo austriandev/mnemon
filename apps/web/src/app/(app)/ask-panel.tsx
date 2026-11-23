@@ -139,8 +139,10 @@ function AnswerCard({ question, view }: { question: string; view: AnswerView }) 
         </div>
       </div>
       <div className="sentences">
-        {view.sentences.map((s) => (
-          <p key={s.text}>
+        {view.sentences.map((s, i) => (
+          // The list is fixed once rendered and may repeat a sentence, so position is the key.
+          // biome-ignore lint/suspicious/noArrayIndexKey: never reordered
+          <p key={i}>
             {s.text}
             {s.sources.map((n) => (
               <a key={n} className="cite" href={`#source-${n}`} aria-label={`Source ${n}`}>

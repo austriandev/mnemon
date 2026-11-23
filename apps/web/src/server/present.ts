@@ -6,7 +6,10 @@ export interface AnswerView {
   readonly sentences: readonly { readonly text: string; readonly sources: readonly number[] }[];
   readonly sources: readonly SourceView[];
   readonly gaps: string | null;
-  /** Why an answer was withheld. The withheld text itself is never sent to the browser. */
+  /**
+   * Why an answer was withheld, as a fixed phrase. Neither the withheld text nor the
+   * check's detail (which quotes the model) is sent to the browser; the server logs it.
+   */
   readonly reason: string | null;
   readonly model: string | null;
   readonly searched: { readonly chunks: number; readonly meetings: number };
@@ -28,7 +31,9 @@ export function presentAnswer({ answer, retrieved, excerpts }: AskResult): Answe
   const searched = { chunks: retrieved.length, meetings: excerpts.length };
   const empty = { sentences: [], sources: [], gaps: null, searched, model: answer.model };
   if (answer.status === "not_found") return { ...empty, status: "not_found", reason: null };
-  if (answer.status === "rejected") return { ...empty, status: "rejected", reason: answer.reason };
+  if (answer.status === "rejected") {
+    return { ...empty, status: "rejected", reason: withheldBecause(answer.reason) };
+  }
 
   const numbers = new Map<string, number>();
   const sources: SourceView[] = [];
@@ -69,4 +74,12 @@ export function presentAnswer({ answer, retrieved, excerpts }: AskResult): Answe
     model: answer.model,
     searched,
   };
+}
+
+/** The check's reason, reduced to a phrase that repeats nothing the model wrote. */
+function withheldBecause(reason: string): string {
+  if (reason.includes(" quote ")) return "a quote didn't match the transcript";
+  if (reason.includes("not in the excerpts")) return "it cited a passage it wasn't shown";
+  if (reason.includes("no citation")) return "a sentence had no citation";
+  return "it didn't have the expected shape";
 }

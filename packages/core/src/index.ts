@@ -37,6 +37,7 @@ export type {
 } from "./extraction/types.ts";
 export {
   type IngestDeps,
+  type IngestError,
   type IngestPlan,
   type IngestResult,
   type MeetingRepository,

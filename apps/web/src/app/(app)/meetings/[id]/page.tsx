@@ -17,6 +17,7 @@ const GROUPS: { kind: RecordKind; title: string; icon: typeof Gavel }[] = [
 ];
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  await requireSession();
   const meeting = await (await mnemon()).store.get((await params).id);
   return { title: meeting?.title ?? "Meeting" };
 }
@@ -99,11 +100,13 @@ function RecordItem({
       <div className="chips">
         {record.owner ? <span className="chip">{record.owner}</span> : null}
         {record.due ? <span className="chip">{record.due}</span> : null}
-        {record.citations.map((c) => {
+        {record.citations.map((c, i) => {
           const turn = turns.get(c.turnIndex);
           return (
             <a
-              key={`${c.turnIndex}:${c.quote}`}
+              // A record may cite the same turn and quote twice; position keeps keys unique.
+              // biome-ignore lint/suspicious/noArrayIndexKey: never reordered
+              key={i}
               className="chip tabular"
               href={`#turn-${c.turnIndex}`}
               title={`“${c.quote}”`}

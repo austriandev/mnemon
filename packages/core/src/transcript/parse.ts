@@ -1,9 +1,10 @@
 import type { ParseError, ParseResult, Turn } from "./types.ts";
 
 // A line opens a turn when it starts with something bracketed that looks like a
-// timestamp. Whether that timestamp is valid is checked separately, so a typo such
-// as "[00:61:00]" is reported rather than read as text continuing the previous turn.
-const TIMESTAMP_PREFIX = /^\[([\d:]+)\](.*)$/;
+// timestamp: digits with at least one colon. Whether that timestamp is valid is checked
+// separately, so a typo such as "[00:61:00]" is reported rather than read as text
+// continuing the previous turn, while a footnote such as "[2]" stays text.
+const TIMESTAMP_PREFIX = /^\[(\d*:[\d:]*)\](.*)$/;
 const TIMESTAMP = /^(?:(\d{2}):)?([0-5]\d):([0-5]\d)$/;
 // The speaker is everything up to the first ": " (or a ":" that ends the line, when
 // the text starts on the next line).

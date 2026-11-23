@@ -2,6 +2,9 @@ import type { Chunk, MeetingRecord, RecordKind, Turn } from "@mnemon/core";
 
 // Row shapes and their mapping to domain types. The one place snake_case meets camelCase.
 
+/** Ids are uuids; anything else matches no row, so callers can skip the query. */
+export const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export interface MeetingRow {
   id: string;
   title: string;

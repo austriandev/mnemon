@@ -1,0 +1,70 @@
+{
+  "date": "2026-11-22T16:14:16.799Z",
+  "ids": {
+    "oct": "469e400d-01ed-415c-a05a-919c245053b4",
+    "nov": "f5da9d91-d971-4ef0-a735-4bc6465281ed",
+    "cmc": "1af47e3e-1193-4ccd-8ec3-1a49cfea765b"
+  },
+  "answers": [
+    {
+      "config": {
+        "model": "claude-haiku-5-5",
+        "effort": "medium"
+      },
+      "question": "audit-owner",
+      "ms": 4838,
+      "usage": [
+        {
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "servedBy": "claude-haiku-5-5",
+          "inputTokens": 4741,
+          "outputTokens": 875,
+          "cacheReadTokens": 0,
+          "cacheWriteTokens": 0,
+          "costUsd": 0.0009116
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "sentences": [
+          {
+            "text": "Priya Nair took on the vendor audit of Quellmark Fill Services in the October meeting.",
+            "citations": [
+              {
+                "meetingId": "469e400d-01ed-415c-a05a-919c245053b4",
+                "turnIndex": 31,
+                "quote": "I'll take the vendor audit"
+              }
+            ]
+          },
+          {
+            "text": "In the November meeting, Priya Nair reported that the audit is booked for the week of the ninth of December, with two auditors on site for three days.",
+            "citations": [
+              {
+                "meetingId": "f5da9d91-d971-4ef0-a735-4bc6465281ed",
+                "turnIndex": 18,
+                "quote": "The audit is booked for the week of the ninth of December"
+              },
+              {
+                "meetingId": "f5da9d91-d971-4ef0-a735-4bc6465281ed",
+                "turnIndex": 18,
+                "quote": "two auditors on site for three days"
+              }
+            ]
+          }
+        ],
+        "gaps": "The excerpts do not name the two auditors who will be on site for the audit.",
+        "model": "claude-haiku-5-5"
+      },
+      "score": {
+        "outcome": "answered",
+        "correct": true,
+        "factsFound": 1,
+        "factsTotal": 1,
+        "citesEvidence": true
+      }
+    }
+  ],
+  "spentUsd": 0.0009116
+}

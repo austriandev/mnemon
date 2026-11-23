@@ -23,6 +23,7 @@ import {
   toRecords,
   toTurn,
   turnRow,
+  UUID,
 } from "./rows.ts";
 
 // NewMeeting and NewRecords are the core's: the store implements its MeetingRepository.
@@ -84,8 +85,6 @@ async function insertRecords(
 function sha256Of(source: string): string {
   return createHash("sha256").update(source, "utf8").digest("hex");
 }
-
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export function createMeetingStore(sql: Sql): MeetingStore {
   return {

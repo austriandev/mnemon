@@ -86,6 +86,12 @@ describe("chunk search", () => {
       expect(hit?.chunk).toEqual(budgetChunks[0]);
     });
 
+    it("finds nothing in a meeting id that is not a uuid, rather than failing", async () => {
+      await expect(search.keyword("vendor audit", { limit: 5, meetingId: "abc" })).resolves.toEqual(
+        [],
+      );
+    });
+
     it.each([
       ["only stop words", "who is it?"],
       ["only punctuation", "?!' --"],
