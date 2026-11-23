@@ -47,8 +47,8 @@ named its code.
 
 ## Consequences
 
-- Reviewers share one workspace: they see the same meetings, including any one of
-  them adds. The add page says the data must be synthetic.
+- Reviewers shared one workspace, seeing any meeting one of them added. ADR-0017
+  replaces this: a meeting added under a code is private to it.
 - The hosted copy costs only API calls, capped at $10 a day; a monthly limit on the
   Anthropic workspace is the backstop if our own limits failed.
 - Neon's free tier pauses when idle, so the first request after a quiet spell takes a

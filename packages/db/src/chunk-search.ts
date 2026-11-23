@@ -1,6 +1,7 @@
 import type { ChunkSearch, SearchHit } from "@mnemon/core";
 import type { Sql } from "postgres";
 import { CHUNK_COLUMNS, type ChunkRow, toChunk, toVectorLiteral, UUID } from "./rows.ts";
+import { ALL_MEETINGS, seenBy, type Visibility } from "./visibility.ts";
 
 type HitRow = Omit<ChunkRow, "meeting_id"> & { meeting_id: string };
 
@@ -13,8 +14,10 @@ type HitRow = Omit<ChunkRow, "meeting_id"> & { meeting_id: string };
  *   Postgres's built-in ranking, not true BM25 (ADR-0005).
  * - vector: cosine distance via pgvector's HNSW index, restricted to chunks
  *   embedded by the same model as the query.
+ *
+ * Both search only the meetings `visibility` sees (ADR-0017).
  */
-export function createChunkSearch(sql: Sql): ChunkSearch {
+export function createChunkSearch(sql: Sql, visibility: Visibility = ALL_MEETINGS): ChunkSearch {
   const toHit = (row: HitRow): SearchHit => ({ meetingId: row.meeting_id, chunk: toChunk(row) });
   const inMeeting = (meetingId: string | undefined) =>
     meetingId === undefined ? sql`true` : sql`c.meeting_id = ${meetingId}`;
@@ -31,8 +34,11 @@ export function createChunkSearch(sql: Sql): ChunkSearch {
           from unnest(tsvector_to_array(to_tsvector('english', ${query}))) as lexeme
         )
         select c.meeting_id, ${sql(CHUNK_COLUMNS.map((col) => `c.${col}`))}
-        from chunks c, q
+        from chunks c
+        join meetings m on m.id = c.meeting_id
+        cross join q
         where q.query is not null and c.search @@ q.query and ${inMeeting(meetingId)}
+          and ${seenBy(sql, visibility)}
         order by ts_rank_cd(c.search, q.query) desc, c.meeting_id, c.chunk_index
         limit ${limit}`;
       return rows.map(toHit);
@@ -45,6 +51,7 @@ export function createChunkSearch(sql: Sql): ChunkSearch {
         from chunks c
         join meetings m on m.id = c.meeting_id
         where m.embedding_model = ${model} and ${inMeeting(meetingId)}
+          and ${seenBy(sql, visibility)}
         order by c.embedding <=> ${toVectorLiteral(embedding)}::vector, c.meeting_id, c.chunk_index
         limit ${limit}`;
       return rows.map(toHit);

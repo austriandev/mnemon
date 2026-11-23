@@ -25,6 +25,7 @@ import {
   turnRow,
   UUID,
 } from "./rows.ts";
+import { ALL_MEETINGS, ownerOf, seenBy, type Visibility } from "./visibility.ts";
 
 // NewMeeting and NewRecords are the core's: the store implements its MeetingRepository.
 export type { NewMeeting, NewRecords };
@@ -71,7 +72,7 @@ export interface MeetingStore extends MeetingRepository, TranscriptSource {
   addRecords(meetingId: string, records: NewRecords): Promise<void>;
   /** The meeting with that id, or undefined if there is none (including malformed ids). */
   get(id: string): Promise<StoredMeeting | undefined>;
-  /** All meetings, newest first. */
+  /** The meetings this store sees, newest first. */
   list(): Promise<MeetingSummary[]>;
   /** The meeting's title and the turns with these indices, in turn order (the core's TranscriptSource). */
   excerpt(meetingId: string, turnIndices: readonly number[]): Promise<Excerpt | undefined>;
@@ -91,9 +92,22 @@ function sha256Of(source: string): string {
   return createHash("sha256").update(source, "utf8").digest("hex");
 }
 
-export function createMeetingStore(sql: Sql): MeetingStore {
+/**
+ * The Postgres meeting store, seeing and saving meetings as `visibility` allows: a
+ * meeting it can't see reads as missing, everywhere (ADR-0017). Operator tools pass
+ * nothing and see every meeting.
+ */
+export function createMeetingStore(sql: Sql, visibility: Visibility = ALL_MEETINGS): MeetingStore {
+  const owner = ownerOf(visibility);
+  const seen = () => seenBy(sql, visibility);
+  const isSeen = async (meetingId: string) => {
+    if (!UUID.test(meetingId)) return false;
+    const [row] = await sql`select 1 from meetings m where m.id = ${meetingId} and ${seen()}`;
+    return row !== undefined;
+  };
+
   const readRecords = async (meetingId: string) => {
-    if (!UUID.test(meetingId)) return [];
+    if (!(await isSeen(meetingId))) return [];
     const recordRows = await sql<RecordRow[]>`
       select * from records where meeting_id = ${meetingId} order by record_index`;
     const citationRows = await sql<CitationRow[]>`
@@ -111,16 +125,23 @@ export function createMeetingStore(sql: Sql): MeetingStore {
       }
       const sha256 = sha256Of(source);
       return sql.begin(async (tx) => {
+        // A copy this store already sees (common, or its own) is the meeting: no second copy.
+        const [visible] = await tx<{ id: string }[]>`
+          select m.id from meetings m where m.source_sha256 = ${sha256} and ${seenBy(tx, visibility)}
+          order by m.owner nulls first limit 1`;
+        if (visible) return { id: visible.id, created: false };
         const [meeting] = await tx<{ id: string }[]>`
           insert into meetings
-            (title, source_text, source_sha256, embedding_model, records_model, held_on)
+            (title, source_text, source_sha256, embedding_model, records_model, held_on, owner)
           values (${title}, ${source}, ${sha256}, ${embeddings.model}, ${records?.model ?? null},
-                  ${heldOn ?? null}::date)
-          on conflict (source_sha256) do nothing
+                  ${heldOn ?? null}::date, ${owner})
+          on conflict ((coalesce(owner, '')), source_sha256) do nothing
           returning id`;
         if (!meeting) {
+          // Another request saved the same transcript for the same owner in the meantime.
           const [existing] = await tx<{ id: string }[]>`
-            select id from meetings where source_sha256 = ${sha256}`;
+            select id from meetings
+            where source_sha256 = ${sha256} and coalesce(owner, '') = ${owner ?? ""}`;
           if (!existing) throw new Error("insert into meetings returned no row");
           return { id: existing.id, created: false };
         }
@@ -139,8 +160,9 @@ export function createMeetingStore(sql: Sql): MeetingStore {
 
     async findBySource(source) {
       const [meeting] = await sql<Pick<MeetingRow, "id" | "title" | "records_model" | "held_on">[]>`
-        select id, title, records_model, held_on::text
-        from meetings where source_sha256 = ${sha256Of(source)}`;
+        select m.id, m.title, m.records_model, m.held_on::text
+        from meetings m where m.source_sha256 = ${sha256Of(source)} and ${seen()}
+        order by m.owner nulls first limit 1`;
       return meeting
         ? {
             id: meeting.id,
@@ -153,18 +175,19 @@ export function createMeetingStore(sql: Sql): MeetingStore {
 
     async setHeldOn(meetingId, heldOn) {
       await sql`
-        update meetings set held_on = ${heldOn}::date
-        where id = ${meetingId} and held_on is null`;
+        update meetings m set held_on = ${heldOn}::date
+        where m.id = ${meetingId} and m.held_on is null and ${seen()}`;
     },
 
     async addRecords(meetingId, { model, items }) {
       await sql.begin(async (tx) => {
         const [claimed] = await tx`
-          update meetings set records_model = ${model}
-          where id = ${meetingId} and records_model is null
-          returning id`;
+          update meetings m set records_model = ${model}
+          where m.id = ${meetingId} and m.records_model is null and ${seenBy(tx, visibility)}
+          returning m.id`;
         if (!claimed) {
-          const [exists] = await tx`select 1 from meetings where id = ${meetingId}`;
+          const [exists] = await tx`
+            select 1 from meetings m where m.id = ${meetingId} and ${seenBy(tx, visibility)}`;
           throw new Error(
             exists ? `Meeting ${meetingId} already has records` : `No meeting ${meetingId}`,
           );
@@ -176,9 +199,9 @@ export function createMeetingStore(sql: Sql): MeetingStore {
     async get(id) {
       if (!UUID.test(id)) return undefined;
       const [meeting] = await sql<MeetingRow[]>`
-        select id, title, source_text, source_sha256, embedding_model, records_model,
-               created_at, held_on::text
-        from meetings where id = ${id}`;
+        select m.id, m.title, m.source_text, m.source_sha256, m.embedding_model,
+               m.records_model, m.created_at, m.held_on::text
+        from meetings m where m.id = ${id} and ${seen()}`;
       if (!meeting) return undefined;
       const turnRows = await sql<TurnRow[]>`
         select * from turns where meeting_id = ${id} order by turn_index`;
@@ -204,7 +227,7 @@ export function createMeetingStore(sql: Sql): MeetingStore {
     async excerpt(meetingId, turnIndices) {
       if (!UUID.test(meetingId)) return undefined;
       const [meeting] = await sql<Pick<MeetingRow, "title" | "held_on">[]>`
-        select title, held_on::text from meetings where id = ${meetingId}`;
+        select m.title, m.held_on::text from meetings m where m.id = ${meetingId} and ${seen()}`;
       if (!meeting) return undefined;
       const rows = await sql<TurnRow[]>`
         select * from turns
@@ -220,6 +243,7 @@ export function createMeetingStore(sql: Sql): MeetingStore {
         select m.id, m.title, m.created_at, m.held_on::text,
                (select count(*)::int from turns t where t.meeting_id = m.id) as turn_count
         from meetings m
+        where ${seen()}
         order by m.created_at desc, m.id`;
       return rows.map((r) => ({
         id: r.id,

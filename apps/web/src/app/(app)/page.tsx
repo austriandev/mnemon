@@ -13,8 +13,8 @@ const dateFormat = new Intl.DateTimeFormat("en-GB", {
 });
 
 export default async function HomePage() {
-  await requireSession();
-  const meetings = await (await mnemon()).store.list();
+  const session = await requireSession();
+  const meetings = await (await mnemon()).forSession(session).store.list();
 
   return (
     <main className="main">

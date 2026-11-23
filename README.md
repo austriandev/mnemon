@@ -20,8 +20,9 @@ The sign-in page is in [docs/screenshots/login.png](docs/screenshots/login.png).
 
 **https://mnemon-topaz.vercel.app**: sign in with the access code you were given. It
 runs on our API keys over the synthetic demo meetings; each code has $2 a day to spend,
-and the whole demo $10 a day (ADR-0016). Everyone with a code shares one workspace, so
-add only synthetic transcripts. To run your own copy instead, see the Quickstart.
+and the whole demo $10 a day (ADR-0016). Everyone sees the seeded demo meetings; a
+meeting you add is private to your code (ADR-0017). To run your own copy instead, see
+the Quickstart.
 
 ## Quickstart
 
@@ -131,6 +132,7 @@ Where to read each part:
 | Model choice, settled by the eval | `packages/anthropic/src`, `packages/eval` | ADR-0008 |
 | Web shell, sign-in gate, access codes | `apps/web` | ADR-0009, ADR-0010, ADR-0016 |
 | Hosted demo (Vercel, Neon) | `.vercelignore`, project settings | ADR-0016 |
+| Private meetings per access code | `packages/db/src/visibility.ts` | ADR-0017 |
 | Spending limit | `packages/core/src/spending`, `apps/web/src/server` | ADR-0014 |
 | Containers, the start script | `Dockerfile`, `docker-compose.yml`, `scripts/app.sh` | ADR-0015 |
 

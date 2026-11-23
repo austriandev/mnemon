@@ -48,7 +48,8 @@ export async function addMeeting(_: AddState, form: FormData): Promise<AddState>
     };
   }
   const { title, source, heldOn } = submission;
-  const app = await mnemon();
+  // Saved as this code's own meeting; it sees the common ones and its own (ADR-0017).
+  const app = (await mnemon()).forSession(session);
   const plan = await planIngest(source, title, app.store, heldOn ? { heldOn } : {});
   const checked = fingerprint(`${title}\n${heldOn ?? ""}`, source);
   const shown: AddState = {
@@ -70,18 +71,17 @@ export async function addMeeting(_: AddState, form: FormData): Promise<AddState>
     return { ...shown, notice: "The transcript or title changed. Here is the new cost." };
   }
   let id: string;
-  const paid = app.paid(session);
   try {
-    const budget = await paid.budget(planCostUsd(plan));
+    const budget = await app.budget(planCostUsd(plan));
     if (!budget.ok) return { ...shown, notice: overLimitMessage(budget) };
     // API clients are created only when runIngest reaches a paid step.
     const deps: IngestDeps = {
       repository: app.store,
       get embedder() {
-        return paid.embedder;
+        return app.embedder;
       },
       get model() {
-        return paid.languageModel("extraction");
+        return app.languageModel("extraction");
       },
     };
     const result = await runIngest(plan, deps);
@@ -95,7 +95,7 @@ export async function addMeeting(_: AddState, form: FormData): Promise<AddState>
       message: "The meeting couldn't be added. Nothing was stored; try again in a moment.",
     };
   } finally {
-    await paid.recorded();
+    await app.recorded();
   }
   redirect(`/meetings/${id}`);
 }

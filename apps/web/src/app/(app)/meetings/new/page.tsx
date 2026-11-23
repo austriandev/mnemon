@@ -19,8 +19,8 @@ export default async function NewMeetingPage() {
         <p className="page-sub" style={{ fontSize: 16 }}>
           Paste a transcript or choose a .txt file, one turn per line:{" "}
           <code className="inline">[00:12:40] Speaker: what they said</code>. You see the cost
-          before anything is paid for. Everyone signed in to this workspace sees the meetings in it,
-          so add only synthetic transcripts, never confidential ones.
+          before anything is paid for. A meeting you add is private to your access code: only you
+          see it, and only your questions search it. Still, add synthetic transcripts only.
         </p>
         <AddForm />
       </div>
