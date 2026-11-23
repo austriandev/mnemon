@@ -15,7 +15,7 @@ import { dailyLimitUsd, today } from "./budget.ts";
 function create() {
   const sql = postgres(databaseUrl(), { onnotice: () => {}, max: 5 });
   // The schema is not the web server's: migrations run as their own step before it
-  // starts (`pnpm db:migrate`, or the migrate service in deployment).
+  // starts (`pnpm db:migrate`, or the migrate container in docker-compose.yml).
   const ledger = createSpendLedger(sql);
   // Every paid call is logged, then recorded against today's limit. A failed write is
   // logged, never thrown: the call it records has already been made and paid for.

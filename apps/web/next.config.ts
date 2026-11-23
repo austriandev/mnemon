@@ -16,7 +16,7 @@ const config: NextConfig = {
   // The core and adapters are TypeScript source with .ts imports; Next compiles them.
   transpilePackages: ["@mnemon/core", "@mnemon/db", "@mnemon/anthropic", "@mnemon/voyage"],
   serverExternalPackages: ["postgres"],
-  // A self-contained server for the Docker image (next slice).
+  // A self-contained server for the web image (Dockerfile); `pnpm web:start` uses it too.
   output: "standalone",
   // Types are checked by `pnpm typecheck` (TypeScript 7) in CI, not by next build.
   typescript: { ignoreBuildErrors: true },

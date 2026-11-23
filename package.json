@@ -22,7 +22,11 @@
     "eval": "node --env-file-if-exists=.env packages/eval/src/run.ts",
     "web": "pnpm --filter @mnemon/web dev",
     "web:build": "pnpm --filter @mnemon/web build",
-    "web:start": "pnpm --filter @mnemon/web start"
+    "web:start": "pnpm --filter @mnemon/web start",
+    "app:up": "scripts/app.sh up",
+    "app:seed": "scripts/app.sh seed",
+    "app:logs": "scripts/app.sh logs",
+    "app:down": "scripts/app.sh down"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.8",

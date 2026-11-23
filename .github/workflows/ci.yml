@@ -42,3 +42,12 @@ jobs:
       - run: pnpm web:build
         env:
           NEXT_TELEMETRY_DISABLED: "1"
+
+  # The images scripts/app.sh runs: both must build from a clean checkout.
+  images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker build --target web --tag mnemon-web .
+      - run: docker build --target tools --tag mnemon-tools .
+      - run: bash -n scripts/app.sh
