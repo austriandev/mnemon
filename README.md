@@ -7,6 +7,15 @@ Built for teams in regulated settings, where an answer has to trace back to who 
 it and when: every sentence of an answer cites a turn, and an answer whose citations
 don't check out is not shown.
 
+![An answer to "What is the current dosing decision for new patients?", each sentence citing the turn it rests on](docs/screenshots/answer.png)
+
+| Open a citation: the cited turn, beside the meeting's records | Add a meeting: its cost is shown before anything is paid for |
+| --- | --- |
+| ![The meeting page, the cited turn highlighted](docs/screenshots/transcript.png) | ![Adding a 165-turn meeting, priced at about $0.10](docs/screenshots/add-meeting.png) |
+
+Screenshots from the production build, signed in, over the seeded demo meetings.
+The sign-in page is in [docs/screenshots/login.png](docs/screenshots/login.png).
+
 ## Quickstart
 
 Needs Node 24, pnpm 9 (`corepack enable` picks up the pinned version), Docker, and two
