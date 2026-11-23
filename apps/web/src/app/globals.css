@@ -84,9 +84,9 @@ h3 {
 /* ── wordmark ──────────────────────────────────────────────────────────── */
 
 .wordmark {
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   line-height: 1;
   color: var(--ink);
   text-decoration: none;
@@ -470,7 +470,7 @@ h3 {
   display: flex;
   align-items: center;
   gap: 32px;
-  height: 64px;
+  height: 72px;
 }
 
 .topbar .end {
@@ -688,7 +688,7 @@ h3 {
   gap: 12px;
   padding: 12px 0;
   border-top: 1px solid var(--line);
-  scroll-margin-top: 88px;
+  scroll-margin-top: 96px;
 }
 
 .source:first-of-type {
@@ -928,11 +928,11 @@ h3 {
 
 .records {
   position: sticky;
-  top: 88px;
+  top: 96px;
   display: grid;
   gap: 32px;
   padding: 24px;
-  max-height: calc(100dvh - 112px);
+  max-height: calc(100dvh - 120px);
   overflow: auto;
 }
 
@@ -1008,7 +1008,7 @@ a.chip:hover {
   gap: 16px;
   padding: 12px 24px;
   border-left: 2px solid transparent;
-  scroll-margin-top: 96px;
+  scroll-margin-top: 104px;
   transition: background-color 0.4s var(--ease);
 }
 
