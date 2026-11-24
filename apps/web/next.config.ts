@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import type { NextConfig } from "next";
+import { SECURITY_HEADERS } from "./src/server/security-headers.ts";
 
 // The workspace keeps one .env at its root. Load it for dev and build (the standalone
 // server behind `pnpm web:start` loads it with --env-file, as it skips this file);
@@ -37,13 +38,7 @@ const config: NextConfig = {
     return [
       {
         source: "/:path*",
-        headers: [
-          { key: "X-Frame-Options", value: "DENY" },
-          { key: "X-Content-Type-Options", value: "nosniff" },
-          { key: "Referrer-Policy", value: "same-origin" },
-          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
-          { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
-        ],
+        headers: [...SECURITY_HEADERS],
       },
     ];
   },
