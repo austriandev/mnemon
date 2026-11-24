@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@mnemon/anthropic": "workspace:*",
+    "@mnemon/assemblyai": "workspace:*",
     "@mnemon/core": "workspace:*",
     "@mnemon/db": "workspace:*",
     "@mnemon/voyage": "workspace:*",

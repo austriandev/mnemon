@@ -1,12 +1,20 @@
 // Composition root for the web app: the same core and adapters as the CLI, created once
 // per server process. Next.js is a thin shell; everything here is wiring, not behaviour.
+
 import {
   CHOSEN_MODELS,
   createAnthropicModel,
   estimateCostUsd,
   type ModelUse,
 } from "@mnemon/anthropic";
-import { type BudgetCheck, checkBudget, type Embedder, type Spend } from "@mnemon/core";
+import { createAssemblyAiTranscriber } from "@mnemon/assemblyai";
+import {
+  type BudgetCheck,
+  checkBudget,
+  type Embedder,
+  type Spend,
+  type Transcriber,
+} from "@mnemon/core";
 import {
   createChunkSearch,
   createMeetingStore,
@@ -48,6 +56,7 @@ function create() {
       );
     };
     let embedder: Embedder | undefined;
+    let transcriber: Transcriber | undefined;
     return {
       store: createMeetingStore(sql, visibility),
       search: createChunkSearch(sql, visibility),
@@ -76,6 +85,24 @@ function create() {
             ),
         });
         return embedder;
+      },
+      // Recordings to text with speaker labels (ADR-0018); billed by the audio's length.
+      get transcriber(): Transcriber {
+        transcriber ??= createAssemblyAiTranscriber({
+          apiKey: process.env.MNEMON_ASSEMBLYAI_API_KEY ?? "",
+          onUsage: (u) =>
+            spent(
+              {
+                provider: "assemblyai",
+                model: u.model,
+                inputTokens: 0,
+                outputTokens: 0,
+                costUsd: u.costUsd,
+              },
+              u,
+            ),
+        });
+        return transcriber;
       },
       languageModel: (use: ModelUse) =>
         createAnthropicModel({

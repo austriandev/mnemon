@@ -137,6 +137,7 @@ Where to read each part:
 | Hosted demo (Vercel, Neon) | `.vercelignore`, project settings | ADR-0016 |
 | Private meetings per access code | `packages/db/src/visibility.ts` | ADR-0017 |
 | Spending limit | `packages/core/src/spending`, `apps/web/src/server` | ADR-0014 |
+| Voice to transcript | `packages/core/src/transcription`, `packages/assemblyai` | ADR-0018 |
 | Containers, the start script | `Dockerfile`, `docker-compose.yml`, `scripts/app.sh` | ADR-0015 |
 
 Every model call logs its tokens and cost; the web app also records them in the
@@ -165,6 +166,8 @@ pnpm db:down     # stop Postgres (data is kept in the mnemon-db volume)
 - `MNEMON_VOYAGE_API_KEY` (from https://dashboard.voyageai.com) to embed and search;
 - `MNEMON_ANTHROPIC_API_KEY` (from https://platform.claude.com/settings/keys) to
   extract records at ingest and to answer questions;
+- `MNEMON_ASSEMBLYAI_API_KEY` (optional, from https://www.assemblyai.com) to start a
+  meeting from a recording; new accounts get free credit;
 - `MNEMON_ACCESS_CODES` for the web app: `name:code[:dollars]` entries, one per person,
   each held to its own daily limit (`MNEMON_CODE_DAILY_LIMIT_USD`, default 2) as well as
   the day's. `MNEMON_ACCESS_CODE` sets one shared code instead. Without either the app
@@ -196,7 +199,10 @@ pnpm web:build && pnpm web:start
 with the access code, ask a question, and every sentence of the answer links to the
 turn it cites on the meeting's page. Add your own meeting at `/meetings/new`: paste a
 transcript or choose a `.txt` file, and Mnemon shows what it will cost before
-anything is paid for (ADR-0010). Give the day it was held, and answers can tell what
+anything is paid for (ADR-0010). Or start from a recording: record in the browser,
+choose an audio file up to 4 MB, or try the synthetic sample. It is transcribed with
+each speaker told apart, you name the speakers, and the transcript is checked and added
+like a pasted one (ADR-0018). Give the day it was held, and answers can tell what
 is due or overdue (ADR-0012). Every paid call is recorded in the `spend` table, and
 once a day's spend would pass `MNEMON_DAILY_LIMIT_USD`, questions and new meetings are
 refused until midnight (ADR-0014). The web server doesn't migrate the database: run
@@ -236,6 +242,8 @@ settled a choice go in its ADR.
 - `packages/voyage` (`@mnemon/voyage`): Voyage AI embeddings, implementing the core's `Embedder`.
 - `packages/anthropic` (`@mnemon/anthropic`): Claude via the Anthropic SDK, implementing
   the core's `LanguageModel`.
+- `packages/assemblyai` (`@mnemon/assemblyai`): speech to text with speaker labels,
+  implementing the core's `Transcriber`.
 - `packages/eval` (`@mnemon/eval`): the labelled eval set, its scoring, and the runner.
 - `apps/web` (`@mnemon/web`): the Next.js app: sign-in gate, ask, meeting pages.
 - `apps/cli`: `ingest`, `records`, `ask` and `retrieve` commands wiring the packages together.

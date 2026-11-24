@@ -4,6 +4,7 @@ import { ArrowRight, FileUp, Info, TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import { type ChangeEvent, useActionState, useRef, useState } from "react";
 import { type AddState, addMeeting } from "./actions.ts";
+import { AudioStart } from "./audio-start.tsx";
 
 export function AddForm() {
   const [state, action, pending] = useActionState<AddState, FormData>(addMeeting, {
@@ -33,6 +34,14 @@ export function AddForm() {
 
   return (
     <form action={action} className="card add-form">
+      <AudioStart
+        onTranscript={(text) => {
+          if (source.current) source.current.value = text;
+        }}
+        onTitle={(text) => {
+          if (title.current && !title.current.value.trim()) title.current.value = text;
+        }}
+      />
       {/* A new state remounts the fields with what the server read. */}
       <div key={state.kind === "idle" ? "idle" : `${values.title}:${values.source.length}`}>
         <label className="field">

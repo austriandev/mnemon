@@ -15,8 +15,17 @@ for (const dir of [process.cwd(), resolve(process.cwd(), "../..")]) {
 
 const config: NextConfig = {
   // The core and adapters are TypeScript source with .ts imports; Next compiles them.
-  transpilePackages: ["@mnemon/core", "@mnemon/db", "@mnemon/anthropic", "@mnemon/voyage"],
+  transpilePackages: [
+    "@mnemon/core",
+    "@mnemon/db",
+    "@mnemon/anthropic",
+    "@mnemon/voyage",
+    "@mnemon/assemblyai",
+  ],
   serverExternalPackages: ["postgres"],
+  // Recordings are sent to a server action to be transcribed (ADR-0018): under Vercel's
+  // 4.5 MB request limit, with room for the multipart form around a 4 MB file.
+  experimental: { serverActions: { bodySizeLimit: "4.4mb" } },
   // A self-contained server for the web image (Dockerfile); `pnpm web:start` uses it too.
   output: "standalone",
   // Types are checked by `pnpm typecheck` (TypeScript 7) in CI, not by next build.

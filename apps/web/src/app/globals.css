@@ -1198,6 +1198,87 @@ code.inline {
   color: var(--green-700);
 }
 
+/* ── add a meeting: start from a recording (ADR-0018) ────────────────── */
+
+.audio-start {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px dashed var(--line-2);
+  border-radius: var(--r-ctl);
+  background: var(--canvas);
+}
+
+.audio-head {
+  display: flex;
+  gap: 12px;
+}
+
+.audio-head strong {
+  display: block;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.audio-head p {
+  margin: 4px 0 0;
+  font-size: 14px;
+}
+
+.audio-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.audio-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.file-pick.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.speakers {
+  display: grid;
+  gap: 10px;
+}
+
+.speakers p {
+  margin: 0;
+}
+
+.speaker-row {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 220px) minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.speaker-label {
+  color: var(--ink-2);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.speaker-first {
+  overflow: hidden;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .speaker-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+}
+
 /* ── narrow screens ───────────────────────────────────────────────────── */
 
 @media (max-width: 900px) {

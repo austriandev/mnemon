@@ -48,6 +48,21 @@ describe("spend ledger", () => {
     expect(await ledger.spentOn("2026-11-19")).toBe(3.75);
   });
 
+  it("records transcription, billed by the second of audio, alongside model calls", async () => {
+    const ledger = createSpendLedger(sql);
+    await ledger.record({
+      day: "2026-11-18",
+      provider: "assemblyai",
+      model: "assemblyai-stt-3-7",
+      inputTokens: 0,
+      outputTokens: 0,
+      costUsd: 0.0115,
+      accessCode: "reviewer-a",
+    });
+
+    expect(await ledger.spentOn("2026-11-18", "reviewer-a")).toBe(0.0115);
+  });
+
   it("keeps each call's tokens and model, so spend can be read back by model", async () => {
     const ledger = createSpendLedger(sql);
     await ledger.record({
