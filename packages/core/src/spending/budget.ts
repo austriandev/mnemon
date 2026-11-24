@@ -2,7 +2,7 @@
 export interface Spend {
   /** The calendar day the call counts against, YYYY-MM-DD. */
   readonly day: string;
-  readonly provider: "anthropic" | "voyage";
+  readonly provider: "anthropic" | "voyage" | "assemblyai";
   readonly model: string;
   readonly inputTokens: number;
   readonly outputTokens: number;

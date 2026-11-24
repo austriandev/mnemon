@@ -1,0 +1,9 @@
+[00:00:00] Rui Almeida: Good morning. This is the BX-17 blister line huddle for Tuesday.
+[00:00:05] Dr. Grace Mensah: The sealer temperature drifted again overnight. It reached 190 degrees before the alarm went off.
+[00:00:11] Tomas Berg: Maintenance replaced the thermocouple at six this morning. It has held at 180 degrees since.
+[00:00:19] Rui Almeida: Did any blisters from the night shift fail the seal check?
+[00:00:23] Dr. Grace Mensah: Two trays failed. They are in quarantine, and I have opened a deviation.
+[00:00:28] Rui Almeida: Then here is the decision. The line restarts at ten, with a seal check every thirty minutes for the rest of the week.
+[00:00:35] Tomas Berg: I will log every reading in the batch record and send the summary to quality by Thursday.
+[00:00:41] Dr. Grace Mensah: And I will close the deviation once the root cause report is in, by Friday.
+[00:00:46] Rui Almeida: Thank you both. That is everything for today.

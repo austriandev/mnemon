@@ -75,3 +75,10 @@ export {
 export { parseTranscript } from "./transcript/parse.ts";
 export { formatTimestamp } from "./transcript/timestamp.ts";
 export type { ParseError, ParseErrorCode, ParseResult, Turn } from "./transcript/types.ts";
+export {
+  speakersOf,
+  type Transcriber,
+  type Transcription,
+  toTranscript,
+  type Utterance,
+} from "./transcription/transcription.ts";
