@@ -10,6 +10,17 @@ One recorded session, known to Mnemon through its transcript: an ordered sequenc
 of turns.
 _Avoid_: call, session, recording
 
+**Recording**:
+The audio of a meeting, before it is transcribed. Mnemon never stores it: a recording
+becomes a transcript, and the transcript is what is added.
+_Avoid_: file, track
+
+**Utterance**:
+What speech-to-text returns: a stretch of speech with a speaker label ("A", "B") and
+a start time. Utterances become turns once a person names the labels; until then
+nobody knows who spoke.
+_Avoid_: turn (an utterance has no speaker's name yet)
+
 **Turn**:
 One speaker's uninterrupted contribution to a meeting, with the time it starts and
 the lines of the transcript it came from.
@@ -40,3 +51,8 @@ _Avoid_: response, reply
 A pointer from an answer or record back to the turns it rests on: who said it, when,
 and where in the transcript.
 _Avoid_: source, reference, link
+
+**Access code**:
+The code a person signs in with. Meetings added under it are private to it, and it has
+its own daily spending limit.
+_Avoid_: password, account, user
