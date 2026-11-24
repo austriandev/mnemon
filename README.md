@@ -12,7 +12,10 @@ don't check out is not shown.
 **https://mnemon-topaz.vercel.app**: sign in with the access code you were given. No
 setup and no API keys needed: the hosted copy pays for the model calls, up to $2 a day
 per code and $10 a day in all (ADR-0016). Everyone sees the seeded demo meetings; a
-meeting you add is private to your code (ADR-0017).
+meeting you add is private to your code (ADR-0017). To see voice-to-transcript, open
+**Add a meeting** and press **Try the sample recording**: a 50-second synthetic
+recording comes back as a transcript with each speaker told apart, ready to name
+(ADR-0018).
 
 Running your own copy (the Quickstart below) needs API keys of your own.
 
@@ -21,6 +24,10 @@ Running your own copy (the Quickstart below) needs API keys of your own.
 | Open a citation: the cited turn, beside the meeting's records | Add a meeting: its cost is shown before anything is paid for |
 | --- | --- |
 | ![The meeting page, the cited turn highlighted](docs/screenshots/transcript.png) | ![Adding a 165-turn meeting, priced at about $0.10](docs/screenshots/add-meeting.png) |
+
+| Start from a recording: speakers told apart, then named |
+| --- |
+| ![The sample recording transcribed: three speakers, each with a name box and their first words, and the transcript below](docs/screenshots/recording.png) |
 
 Screenshots from the production build, signed in, over the seeded demo meetings.
 The sign-in page is in [docs/screenshots/login.png](docs/screenshots/login.png).
@@ -31,6 +38,9 @@ Needs Docker (with Compose 2.24 or later) and two API keys of your own: Voyage A
 (https://dashboard.voyageai.com, free to create) and Anthropic
 (https://platform.claude.com/settings/keys, needs a paid account). Without them the app
 runs, but can't add meetings or answer questions; the live demo above needs neither.
+Starting a meeting from a recording also needs an AssemblyAI key
+(https://www.assemblyai.com, free credit for new accounts); without one, pasting
+transcripts works as before.
 
 ```sh
 cp .env.example .env        # then add MNEMON_VOYAGE_API_KEY and MNEMON_ANTHROPIC_API_KEY
@@ -80,7 +90,7 @@ payment method lifts the limit; the first 200M tokens stay free.
 
 All behaviour lives in `@mnemon/core`, which imports no framework, database or API
 client. It defines small interfaces (`MeetingRepository`, `ChunkSearch`, `Embedder`,
-`LanguageModel`, `SpendLedger`) and the adapters implement them. The web app, the CLI
+`LanguageModel`, `Transcriber`, `SpendLedger`) and the adapters implement them. The web app, the CLI
 and the eval are composition roots that wire the same core to the same adapters, so
 the eval measures the code the app runs.
 
@@ -89,17 +99,22 @@ flowchart LR
   web["apps/web<br/>Next.js shell"] --> core
   cli["apps/cli<br/>ingest, ask, seed"] --> core
   eval["packages/eval<br/>labelled set, scoring"] --> core
-  web & cli & eval -. wire .-> db & voyage & anthropic
+  web & cli & eval -. wire .-> db & voyage & anthropic & assemblyai
   db["@mnemon/db<br/>Postgres + pgvector"] -->|implements| core
   voyage["@mnemon/voyage<br/>embeddings"] -->|implements| core
   anthropic["@mnemon/anthropic<br/>Claude via the SDK"] -->|implements| core
-  core["@mnemon/core<br/>parse, chunk, extract,<br/>retrieve, answer, budget"]
+  assemblyai["@mnemon/assemblyai<br/>speech to text"] -->|implements| core
+  core["@mnemon/core<br/>parse, chunk, extract,<br/>retrieve, answer, budget,<br/>recording to transcript"]
 ```
 
 **Adding a meeting.** Nothing is paid for until the plan has been priced and accepted.
+A recording first becomes a transcript; a person names its speakers.
 
 ```mermaid
 flowchart LR
+  R[recording] -.-> STT["transcribe<br/>AssemblyAI: Speaker A, B, …"]
+  STT -.-> N["a person names<br/>the speakers"]
+  N -.-> T
   T[transcript] --> P["parseTranscript<br/>speaker-labelled turns"]
   P --> C["chunkTurns<br/>runs of whole turns"]
   C --> Plan["planIngest<br/>new / unchanged / extract-only,<br/>with its cost"]
@@ -218,6 +233,7 @@ pnpm eval --yes               # runs it: retrieval, record extraction, answers
 pnpm eval --only answers --configs sonnet --questions 5 --yes   # a slice
 pnpm eval --only answers --ids list-oct,list-cmc --limit 3 --records off --yes
 pnpm eval --only extraction --meetings kr44,joined --configs sonnet --yes   # long meetings
+pnpm eval:transcription --yes # the sample recording: word error rate, speakers (~$0.006)
 ```
 
 Four synthetic meetings (`packages/core/fixtures`) with hand-labelled gold records and
@@ -230,7 +246,9 @@ joined into one 275-turn meeting, to see how extraction holds up as meetings gro
 and `--records off` answers without the meetings' records (ADR-0011). Each model
 configuration runs over the same data through the same code the app uses, in its own
 database (`mnemon_eval`). Results go to `packages/eval/results/`, and the numbers that
-settled a choice go in its ADR.
+settled a choice go in its ADR. `eval:transcription` transcribes the synthetic sample
+recording with each AssemblyAI model and scores it against the script it was spoken
+from (ADR-0018).
 
 ## Layout
 
