@@ -19,6 +19,12 @@ each speaker told apart, ready to name (ADR-0018).
 
 Running your own copy (the Quickstart below) needs API keys of your own.
 
+[![Watch the demo: 1:38, asking a question, opening its cited source, and adding a meeting from a recording](docs/demo/poster.png)](docs/demo/mnemon-demo.mp4)
+
+The demo ([`docs/demo/mnemon-demo.mp4`](docs/demo/mnemon-demo.mp4), 1:38) was recorded on
+the live site: sign in, ask, open the cited turn, add a meeting from the sample
+recording, name its speakers, see the cost, add it, and ask about it.
+
 ![An answer to "What is the current dosing decision for new patients?", each sentence citing the turn it rests on](docs/screenshots/answer.png)
 
 | Open a citation: the cited turn, beside the meeting's records | Add a meeting: its cost is shown before anything is paid for |
@@ -267,4 +273,5 @@ from (ADR-0018).
 - `apps/cli`: `ingest`, `records`, `ask` and `retrieve` commands wiring the packages together.
 - `Dockerfile`, `docker-compose.yml`, `scripts/app.sh`: the containers and the script that starts them.
 - `docs/adr`: one record per architectural decision.
+- `docs/screenshots`, `docs/demo`: screenshots and the demo video.
 - `GLOSSARY.md`: the domain language.
