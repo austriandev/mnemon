@@ -7,6 +7,9 @@ Built for teams in regulated settings, where an answer has to trace back to who 
 it and when: every sentence of an answer cites a turn, and an answer whose citations
 don't check out is not shown.
 
+**How it was built**, the decisions, how AI tools were used, what production would need
+and what I'd do differently: [docs/approach.md](docs/approach.md).
+
 ## Try it live
 
 **https://mnemon-topaz.vercel.app**: sign in with the access code you were given. No
@@ -272,6 +275,7 @@ from (ADR-0018).
 - `apps/web` (`@mnemon/web`): the Next.js app: sign-in gate, ask, meeting pages.
 - `apps/cli`: `ingest`, `records`, `ask` and `retrieve` commands wiring the packages together.
 - `Dockerfile`, `docker-compose.yml`, `scripts/app.sh`: the containers and the script that starts them.
+- `docs/approach.md`: how it was built, the decisions and the trade-offs.
 - `docs/adr`: one record per architectural decision.
 - `docs/screenshots`, `docs/demo`: screenshots and the demo video.
 - `GLOSSARY.md`: the domain language.
