@@ -24,6 +24,13 @@ export async function transcribeAudio(form: FormData): Promise<TranscribeResult>
   const session = await requireSession();
   const audio = await readAudio(form);
   if (!audio.ok) return { kind: "error", message: audio.message };
+  if (!process.env.MNEMON_ASSEMBLYAI_API_KEY) {
+    return {
+      kind: "error",
+      message:
+        "Recordings aren't set up on this server: it needs an AssemblyAI key (MNEMON_ASSEMBLYAI_API_KEY). Paste a transcript instead.",
+    };
+  }
   const app = (await mnemon()).forSession(session);
   try {
     const budget = await app.budget(estimateTranscriptionUsd(audio.bytes.length));
