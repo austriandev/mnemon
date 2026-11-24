@@ -68,11 +68,11 @@ was right. The scorer now matches by the words said and reports timing on its ow
 earlier, cleaner sample of macOS voices gave 0.8% and 1.6%, 9/9 each (run
 `transcription-2026-11-24-12-10-16`).
 
-End to end on a production build: the sample transcribed in 6.9 s; named, checked and
-added (9 turns, 3 speakers) in 6.1 s; asked "When does the BX-17 blister line restart,
-and who sends the summary to quality?", the answer named Rui Almeida's decision and
-Tomas Berg's action, each cited. $0.042 in all, transcription $0.0032 of it. No
-transcript was left undeleted.
+End to end on a production build, with this sample: transcribed in 10.4 s (3 speakers);
+named, checked and added (12 turns) in 5.9 s; asked "When does the BX-17 blister line
+restart, and who sends the summary to quality?", the answer named Rui Almeida's
+decision and Tomas Berg's action, each cited. $0.046 in all. No transcript was left
+undeleted at AssemblyAI.
 
 ## Consequences
 
