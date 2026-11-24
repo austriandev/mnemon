@@ -25,9 +25,14 @@ take audio, so this needs a speech-to-text service.
   are. The browser shows each label with its first words; naming one rewrites the
   transcript box. Nothing is stored at this step: the meeting is then checked and added
   exactly like a pasted transcript, so extraction, citations and limits are unchanged.
-- **Record in the browser, choose a file, or try the synthetic sample.** The sample is
-  macOS voices reading a fictional script (`scripts/make-sample-recording.py`); its
-  script with real turn times is the reference for the eval.
+- **Record in the browser, choose a file, or try the synthetic sample.** The sample is a
+  fictional 77-second huddle spoken by three ElevenLabs voices (`eleven_v4`, pre-made
+  voices) in a small-room acoustic, each at a different distance from the microphone,
+  with hesitations, a laugh, uneven pauses, two lines spoken over the one before, and a
+  room hum under it all (`pnpm sample:recording`, `scripts/make-sample-recording.ts`,
+  901 ElevenLabs characters). It writes the reference transcript with each line at the
+  moment it starts in the audio, which is what the eval scores against. It replaced a
+  first sample of macOS system voices that sounded plainly synthetic.
 - **Money:** before paying, the spending limit is checked against an upper estimate from
   the file's size at 16 kbps, the lowest voice bitrate, since the browser's reported
   duration can't be trusted. The real cost, from the audio's length, is recorded under
@@ -39,18 +44,29 @@ take audio, so this needs a speech-to-text service.
 
 ## Eval
 
-`pnpm eval:transcription`, the 50-second sample (3 voices, 9 turns), word error rate
-after normalising case, punctuation and spelled numbers, and turns attributed to the
-right person (run `transcription-2026-11-24-12-10-16`, $0.0056):
+`pnpm eval:transcription` on the sample (77 s, 3 voices, 12 turns): word error rate after
+normalising case, punctuation and spelled numbers, with fillers ("uh", "um") and stage
+cues ("[laughs]") left out, since transcription drops them by design; turns attributed
+to the right person, each utterance matched to the reference line it says; and how far
+start times are off (run `transcription-2026-11-24-12-49-58`, $0.0085):
 
-| Model | Word error rate | Speakers found | Turns attributed right | Cost (50 s) | Time |
-| --- | --- | --- | --- | --- | --- |
-| **assemblyai-stt-3-7** | **0.8%** | **3/3** | **9/9** | $0.0032 | 6.2 s |
-| universal-2 | 1.6% | 3/3 | 9/9 | $0.0024 | 5.1 s |
+| Model | Word error rate | Speakers found | Turns attributed right | Start times off by | Cost (77 s) | Time |
+| --- | --- | --- | --- | --- | --- | --- |
+| **assemblyai-stt-3-7** | **1.8%** | **3/3** | **12/12** | 0.8 s | $0.0049 | 10.6 s |
+| universal-2 | 1.8% | 3/3 | 12/12 | 0.5 s | $0.0036 | 5.4 s |
 
-`assemblyai-stt-3-7` stays the default: it wrote the product code as "BX-17" where
-universal-2 wrote "BX17", and exact codes matter here (keyword search, and answers keep
-codes as said). Its one error was "ten" written "10:00".
+`assemblyai-stt-3-7` stays the default. On words and speakers the two tie; universal-2
+is cheaper, twice as fast and closer on timing, but wrote the product code "BX17" for
+"BX-17" and heard "blister lime" for "blister line". Exact codes matter here (keyword
+search; answers keep codes as said); a start a second early doesn't, since citations
+point at turns. stt-3-7's errors: "Blisterline" as one word, "ten" as "10:00".
+
+The first run on this sample (`transcription-2026-11-24-12-48-52`) scored stt-3-7 at
+8/12 turns: the scorer then decided who spoke by time alone, and stt-3-7's starts run a
+second or two early, so they landed on the line before. Every name in its transcript
+was right. The scorer now matches by the words said and reports timing on its own; the
+earlier, cleaner sample of macOS voices gave 0.8% and 1.6%, 9/9 each (run
+`transcription-2026-11-24-12-10-16`).
 
 End to end on a production build: the sample transcribed in 6.9 s; named, checked and
 added (9 turns, 3 speakers) in 6.1 s; asked "When does the BX-17 blister line restart,
@@ -62,9 +78,10 @@ transcript was left undeleted.
 
 - One more sub-processor for audio: for a real client, AssemblyAI's data terms (and
   region) join Anthropic's and Voyage's.
-- **The eval is the easy case.** Clean synthetic voices, no crosstalk, no room noise.
-  *Hypothesis:* real meetings score worse on both words and speakers; a few real
-  recordings with hand-checked transcripts are the next eval to add.
+- **The eval is still a kind case.** Natural voices with room sound and some overlap,
+  but one microphone, three speakers, little crosstalk and no accents far from the
+  model's training. *Hypothesis:* real meetings score worse on words and speakers; a few
+  real recordings with hand-checked transcripts are the next eval to add.
 - Recordings over 4 MB are refused with a message; long meetings need the next step
   below.
 - Without `MNEMON_ASSEMBLYAI_API_KEY` the panel says recordings aren't set up; pasting

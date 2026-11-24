@@ -16,7 +16,7 @@ import { scoreSpeakers, wordErrorRate } from "./transcription-score.ts";
 const ROOT = new URL("../../../", import.meta.url);
 const AUDIO = new URL("apps/web/public/samples/bx17-line-huddle.m4a", ROOT);
 const REFERENCE = new URL("packages/core/fixtures/audio/bx17-line-huddle.txt", ROOT);
-const SAMPLE_SECONDS = 50;
+const SAMPLE_SECONDS = 77;
 
 const { values } = parseArgs({ options: { yes: { type: "boolean", default: false } } });
 const models = Object.keys(TRANSCRIPTION_PRICE_PER_HOUR) as AssemblyAiModel[];
@@ -53,6 +53,7 @@ for (const model of models) {
     wer: wordErrorRate(referenceText, hypothesis),
     speakerTurnsCorrect: `${speakers.correct}/${speakers.turns}`,
     speakersFound: `${speakers.speakersFound}/${speakers.speakersExpected}`,
+    meanStartOffsetMs: speakers.meanStartOffsetMs,
     labels: speakers.labels,
     durationSeconds,
     costUsd,
@@ -61,7 +62,7 @@ for (const model of models) {
   };
   results.push(result);
   console.log(
-    `\n${model}: WER ${(result.wer * 100).toFixed(1)}% · speaker turns ${result.speakerTurnsCorrect} · speakers ${result.speakersFound} · $${costUsd.toFixed(4)} · ${result.seconds} s`,
+    `\n${model}: WER ${(result.wer * 100).toFixed(1)}% · speaker turns ${result.speakerTurnsCorrect} · speakers ${result.speakersFound} · starts off by ${(result.meanStartOffsetMs / 1000).toFixed(1)} s on average · $${costUsd.toFixed(4)} · ${result.seconds} s`,
   );
   for (const line of result.transcript.split("\n")) console.log(`  ${line}`);
 }

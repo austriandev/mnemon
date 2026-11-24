@@ -13,9 +13,9 @@ don't check out is not shown.
 setup and no API keys needed: the hosted copy pays for the model calls, up to $2 a day
 per code and $10 a day in all (ADR-0016). Everyone sees the seeded demo meetings; a
 meeting you add is private to your code (ADR-0017). To see voice-to-transcript, open
-**Add a meeting** and press **Try the sample recording**: a 50-second synthetic
-recording comes back as a transcript with each speaker told apart, ready to name
-(ADR-0018).
+**Add a meeting** and press **Try the sample recording**: a 77-second synthetic huddle
+(three voices in a small room, made with ElevenLabs) comes back as a transcript with
+each speaker told apart, ready to name (ADR-0018).
 
 Running your own copy (the Quickstart below) needs API keys of your own.
 
