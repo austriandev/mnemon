@@ -7,6 +7,15 @@ Built for teams in regulated settings, where an answer has to trace back to who 
 it and when: every sentence of an answer cites a turn, and an answer whose citations
 don't check out is not shown.
 
+## Try it live
+
+**https://mnemon-topaz.vercel.app**: sign in with the access code you were given. No
+setup and no API keys needed: the hosted copy pays for the model calls, up to $2 a day
+per code and $10 a day in all (ADR-0016). Everyone sees the seeded demo meetings; a
+meeting you add is private to your code (ADR-0017).
+
+Running your own copy (the Quickstart below) needs API keys of your own.
+
 ![An answer to "What is the current dosing decision for new patients?", each sentence citing the turn it rests on](docs/screenshots/answer.png)
 
 | Open a citation: the cited turn, beside the meeting's records | Add a meeting: its cost is shown before anything is paid for |
@@ -16,18 +25,12 @@ don't check out is not shown.
 Screenshots from the production build, signed in, over the seeded demo meetings.
 The sign-in page is in [docs/screenshots/login.png](docs/screenshots/login.png).
 
-## Try it live
-
-**https://mnemon-topaz.vercel.app**: sign in with the access code you were given. It
-runs on our API keys over the synthetic demo meetings; each code has $2 a day to spend,
-and the whole demo $10 a day (ADR-0016). Everyone sees the seeded demo meetings; a
-meeting you add is private to your code (ADR-0017). To run your own copy instead, see
-the Quickstart.
-
 ## Quickstart
 
-Needs Docker (with Compose 2.24 or later) and two API keys: Voyage AI
-(https://dashboard.voyageai.com) and Anthropic (https://platform.claude.com/settings/keys).
+Needs Docker (with Compose 2.24 or later) and two API keys of your own: Voyage AI
+(https://dashboard.voyageai.com, free to create) and Anthropic
+(https://platform.claude.com/settings/keys, needs a paid account). Without them the app
+runs, but can't add meetings or answer questions; the live demo above needs neither.
 
 ```sh
 cp .env.example .env        # then add MNEMON_VOYAGE_API_KEY and MNEMON_ANTHROPIC_API_KEY

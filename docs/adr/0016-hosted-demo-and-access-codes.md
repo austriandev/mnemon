@@ -10,7 +10,7 @@ yourself.
 ## Context
 
 Reviewers could run Mnemon only by installing Docker and bringing two API keys of
-their own. A hosted copy lets them sign in and use it straight away, on our keys.
+their own. A hosted copy lets them sign in and use it straight away, on the project's keys.
 That makes the spending limit matter more: one shared code with one daily limit
 (ADR-0014) means a single reviewer could use up the whole day, and no one can tell
 whose questions cost what.
@@ -50,7 +50,7 @@ named its code.
 - Reviewers shared one workspace, seeing any meeting one of them added. ADR-0017
   replaces this: a meeting added under a code is private to it.
 - The hosted copy costs only API calls, capped at $10 a day; a monthly limit on the
-  Anthropic workspace is the backstop if our own limits failed.
+  Anthropic workspace is the backstop if Mnemon's own limits failed.
 - Neon's free tier pauses when idle, so the first request after a quiet spell takes a
   few seconds longer.
 - "Today" is the server's calendar day, which on Vercel is UTC (ADR-0012, ADR-0014).
