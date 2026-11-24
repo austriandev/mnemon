@@ -11,6 +11,12 @@ describe("wordErrorRate", () => {
     expect(wordErrorRate("hold dose", "hold the dose")).toBe(0.5);
   });
 
+  it("ignores fillers and stage cues, which transcription leaves out by design", () => {
+    expect(
+      wordErrorRate("Okay, uh, let's [laughs] go. Mm-hm. Um, right.", "okay let's go right"),
+    ).toBe(0);
+  });
+
   it("ignores case, punctuation and how numbers are written", () => {
     expect(
       wordErrorRate(
@@ -51,7 +57,29 @@ describe("scoreSpeakers", () => {
       labels: { A: "Rui", B: "Grace", C: "Tomas" },
       speakersFound: 3,
       speakersExpected: 3,
+      meanStartOffsetMs: 250,
     });
+  });
+
+  it("matches each utterance to the line it says, so early timestamps aren't wrong speakers", () => {
+    const said = [
+      { ...turn(0, "Rui", 0), text: "Okay, morning, everyone." },
+      { ...turn(1, "Grace", 8), text: "The sealer drifted again overnight." },
+      { ...turn(2, "Tomas", 24), text: "Maintenance swapped the thermocouple at about six." },
+    ];
+    // Each start is a second or two early: by time alone, B and C land on the line before.
+    const utterances: Utterance[] = [
+      { speaker: "A", startMs: 0, text: "Okay, morning everyone." },
+      { speaker: "B", startMs: 6_500, text: "The sealer drifted again overnight." },
+      { speaker: "C", startMs: 22_000, text: "Maintenance swapped the thermocouple at about 6." },
+    ];
+
+    const score = scoreSpeakers(said, utterances);
+
+    expect(score.correct).toBe(3);
+    expect(score.labels).toEqual({ A: "Rui", B: "Grace", C: "Tomas" });
+    // |0| + |-1.5 s| + |-2 s|, averaged.
+    expect(score.meanStartOffsetMs).toBe(1167);
   });
 
   it("counts a turn wrong when two people were merged into one label", () => {

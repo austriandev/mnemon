@@ -35,17 +35,22 @@ const TENS: Record<string, number> = {
   ninety: 90,
 };
 
+/** Hesitations a transcription service leaves out by design, so they aren't errors. */
+const FILLERS = new Set(["uh", "um", "uhm", "er", "erm", "ah", "mm", "hm", "mhm", "hmm"]);
+
 /**
  * Lower case, punctuation and hyphens as spaces, and spelled-out numbers as digits, so
- * "BX-17", "one hundred eighty" and "180" compare the way a reader would.
+ * "BX-17", "one hundred eighty" and "180" compare the way a reader would. Fillers and
+ * stage cues such as "[laughs]" are dropped: they aren't words anyone asks about.
  */
 export function normalizeWords(text: string): string[] {
   const tokens = text
+    .replace(/\[[^\]]*\]/g, " ")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, " ")
     .trim()
     .split(" ")
-    .filter(Boolean);
+    .filter((token) => token !== "" && !FILLERS.has(token));
   const out: string[] = [];
   let current: number | null = null;
   const flush = () => {
@@ -85,29 +90,54 @@ export function wordErrorRate(reference: string, hypothesis: string): number {
 }
 
 export interface SpeakerScore {
-  /** Utterances whose label maps to the person speaking at that moment in the reference. */
+  /** Utterances whose label maps to the person who said that line in the reference. */
   readonly correct: number;
   readonly turns: number;
   /** Each label, mapped to the person it most often lands on. */
   readonly labels: Readonly<Record<string, string>>;
   readonly speakersFound: number;
   readonly speakersExpected: number;
+  /** How far, on average, each utterance's start is from its line's start in the reference. */
+  readonly meanStartOffsetMs: number;
 }
 
 /**
- * Who was speaking when each utterance started, by the reference's turn times (a second
- * of slack for where the service places the start), then each label is mapped to the
- * person it lands on most. Merging two people into one label costs the minority's turns.
+ * Matches each utterance to the reference line it says (the most words in common, the
+ * nearer in time on a tie), or, with no words in common, to the line being spoken when
+ * it starts. So "who" is scored apart from "when": a service whose timestamps run early
+ * isn't marked as getting the speaker wrong. Each label is then mapped to the person it
+ * lands on most; merging two people into one label costs the minority's turns.
  */
 export function scoreSpeakers(
   reference: readonly Turn[],
   utterances: readonly Utterance[],
 ): SpeakerScore {
-  const speakerAt = (ms: number) =>
-    [...reference].reverse().find((t) => t.startSeconds * 1000 <= ms + 1000)?.speaker ??
-    reference[0]?.speaker ??
-    "";
-  const landed = utterances.map((u) => ({ label: u.speaker, person: speakerAt(u.startMs) }));
+  const lineAt = (ms: number) =>
+    [...reference].reverse().find((t) => t.startSeconds * 1000 <= ms + 1000) ?? reference[0];
+  const words = (text: string) => new Set(normalizeWords(text));
+  const referenceWords = reference.map((t) => words(t.text));
+
+  const landed = utterances.map((u) => {
+    const said = words(u.text);
+    let best: { turn: Turn; shared: number } | undefined;
+    for (const [i, turn] of reference.entries()) {
+      const shared = [...said].filter((w) => referenceWords[i]?.has(w)).length;
+      const nearer =
+        best !== undefined &&
+        shared === best.shared &&
+        Math.abs(turn.startSeconds * 1000 - u.startMs) <
+          Math.abs(best.turn.startSeconds * 1000 - u.startMs);
+      if (shared > 0 && (best === undefined || shared > best.shared || nearer)) {
+        best = { turn, shared };
+      }
+    }
+    const turn = best?.turn ?? lineAt(u.startMs);
+    return {
+      label: u.speaker,
+      person: turn?.speaker ?? "",
+      offsetMs: Math.abs(u.startMs - (turn?.startSeconds ?? 0) * 1000),
+    };
+  });
 
   const votes = new Map<string, Map<string, number>>();
   for (const { label, person } of landed) {
@@ -119,11 +149,13 @@ export function scoreSpeakers(
   for (const [label, people] of votes) {
     labels[label] = [...people].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "";
   }
+  const totalOffset = landed.reduce((sum, l) => sum + l.offsetMs, 0);
   return {
     correct: landed.filter(({ label, person }) => labels[label] === person).length,
     turns: utterances.length,
     labels,
     speakersFound: votes.size,
     speakersExpected: new Set(reference.map((t) => t.speaker)).size,
+    meanStartOffsetMs: landed.length === 0 ? 0 : Math.round(totalOffset / landed.length),
   };
 }

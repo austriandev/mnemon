@@ -21,6 +21,7 @@
     "seed": "node --env-file-if-exists=.env apps/cli/src/seed.ts",
     "eval": "node --env-file-if-exists=.env packages/eval/src/run.ts",
     "eval:transcription": "node --env-file-if-exists=.env packages/eval/src/transcription.ts",
+    "sample:recording": "node --env-file=.env.local scripts/make-sample-recording.ts",
     "web": "pnpm --filter @mnemon/web dev",
     "web:build": "pnpm --filter @mnemon/web build",
     "web:start": "pnpm --filter @mnemon/web start",
@@ -31,6 +32,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.8",
+    "@elevenlabs/elevenlabs-js": "2.79.0",
     "@types/node": "24.19.2",
     "typescript": "7.0.2"
   }
